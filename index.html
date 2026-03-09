@@ -2,20 +2,53 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>AutoRating - Топ Авто</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoRating Pro | Аналитика и ТОП</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Рейтинг Автомобилей</h1>
-        
-        <div class="filters">
-            <button onclick="sortCars('rating')">По рейтингу</button>
-            <button onclick="sortCars('price')">По цене</button>
+        <div class="top-controls">
+            <button id="theme-toggle" onclick="toggleTheme()">🌓 Сменить тему</button>
+            <button class="btn-clear" onclick="clearAll()">🗑️ Очистить базу</button>
         </div>
+        
+        <header>
+            <h1>🚗 AutoRating</h1>
+            <p>Твой личный гараж и оценка рынка</p>
+        </header>
 
-        <div id="car-list" class="grid">
+        <section class="dashboard">
+            <div class="stat-card">
+                <span class="label">Средняя цена</span>
+                <div id="avg-price" class="value">$0</div>
             </div>
+            <div class="stat-card">
+                <span class="label">Лидер рейтинга</span>
+                <div id="top-car" class="value">—</div>
+            </div>
+            <div class="stat-card">
+                <span class="label">Всего активов</span>
+                <div id="total-value" class="value">$0</div>
+            </div>
+        </section>
+
+        <section class="add-form">
+            <input type="text" id="car-name" placeholder="Марка и модель">
+            <input type="number" id="car-price" placeholder="Цена ($)">
+            <input type="number" id="car-rating" step="0.1" max="10" placeholder="Рейтинг (0-10)">
+            <button onclick="addCar()" class="btn-add">Добавить</button>
+        </section>
+
+        <section class="controls">
+            <input type="text" id="search-input" placeholder="Поиск по названию (напр. Toyota)..." oninput="filterCars()">
+            <div class="sort-buttons">
+                <button onclick="sortCars('rating')">⭐ Топ по рейтингу</button>
+                <button onclick="sortCars('price')">💰 Сначала дорогие</button>
+            </div>
+        </section>
+
+        <div id="car-list" class="grid"></div>
     </div>
     <script src="script.js"></script>
 </body>
