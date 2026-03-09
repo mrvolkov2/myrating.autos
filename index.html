@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoRating Pro | Аналитика и ТОП</title>
+    <title>MyRating Autos | Аналитика и ТОП</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="top-controls">
-            <button id="theme-toggle" onclick="toggleTheme()">🌓 Сменить тему</button>
+            <button id="theme-toggle" onclick="toggleTheme()">🌓 Тема</button>
+            <div id="stats-count">Авто в базе: 0</div>
             <button class="btn-clear" onclick="clearAll()">🗑️ Очистить базу</button>
         </div>
         
         <header>
-            <h1>🚗 AutoRating</h1>
-            <p>Твой личный гараж и оценка рынка</p>
+            <h1>🚗 MyRating Autos</h1>
+            <p>Твой личный гараж и оценка авторынка</p>
         </header>
 
         <section class="dashboard">
@@ -28,7 +29,7 @@
                 <div id="top-car" class="value">—</div>
             </div>
             <div class="stat-card">
-                <span class="label">Всего активов</span>
+                <span class="label">Общая стоимость</span>
                 <div id="total-value" class="value">$0</div>
             </div>
         </section>
@@ -43,12 +44,19 @@
         <section class="controls">
             <input type="text" id="search-input" placeholder="Поиск по названию (напр. Toyota)..." oninput="filterCars()">
             <div class="sort-buttons">
-                <button onclick="sortCars('rating')">⭐ Топ по рейтингу</button>
-                <button onclick="sortCars('price')">💰 Сначала дорогие</button>
+                <button onclick="sortCars('rating')">⭐ По рейтингу</button>
+                <button onclick="sortCars('price')">💰 По цене</button>
             </div>
         </section>
 
         <div id="car-list" class="grid"></div>
+
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <div class="empty-icon">🏎️</div>
+            <h2>Ваш гараж пуст</h2>
+            <p>Добавьте свои машины или верните наш топ-лист:</p>
+            <button class="btn-restore" onclick="restoreDefaults()">Восстановить список</button>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
