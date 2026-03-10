@@ -11,7 +11,7 @@ const defaultCars = [
     { name: "Nissan Skyline GT-R", price: 80000, rating: 9.8 }
 ];
 
-let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
+let cars = JSON.parse(localStorage.getItem('myrating_final_db')) || defaultCars;
 
 function render(data = cars) {
     const list = document.getElementById('car-list');
@@ -19,7 +19,7 @@ function render(data = cars) {
     const statsCount = document.getElementById('stats-count');
     
     list.innerHTML = '';
-    statsCount.innerText = `Авто в списке: ${data.length}`;
+    statsCount.innerText = data.length; // Обновляем только число
 
     if (data.length === 0) {
         emptyState.style.display = 'block';
@@ -42,7 +42,7 @@ function render(data = cars) {
         });
     }
     updateDashboard();
-    localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
+    localStorage.setItem('myrating_final_db', JSON.stringify(cars));
 }
 
 function updateDashboard() {
@@ -53,8 +53,11 @@ function updateDashboard() {
         return;
     }
     const total = cars.reduce((sum, car) => sum + car.price, 0);
-    const top = [...cars].sort((a, b) => b.rating - a.rating)[0];
-    document.getElementById('avg-price').innerText = `$${Math.round(total / cars.length).toLocaleString()}`;
+    const sortedByRating = [...cars].sort((a, b) => b.rating - a.rating);
+    const top = sortedByRating[0];
+    const avg = total / cars.length;
+
+    document.getElementById('avg-price').innerText = `$${Math.round(avg).toLocaleString()}`;
     document.getElementById('top-car').innerText = top.name;
     document.getElementById('total-value').innerText = `$${total.toLocaleString()}`;
 }
@@ -77,7 +80,8 @@ function deleteCar(index) {
 
 function filterCars() {
     const query = document.getElementById('search-input').value.toLowerCase();
-    render(cars.filter(c => c.name.toLowerCase().includes(query)));
+    const filtered = cars.filter(c => c.name.toLowerCase().includes(query));
+    render(filtered);
 }
 
 function sortCars(key) {
@@ -87,11 +91,11 @@ function sortCars(key) {
 
 function toggleTheme() {
     document.body.classList.toggle('light-theme');
-    localStorage.setItem('myrating_theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+    localStorage.setItem('myrating_theme', document.body.classList.contains('light-theme') ? 'light-theme' : 'dark-theme');
 }
 
 function clearAll() {
-    if(confirm("Очистить базу данных?")) { cars = []; render(); }
+    if(confirm("Удалить все данные? Это действие необратимо.")) { cars = []; render(); }
 }
 
 function restoreDefaults() {
@@ -99,5 +103,7 @@ function restoreDefaults() {
     render();
 }
 
-if (localStorage.getItem('myrating_theme') === 'light') document.body.classList.add('light-theme');
+// Загрузка темы
+if (localStorage.getItem('myrating_theme') === 'light-theme') document.body.classList.add('light-theme');
+
 render();
