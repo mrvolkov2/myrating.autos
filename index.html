@@ -12,7 +12,10 @@
         <div class="header-content">
             <img src="logo.png" alt="MyRating.autos" class="logo-image">
             <div class="header-actions">
-                <button id="theme-toggle" onclick="toggleTheme()">🌓 Тема</button>
+                <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme">
+                    <img src="theme_icon.png" alt="Тема" class="theme-icon-img">
+                    Тема
+                </button>
             </div>
         </div>
     </header>
@@ -42,12 +45,17 @@
             </section>
 
             <section class="controls">
-                <input type="text" id="search-input" placeholder="Поиск по названию..." oninput="filterCars()">
-                <div class="sort-actions">
-                    <div class="stats-counter" id="stats-count">Авто в списке: 0</div>
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Поиск по названию (напр. Toyota Camry)..." oninput="filterCars()">
+                </div>
+                <div class="controls-actions">
+                    <div class="stats-counter-box">
+                        <span class="stats-label">Авто в списке:</span>
+                        <span id="stats-count" class="stats-value">0</span>
+                    </div>
                     <div class="sort-buttons">
-                        <button onclick="sortCars('rating')">⭐ По рейтингу</button>
-                        <button onclick="sortCars('price')">💰 По цене</button>
+                        <button onclick="sortCars('rating')" class="btn-sort">⭐ По рейтингу</button>
+                        <button onclick="sortCars('price')" class="btn-sort">💰 По цене</button>
                     </div>
                 </div>
             </section>
@@ -63,7 +71,7 @@
         </main>
         
         <footer class="main-footer">
-            <button class="btn-clear-footer" onclick="clearAll()">🗑️ Очистить всю базу данных</button>
+            <button class="btn-clear-footer btn-styled" onclick="clearAll()">🗑️ Очистить всю базу данных</button>
         </footer>
     </div>
 
