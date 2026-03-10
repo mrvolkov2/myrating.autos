@@ -11,7 +11,7 @@ const defaultCars = [
     { name: "Nissan Skyline GT-R", price: 80000, rating: 9.8 }
 ];
 
-let cars = JSON.parse(localStorage.getItem('myrating_db')) || defaultCars;
+let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
 
 function render(data = cars) {
     const list = document.getElementById('car-list');
@@ -19,7 +19,7 @@ function render(data = cars) {
     const statsCount = document.getElementById('stats-count');
     
     list.innerHTML = '';
-    statsCount.innerText = `Авто в базе: ${data.length}`;
+    statsCount.innerText = `Авто в списке: ${data.length}`;
 
     if (data.length === 0) {
         emptyState.style.display = 'block';
@@ -29,17 +29,20 @@ function render(data = cars) {
             const rClass = car.rating >= 9 ? 'rating-high' : (car.rating >= 8 ? 'rating-mid' : 'rating-low');
             list.innerHTML += `
                 <div class="car-card">
-                    <h2>${car.name}</h2>
-                    <p>💰 Цена: <strong>$${Number(car.price).toLocaleString()}</strong></p>
-                    <p>⭐ Рейтинг: <span class="${rClass}">${car.rating}/10</span></p>
-                    <button class="btn-delete" onclick="deleteCar(${index})">Удалить</button>
+                    <div class="car-info">
+                        <h2>${car.name}</h2>
+                        <p>Цена: <strong>$${Number(car.price).toLocaleString()}</strong></p>
+                    </div>
+                    <div class="car-meta">
+                        <div class="rating-box">⭐ <span class="${rClass}">${car.rating}</span></div>
+                        <button class="btn-delete" onclick="deleteCar(${index})">Удалить</button>
+                    </div>
                 </div>
             `;
         });
     }
-
     updateDashboard();
-    localStorage.setItem('myrating_db', JSON.stringify(cars));
+    localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
 }
 
 function updateDashboard() {
@@ -49,13 +52,9 @@ function updateDashboard() {
         document.getElementById('total-value').innerText = '$0';
         return;
     }
-
     const total = cars.reduce((sum, car) => sum + car.price, 0);
-    const sortedByRating = [...cars].sort((a, b) => b.rating - a.rating);
-    const top = sortedByRating[0];
-    const avg = total / cars.length;
-
-    document.getElementById('avg-price').innerText = `$${Math.round(avg).toLocaleString()}`;
+    const top = [...cars].sort((a, b) => b.rating - a.rating)[0];
+    document.getElementById('avg-price').innerText = `$${Math.round(total / cars.length).toLocaleString()}`;
     document.getElementById('top-car').innerText = top.name;
     document.getElementById('total-value').innerText = `$${total.toLocaleString()}`;
 }
@@ -64,7 +63,6 @@ function addCar() {
     const name = document.getElementById('car-name').value;
     const price = document.getElementById('car-price').value;
     const rating = document.getElementById('car-rating').value;
-
     if (name && price && rating) {
         cars.push({ name, price: Number(price), rating: Number(rating) });
         render();
@@ -79,8 +77,7 @@ function deleteCar(index) {
 
 function filterCars() {
     const query = document.getElementById('search-input').value.toLowerCase();
-    const filtered = cars.filter(c => c.name.toLowerCase().includes(query));
-    render(filtered);
+    render(cars.filter(c => c.name.toLowerCase().includes(query)));
 }
 
 function sortCars(key) {
@@ -94,10 +91,7 @@ function toggleTheme() {
 }
 
 function clearAll() {
-    if(confirm("Удалить все данные?")) {
-        cars = [];
-        render();
-    }
+    if(confirm("Очистить базу данных?")) { cars = []; render(); }
 }
 
 function restoreDefaults() {
@@ -105,6 +99,5 @@ function restoreDefaults() {
     render();
 }
 
-// Запуск
 if (localStorage.getItem('myrating_theme') === 'light') document.body.classList.add('light-theme');
 render();
