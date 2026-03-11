@@ -148,3 +148,23 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     render();
 });
+
+function setupShareLinks() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent("Смотри, какой крутой сервис для рейтинга и сравнения авто! 🚗");
+    
+    document.getElementById('share-tg').href = `https://t.me/share/url?url=${url}&text=${text}`;
+    document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
+}
+
+function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        alert("Ссылка скопирована! Отправь её друзьям 🚀");
+    });
+}
+
+// Вызови setupShareLinks при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+    // ... твой старый код ...
+    setupShareLinks();
+});
