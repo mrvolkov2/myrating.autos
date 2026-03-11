@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRating Autos PRO | Сравнение и Аналитика</title>
+    <title>MyRating Autos PRO | Аналитика</title>
     <link rel="icon" href="https://fav.farm/🚗" />
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,9 +11,11 @@
 
     <header class="main-header">
         <div class="header-content">
-            <img src="logo.png" alt="MyRating.autos" class="logo-image">
+            <div class="logo-wrapper">
+                <img src="logo.png" alt="MyRating.autos" class="logo-image">
+            </div>
             <div class="header-actions">
-                <button id="theme-toggle" onclick="toggleTheme()">
+                <button id="theme-toggle" onclick="toggleTheme()" class="theme-btn">
                     <img src="theme_light.png" id="theme-icon" alt="Тема">
                     <span>Тема</span>
                 </button>
@@ -72,16 +74,18 @@
             </div>
 
             <section class="promo-banner">
-                <div class="promo-text">
-                    <h3>🔍 Проверка истории по VIN</h3>
-                    <p>Узнай правду о ДТП и пробеге до покупки.</p>
+                <div class="promo-content">
+                    <div class="promo-text">
+                        <h3>🔍 Проверка истории по VIN</h3>
+                        <p>ДТП, пробеги и залоги в одном отчете.</p>
+                    </div>
+                    <a href="https://autoteka.ru/" target="_blank" class="btn-main btn-small vin-btn">Проверить в Автотеке</a>
                 </div>
-                <a href="https://autoteka.ru/" target="_blank" class="btn-main btn-small" style="background: #238636; min-width: 180px;">Проверить в Автотеке</a>
             </section>
         </main>
         
         <footer class="main-footer">
-            <button class="btn-main btn-danger" onclick="clearAll()">Очистить всю базу данных</button>
+            <button class="btn-main btn-danger" onclick="clearAll()">Очистить базу данных</button>
         </footer>
     </div>
 
