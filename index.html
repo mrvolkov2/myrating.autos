@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyRating Autos | Аналитика</title>
+    <link rel="icon" href="https://fav.farm/🚗" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,9 +13,9 @@
         <div class="header-content">
             <img src="logo.png" alt="MyRating.autos" class="logo-image">
             <div class="header-actions">
-                <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme">
-                    <img src="theme_icon.png" alt="Тема" class="theme-icon-img">
-                    Тема
+                <button id="theme-toggle" onclick="toggleTheme()">
+                    <img src="theme_light.png" id="theme-icon" alt="Тема">
+                    <span>Тема</span>
                 </button>
             </div>
         </div>
@@ -38,40 +39,43 @@
             </section>
 
             <section class="add-form">
-                <input type="text" id="car-name" placeholder="Марка и модель">
-                <input type="number" id="car-price" placeholder="Цена ($)">
-                <input type="number" id="car-rating" step="0.1" max="10" placeholder="Рейтинг (0-10)">
-                <button onclick="addCar()" class="btn-add">Добавить авто</button>
+                <div class="form-grid">
+                    <input type="text" id="car-name" placeholder="Марка и модель">
+                    <input type="number" id="car-price" placeholder="Цена ($)">
+                    <input type="number" id="car-year" placeholder="Год выпуска">
+                    <input type="number" id="car-mileage" placeholder="Пробег (тыс. км)">
+                    <select id="car-condition">
+                        <option value="1.0">💎 Идеал (в родне)</option>
+                        <option value="0.85">🎨 Косметика</option>
+                        <option value="0.6">🔨 Бит/Крашен</option>
+                        <option value="0.3">💀 Тотал</option>
+                    </select>
+                </div>
+                <button onclick="calculateAndAdd()" class="btn-main">Просчитать и добавить в список</button>
             </section>
 
             <section class="controls">
-                <div class="search-bar">
-                    <input type="text" id="search-input" placeholder="Поиск по названию (напр. Toyota Camry)..." oninput="filterCars()">
-                </div>
-                <div class="controls-actions">
-                    <div class="stats-counter-box">
-                        <span class="stats-label">Авто в списке:</span>
-                        <span id="stats-count" class="stats-value">0</span>
-                    </div>
-                    <div class="sort-buttons">
-                        <button onclick="sortCars('rating')" class="btn-sort">⭐ По рейтингу</button>
-                        <button onclick="sortCars('price')" class="btn-sort">💰 По цене</button>
-                    </div>
+                <input type="text" id="search-input" placeholder="Поиск в гараже..." oninput="filterCars()">
+                <div class="stats-counter" id="stats-count">Авто в списке: 0</div>
+                <div class="sort-buttons">
+                    <button class="btn-main btn-small" onclick="sortCars('rating')">По рейтингу</button>
+                    <button class="btn-main btn-small" onclick="sortCars('price')">По цене</button>
                 </div>
             </section>
 
             <div id="car-list" class="grid-layout"></div>
 
-            <div id="empty-state" class="empty-state" style="display: none;">
-                <div class="empty-icon">🏎️</div>
-                <h2>Гараж пуст</h2>
-                <p>Добавьте свои машины или загрузите наш ТОП-10</p>
-                <button class="btn-restore" onclick="restoreDefaults()">Восстановить список</button>
-            </div>
+            <section class="promo-banner">
+                <div class="promo-text">
+                    <h3>🔍 Проверка истории по VIN</h3>
+                    <p>Узнай правду о пробеге и владельцах до покупки.</p>
+                </div>
+                <a href="#" class="btn-main btn-small" style="background: #238636;">Проверить отчет</a>
+            </section>
         </main>
         
         <footer class="main-footer">
-            <button class="btn-clear-footer btn-styled" onclick="clearAll()">🗑️ Очистить всю базу данных</button>
+            <button class="btn-main btn-danger" onclick="clearAll()">Очистить всю базу данных</button>
         </footer>
     </div>
 
