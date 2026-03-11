@@ -61,15 +61,14 @@ function calculateAndAdd() {
     if (name && price && year) {
         let score = 10;
         const age = 2026 - year;
-        score -= (age * 0.3); // Минус за возраст
+        score -= (age * 0.3);
         const normalMileage = age * 18;
-        if (mileage > normalMileage) score -= (mileage - normalMileage) / 50; // Минус за перепробег
-        score = score * condition; // Множитель состояния
+        if (mileage > normalMileage) score -= (mileage - normalMileage) / 50;
+        score = score * condition;
         const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
         
         cars.push({ name, price: Number(price), rating: Number(finalRating) });
         render();
-        // Очистка полей
         document.getElementById('car-name').value = '';
         document.getElementById('car-price').value = '';
         document.getElementById('car-year').value = '';
@@ -80,7 +79,7 @@ function calculateAndAdd() {
 }
 
 function deleteCar(index) { cars.splice(index, 1); render(); }
-function clearAll() { if(confirm("Удалить базу данных?")) { cars = []; render(); } }
+function clearAll() { if(confirm("Удалить всё?")) { cars = []; render(); } }
 function restoreDefaults() { cars = [...defaultCars]; render(); }
 function sortCars(key) { cars.sort((a, b) => b[key] - a[key]); render(); }
 function filterCars() {
