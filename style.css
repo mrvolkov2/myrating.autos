@@ -104,3 +104,30 @@ body {
 .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 15px; }
 input, select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-size: 14px; }
 .main-footer { text-align: center; margin: 40px 0; border-top: 1px solid var(--border); padding-top: 30px; }
+
+.share-box {
+    margin: 40px 0;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+}
+.share-box span { display: block; margin-bottom: 15px; font-weight: 600; opacity: 0.8; }
+
+.share-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+
+.btn-share {
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+}
+.tg { background: #0088cc; }
+.wa { background: #25d366; }
+.copy { background: var(--border); color: var(--text); }
+
+.btn-share:hover { opacity: 0.8; transform: translateY(-2px); }
