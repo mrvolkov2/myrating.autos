@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRating Autos | Аналитика</title>
+    <title>MyRating Autos | Аналитика и Гараж</title>
     <link rel="icon" href="https://fav.farm/🚗" />
     <link rel="stylesheet" href="style.css">
 </head>
@@ -72,6 +72,12 @@
                 </div>
                 <a href="#" class="btn-main btn-small" style="background: #238636;">Проверить отчет</a>
             </section>
+
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <div class="empty-icon">🏎️</div>
+                <h2>Гараж пуст</h2>
+                <button class="btn-main" onclick="restoreDefaults()">Загрузить ТОП-20</button>
+            </div>
         </main>
         
         <footer class="main-footer">
