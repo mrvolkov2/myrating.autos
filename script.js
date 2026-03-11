@@ -72,6 +72,8 @@ function toggleCompare(index) {
 
 function openCompare() {
     const container = document.getElementById('compare-table-container');
+    if (compareList.length < 2) return alert("Выберите минимум 2 авто!");
+    
     const minPrice = Math.min(...compareList.map(c => c.price));
     const maxRating = Math.max(...compareList.map(c => c.rating));
 
@@ -119,7 +121,12 @@ function restoreDefaults() { cars = [...defaultCars]; render(); }
 function clearAll() { if(confirm("Удалить базу?")) { cars = []; render(); } }
 
 function updateDashboard() {
-    if (cars.length === 0) return;
+    if (cars.length === 0) {
+        document.getElementById('avg-price').innerText = '$0';
+        document.getElementById('top-car').innerText = '—';
+        document.getElementById('total-value').innerText = '$0';
+        return;
+    }
     const total = cars.reduce((sum, car) => sum + car.price, 0);
     const top = [...cars].sort((a, b) => b.rating - a.rating)[0];
     document.getElementById('avg-price').innerText = `$${Math.round(total / cars.length).toLocaleString()}`;
