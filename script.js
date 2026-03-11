@@ -22,6 +22,7 @@ const defaultCars = [
 ];
 
 let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
+let compareList = [];
 
 function render(data = cars) {
     const list = document.getElementById('car-list');
@@ -36,19 +37,52 @@ function render(data = cars) {
     } else {
         emptyState.style.display = 'none';
         data.forEach((car, index) => {
+            const isComparing = compareList.some(c => c.name === car.name);
             list.innerHTML += `
                 <div class="car-card">
                     <h2>${car.name}</h2>
                     <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
                     <div style="display:flex; justify-content: space-between; align-items: center; margin-top:15px;">
-                        <div style="font-size: 1.5rem; font-weight:900; color:var(--primary);">${car.rating}</div>
-                        <button onclick="deleteCar(${index})" style="background:none; border:1px solid #ef4444; color:#ef4444; padding:5px 10px; border-radius:8px; cursor:pointer;">Удалить</button>
+                        <div style="font-size: 1.4rem; font-weight:900; color:var(--primary);">${car.rating}</div>
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="toggleCompare(${index})" class="btn-main btn-small" style="background:${isComparing ? '#238636' : 'var(--border)'}">⚖️</button>
+                            <button onclick="deleteCar(${index})" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:5px 10px; border-radius:8px; cursor:pointer;">✕</button>
+                        </div>
                     </div>
                 </div>`;
         });
     }
     updateDashboard();
     localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
+}
+
+function toggleCompare(index) {
+    const car = cars[index];
+    const exists = compareList.findIndex(c => c.name === car.name);
+    if (exists > -1) {
+        compareList.splice(exists, 1);
+    } else {
+        if (compareList.length >= 3) return alert("Максимум 3 авто!");
+        compareList.push(car);
+    }
+    document.getElementById('compare-float-bar').classList.toggle('active', compareList.length > 0);
+    document.getElementById('compare-text').innerText = `Выбрано: ${compareList.length}`;
+    render();
+}
+
+function openCompare() {
+    const container = document.getElementById('compare-table-container');
+    const minPrice = Math.min(...compareList.map(c => c.price));
+    const maxRating = Math.max(...compareList.map(c => c.rating));
+
+    let html = `<table class="compare-table">
+        <tr><th>Параметр</th>${compareList.map(c => `<th>${c.name}</th>`).join('')}</tr>
+        <tr><td>Цена</td>${compareList.map(c => `<td class="${c.price === minPrice ? 'best' : ''}">$${c.price.toLocaleString()}</td>`).join('')}</tr>
+        <tr><td>Рейтинг</td>${compareList.map(c => `<td class="${c.rating === maxRating ? 'best' : ''}">${c.rating}</td>`).join('')}</tr>
+    </table>`;
+    
+    container.innerHTML = html;
+    document.getElementById('compare-modal').style.display = 'block';
 }
 
 function calculateAndAdd() {
@@ -67,33 +101,25 @@ function calculateAndAdd() {
         score = score * condition;
         const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
         
-        cars.push({ name, price: Number(price), rating: Number(finalRating) });
+        cars.push({ name, price, rating: Number(finalRating) });
         render();
-        document.getElementById('car-name').value = '';
-        document.getElementById('car-price').value = '';
-        document.getElementById('car-year').value = '';
-        document.getElementById('car-mileage').value = '';
-    } else {
-        alert("Заполните название, цену и год!");
+        document.querySelectorAll('.add-form input').forEach(i => i.value = '');
     }
 }
 
+function closeCompare() { document.getElementById('compare-modal').style.display = 'none'; }
+function resetCompare() { compareList = []; document.getElementById('compare-float-bar').classList.remove('active'); render(); }
 function deleteCar(index) { cars.splice(index, 1); render(); }
-function clearAll() { if(confirm("Удалить всё?")) { cars = []; render(); } }
-function restoreDefaults() { cars = [...defaultCars]; render(); }
 function sortCars(key) { cars.sort((a, b) => b[key] - a[key]); render(); }
 function filterCars() {
     const query = document.getElementById('search-input').value.toLowerCase();
     render(cars.filter(c => c.name.toLowerCase().includes(query)));
 }
+function restoreDefaults() { cars = [...defaultCars]; render(); }
+function clearAll() { if(confirm("Удалить базу?")) { cars = []; render(); } }
 
 function updateDashboard() {
-    if (cars.length === 0) {
-        document.getElementById('avg-price').innerText = '$0';
-        document.getElementById('top-car').innerText = '—';
-        document.getElementById('total-value').innerText = '$0';
-        return;
-    }
+    if (cars.length === 0) return;
     const total = cars.reduce((sum, car) => sum + car.price, 0);
     const top = [...cars].sort((a, b) => b.rating - a.rating)[0];
     document.getElementById('avg-price').innerText = `$${Math.round(total / cars.length).toLocaleString()}`;
