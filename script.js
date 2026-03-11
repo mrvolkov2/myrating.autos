@@ -23,11 +23,32 @@ const defaultCars = [
 
 let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
 
-function toggleTheme() {
-    document.body.classList.toggle('light-theme');
-    const isLight = document.body.classList.contains('light-theme');
-    document.getElementById('theme-icon').src = isLight ? 'theme_night.png' : 'theme_light.png';
-    localStorage.setItem('myrating_theme', isLight ? 'light' : 'dark');
+function render(data = cars) {
+    const list = document.getElementById('car-list');
+    const statsCount = document.getElementById('stats-count');
+    const emptyState = document.getElementById('empty-state');
+    
+    list.innerHTML = '';
+    statsCount.innerText = `Авто в списке: ${data.length}`;
+
+    if (data.length === 0) {
+        emptyState.style.display = 'block';
+    } else {
+        emptyState.style.display = 'none';
+        data.forEach((car, index) => {
+            list.innerHTML += `
+                <div class="car-card">
+                    <h2>${car.name}</h2>
+                    <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
+                    <div style="display:flex; justify-content: space-between; align-items: center; margin-top:15px;">
+                        <div style="font-size: 1.5rem; font-weight:900; color:var(--primary);">${car.rating}</div>
+                        <button onclick="deleteCar(${index})" style="background:none; border:1px solid #ef4444; color:#ef4444; padding:5px 10px; border-radius:8px; cursor:pointer;">Удалить</button>
+                    </div>
+                </div>`;
+        });
+    }
+    updateDashboard();
+    localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
 }
 
 function calculateAndAdd() {
@@ -40,43 +61,40 @@ function calculateAndAdd() {
     if (name && price && year) {
         let score = 10;
         const age = 2026 - year;
-        score -= (age * 0.3);
+        score -= (age * 0.3); // Минус за возраст
         const normalMileage = age * 18;
-        if (mileage > normalMileage) score -= (mileage - normalMileage) / 50;
-        score = score * condition;
+        if (mileage > normalMileage) score -= (mileage - normalMileage) / 50; // Минус за перепробег
+        score = score * condition; // Множитель состояния
         const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
         
         cars.push({ name, price: Number(price), rating: Number(finalRating) });
         render();
-        document.querySelectorAll('.add-form input').forEach(i => i.value = '');
+        // Очистка полей
+        document.getElementById('car-name').value = '';
+        document.getElementById('car-price').value = '';
+        document.getElementById('car-year').value = '';
+        document.getElementById('car-mileage').value = '';
     } else {
         alert("Заполните название, цену и год!");
     }
 }
 
-function render(data = cars) {
-    const list = document.getElementById('car-list');
-    const statsCount = document.getElementById('stats-count');
-    list.innerHTML = '';
-    statsCount.innerText = `Авто в списке: ${data.length}`;
-
-    data.forEach((car, index) => {
-        list.innerHTML += `
-            <div class="car-card">
-                <h2>${car.name}</h2>
-                <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px;">
-                    <div style="font-size:1.5rem; font-weight:900; color:var(--primary);">${car.rating}</div>
-                    <button onclick="deleteCar(${index})" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:5px 10px; border-radius:8px; cursor:pointer;">Удалить</button>
-                </div>
-            </div>`;
-    });
-    updateDashboard();
-    localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
+function deleteCar(index) { cars.splice(index, 1); render(); }
+function clearAll() { if(confirm("Удалить базу данных?")) { cars = []; render(); } }
+function restoreDefaults() { cars = [...defaultCars]; render(); }
+function sortCars(key) { cars.sort((a, b) => b[key] - a[key]); render(); }
+function filterCars() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    render(cars.filter(c => c.name.toLowerCase().includes(query)));
 }
 
 function updateDashboard() {
-    if (cars.length === 0) return;
+    if (cars.length === 0) {
+        document.getElementById('avg-price').innerText = '$0';
+        document.getElementById('top-car').innerText = '—';
+        document.getElementById('total-value').innerText = '$0';
+        return;
+    }
     const total = cars.reduce((sum, car) => sum + car.price, 0);
     const top = [...cars].sort((a, b) => b.rating - a.rating)[0];
     document.getElementById('avg-price').innerText = `$${Math.round(total / cars.length).toLocaleString()}`;
@@ -84,14 +102,12 @@ function updateDashboard() {
     document.getElementById('total-value').innerText = `$${total.toLocaleString()}`;
 }
 
-function deleteCar(index) { cars.splice(index, 1); render(); }
-function sortCars(key) { cars.sort((a, b) => b[key] - a[key]); render(); }
-function filterCars() {
-    const query = document.getElementById('search-input').value.toLowerCase();
-    render(cars.filter(c => c.name.toLowerCase().includes(query)));
+function toggleTheme() {
+    document.body.classList.toggle('light-theme');
+    const isLight = document.body.classList.contains('light-theme');
+    document.getElementById('theme-icon').src = isLight ? 'theme_night.png' : 'theme_light.png';
+    localStorage.setItem('myrating_theme', isLight ? 'light' : 'dark');
 }
-function clearAll() { if(confirm("Удалить всё?")) { cars = []; render(); } }
-function restoreDefaults() { cars = [...defaultCars]; render(); }
 
 window.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('myrating_theme') === 'light') {
