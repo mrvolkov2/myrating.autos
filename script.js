@@ -1,48 +1,90 @@
 const defaultCars = [
-    { name: "Porsche 911 GT3", price: 190000, rating: 9.9 },
-    { name: "Bugatti Chiron", price: 3000000, rating: 9.7 },
-    { name: "Toyota AE86", price: 15000, rating: 9.5 },
-    { name: "Tesla Cybertruck", price: 100000, rating: 6.8 },
-    { name: "BMW M5 CS", price: 145000, rating: 9.6 },
-    { name: "Toyota Camry", price: 35000, rating: 9.2 },
-    { name: "Hyundai Solaris", price: 18000, rating: 8.1 },
-    { name: "Volkswagen Golf GTI", price: 32000, rating: 8.9 },
-    { name: "Lada Vesta NG", price: 14000, rating: 7.6 },
-    { name: "Nissan Skyline GT-R", price: 80000, rating: 9.8 }
+    { name: "Porsche 911 GT3", price: 195000, rating: 9.9 },
+    { name: "BMW M5 F90", price: 105000, rating: 9.7 },
+    { name: "Toyota LC 300", price: 110000, rating: 9.2 },
+    { name: "Tesla Model S", price: 85000, rating: 8.5 },
+    { name: "Audi RS6 Avant", price: 125000, rating: 9.6 },
+    { name: "Mercedes G63", price: 210000, rating: 9.4 },
+    { name: "Nissan GT-R", price: 115000, rating: 9.5 },
+    { name: "Toyota Camry", price: 32000, rating: 9.1 },
+    { name: "VW Golf R", price: 48000, rating: 9.0 },
+    { name: "Ford Mustang", price: 45000, rating: 8.7 },
+    { name: "Mazda CX-5", price: 29000, rating: 8.8 },
+    { name: "Lexus RX 350", price: 68000, rating: 9.0 },
+    { name: "Honda Civic R", price: 44000, rating: 9.3 },
+    { name: "Subaru WRX STI", price: 38000, rating: 8.9 },
+    { name: "Kia Stinger", price: 35000, rating: 8.2 },
+    { name: "Volvo XC90", price: 72000, rating: 9.1 },
+    { name: "Hyundai Ioniq 5", price: 50000, rating: 8.6 },
+    { name: "Skoda Octavia RS", price: 34000, rating: 8.9 },
+    { name: "Dodge Challenger", price: 55000, rating: 8.4 },
+    { name: "Land Rover Defender", price: 88000, rating: 9.2 }
 ];
 
-let cars = JSON.parse(localStorage.getItem('myrating_final_db')) || defaultCars;
+let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
+
+// Переключение темы
+function toggleTheme() {
+    const body = document.body;
+    const icon = document.getElementById('theme-icon');
+    body.classList.toggle('light-theme');
+    const isLight = body.classList.contains('light-theme');
+    
+    icon.src = isLight ? 'theme_night.png' : 'theme_light.png';
+    localStorage.setItem('myrating_theme', isLight ? 'light' : 'dark');
+}
+
+// Расчет и добавление
+function calculateAndAdd() {
+    const name = document.getElementById('car-name').value;
+    const price = Number(document.getElementById('car-price').value);
+    const year = Number(document.getElementById('car-year').value);
+    const mileage = Number(document.getElementById('car-mileage').value);
+    const condition = Number(document.getElementById('car-condition').value);
+
+    if (name && price && year) {
+        let score = 10;
+        const age = 2026 - year;
+        score -= (age * 0.3);
+        const normalMileage = age * 18;
+        if (mileage > normalMileage) score -= (mileage - normalMileage) / 50;
+        score = score * condition;
+        const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
+        
+        cars.push({ name, price: Number(price), rating: Number(finalRating) });
+        render();
+        document.querySelectorAll('.add-form input').forEach(i => i.value = '');
+    } else {
+        alert("Заполните поля!");
+    }
+}
 
 function render(data = cars) {
     const list = document.getElementById('car-list');
-    const emptyState = document.getElementById('empty-state');
     const statsCount = document.getElementById('stats-count');
-    
     list.innerHTML = '';
-    statsCount.innerText = data.length; // Обновляем только число
+    statsCount.innerText = `Авто в списке: ${data.length}`;
 
     if (data.length === 0) {
-        emptyState.style.display = 'block';
+        document.getElementById('empty-state').style.display = 'block';
     } else {
-        emptyState.style.display = 'none';
+        document.getElementById('empty-state').style.display = 'none';
         data.forEach((car, index) => {
-            const rClass = car.rating >= 9 ? 'rating-high' : (car.rating >= 8 ? 'rating-mid' : 'rating-low');
             list.innerHTML += `
                 <div class="car-card">
                     <div class="car-info">
                         <h2>${car.name}</h2>
-                        <p>Цена: <strong>$${Number(car.price).toLocaleString()}</strong></p>
+                        <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
                     </div>
-                    <div class="car-meta">
-                        <div class="rating-box">⭐ <span class="${rClass}">${car.rating}</span></div>
-                        <button class="btn-delete" onclick="deleteCar(${index})">Удалить</button>
+                    <div class="car-meta" style="display:flex; justify-content: space-between; align-items: center; margin-top:15px;">
+                        <div class="rating-box">${car.rating}</div>
+                        <button onclick="deleteCar(${index})" style="background:none; border:1px solid #ef4444; color:#ef4444; padding:5px 10px; border-radius:8px; cursor:pointer;">Удалить</button>
                     </div>
-                </div>
-            `;
+                </div>`;
         });
     }
     updateDashboard();
-    localStorage.setItem('myrating_final_db', JSON.stringify(cars));
+    localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
 }
 
 function updateDashboard() {
@@ -51,59 +93,28 @@ function updateDashboard() {
         document.getElementById('top-car').innerText = '—';
         document.getElementById('total-value').innerText = '$0';
         return;
-    }
+    };
     const total = cars.reduce((sum, car) => sum + car.price, 0);
-    const sortedByRating = [...cars].sort((a, b) => b.rating - a.rating);
-    const top = sortedByRating[0];
-    const avg = total / cars.length;
-
-    document.getElementById('avg-price').innerText = `$${Math.round(avg).toLocaleString()}`;
-    document.getElementById('top-car').innerText = top.name;
+    const top = [...cars].sort((a, b) => b.rating - a.rating)[0];
+    document.getElementById('avg-price').innerText = `$${Math.round(total / cars.length).toLocaleString()}`;
+    document.getElementById('top-car').innerText = top ? top.name : '—';
     document.getElementById('total-value').innerText = `$${total.toLocaleString()}`;
 }
 
-function addCar() {
-    const name = document.getElementById('car-name').value;
-    const price = document.getElementById('car-price').value;
-    const rating = document.getElementById('car-rating').value;
-    if (name && price && rating) {
-        cars.push({ name, price: Number(price), rating: Number(rating) });
-        render();
-        document.querySelectorAll('.add-form input').forEach(i => i.value = '');
-    }
-}
-
-function deleteCar(index) {
-    cars.splice(index, 1);
-    render();
-}
-
+function deleteCar(index) { cars.splice(index, 1); render(); }
 function filterCars() {
     const query = document.getElementById('search-input').value.toLowerCase();
-    const filtered = cars.filter(c => c.name.toLowerCase().includes(query));
-    render(filtered);
+    render(cars.filter(c => c.name.toLowerCase().includes(query)));
 }
+function sortCars(key) { cars.sort((a, b) => b[key] - a[key]); render(); }
+function clearAll() { if(confirm("Удалить базу данных?")) { cars = []; render(); } }
+function restoreDefaults() { cars = [...defaultCars]; render(); }
 
-function sortCars(key) {
-    cars.sort((a, b) => b[key] - a[key]);
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('myrating_theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        document.getElementById('theme-icon').src = 'theme_night.png';
+    }
     render();
-}
-
-function toggleTheme() {
-    document.body.classList.toggle('light-theme');
-    localStorage.setItem('myrating_theme', document.body.classList.contains('light-theme') ? 'light-theme' : 'dark-theme');
-}
-
-function clearAll() {
-    if(confirm("Удалить все данные? Это действие необратимо.")) { cars = []; render(); }
-}
-
-function restoreDefaults() {
-    cars = [...defaultCars];
-    render();
-}
-
-// Загрузка темы
-if (localStorage.getItem('myrating_theme') === 'light-theme') document.body.classList.add('light-theme');
-
-render();
+});

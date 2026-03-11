@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyRating Autos | Аналитика</title>
+    <link rel="icon" href="https://fav.farm/🚗" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-content">
+            <img src="logo.png" alt="MyRating.autos" class="logo-image">
+            <div class="header-actions">
+                <button id="theme-toggle" onclick="toggleTheme()">
+                    <img src="theme_light.png" id="theme-icon" alt="Тема">
+                    <span>Тема</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <main>
+            <section class="dashboard">
+                <div class="stat-card">
+                    <span class="label">Средняя цена</span>
+                    <div id="avg-price" class="value">$0</div>
+                </div>
+                <div class="stat-card">
+                    <span class="label">Лидер рейтинга</span>
+                    <div id="top-car" class="value">—</div>
+                </div>
+                <div class="stat-card">
+                    <span class="label">Общая стоимость</span>
+                    <div id="total-value" class="value">$0</div>
+                </div>
+            </section>
+
+            <section class="add-form">
+                <div class="form-grid">
+                    <input type="text" id="car-name" placeholder="Марка и модель">
+                    <input type="number" id="car-price" placeholder="Цена ($)">
+                    <input type="number" id="car-year" placeholder="Год выпуска">
+                    <input type="number" id="car-mileage" placeholder="Пробег (тыс. км)">
+                    <select id="car-condition">
+                        <option value="1.0">💎 Идеал (в родне)</option>
+                        <option value="0.85">🎨 Косметика</option>
+                        <option value="0.6">🔨 Бит/Крашен</option>
+                        <option value="0.3">💀 Тотал</option>
+                    </select>
+                </div>
+                <button onclick="calculateAndAdd()" class="btn-add">Просчитать и добавить в список</button>
+            </section>
+
+            <section class="controls">
+                <input type="text" id="search-input" placeholder="Поиск в гараже..." oninput="filterCars()">
+                <div class="sort-actions">
+                    <div class="stats-counter" id="stats-count">Авто в списке: 0</div>
+                    <div class="sort-buttons">
+                        <button onclick="sortCars('rating')">⭐ Рейтинг</button>
+                        <button onclick="sortCars('price')">💰 Цена</button>
+                    </div>
+                </div>
+            </section>
+
+            <div id="car-list" class="grid-layout"></div>
+
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <div class="empty-icon">🏎️</div>
+                <h2>Гараж пуст</h2>
+                <button class="btn-restore" onclick="restoreDefaults()">Загрузить базу</button>
+            </div>
+
+            <section class="promo-banner">
+                <div class="promo-text">
+                    <h3>🔍 Проверка истории по VIN</h3>
+                    <p>Узнай правду о пробеге и владельцах.</p>
+                </div>
+                <a href="#" class="btn-promo">Проверить →</a>
+            </section>
+        </main>
+        
+        <footer class="main-footer">
+            <button class="btn-clear-footer" onclick="clearAll()">🗑️ Очистить базу данных</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
