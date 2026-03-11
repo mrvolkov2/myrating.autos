@@ -91,3 +91,12 @@ input, select { background: var(--bg); border: 1px solid var(--border); color: v
 
 .empty-box { text-align: center; padding: 40px; background: var(--card-bg); border-radius: 20px; border: 1px dashed var(--border); margin: 20px 0; }
 .main-footer { text-align: center; margin: 60px 0; border-top: 1px solid var(--border); padding-top: 40px; }
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.car-card {
+    animation: fadeInUp 0.4s ease forwards;
+}
