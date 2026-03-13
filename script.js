@@ -151,7 +151,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function setupShareLinks() {
     const url = encodeURIComponent(window.location.href);
-    const text = encodeURIComponent("Смотри, какой крутой сервис для рейтинга и сравнения авто! 🚗");
+    const text = encodeURIComponent("Смотри, какой крутой сервис для рейтинга и сравнения авто! 🏎️");
     
     document.getElementById('share-tg').href = `https://t.me/share/url?url=${url}&text=${text}`;
     document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
@@ -168,3 +168,19 @@ window.addEventListener('DOMContentLoaded', () => {
     // ... твой старый код ...
     setupShareLinks();
 });
+
+function addToBookmarks() {
+    const title = document.title;
+    const url = window.location.href;
+
+    if (window.sidebar && window.sidebar.addPanel) {
+        // Старый Firefox
+        window.sidebar.addPanel(title, url, "");
+    } else if (window.external && ('AddFavorite' in window.external)) {
+        // Старый IE
+        window.external.AddFavorite(url, title);
+    } else {
+        // Современные браузеры (Chrome, Safari, Firefox, Edge)
+        alert("Нажмите " + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 'Cmd' : 'Ctrl') + " + D, чтобы добавить сайт в закладки.");
+    }
+}

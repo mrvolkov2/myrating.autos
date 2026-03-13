@@ -5,9 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>myrating.autos | Экспертный рейтинг и сравнение авто</title>
+    <title>MyRating.autos | Cравнение авто, экспертные обзоры </title>
     
-    <meta name="description" content="Рассчитай экспертный рейтинг автомобиля по 5 параметрам и сравни модели между собой. Умный инструмент для выбора авто на myrating.autos.">
+    <meta name="description" content="Рассчитай рейтинг автомобиля и сравни модели между собой. Умный инструмент для выбора авто на myrating.autos.">
     <meta name="keywords" content="myrating.autos, рейтинг авто, сравнение машин, расчет рейтинга автомобиля, автоаналитика">
     <link rel="canonical" href="https://myrating.autos">
 
@@ -20,7 +20,7 @@
     <meta property="og:image:height" content="752">
     <meta property="og:site_name" content="myrating.autos">
 
-    <link rel="icon" href="https://fav.farm/🚗" />
+    <link rel="icon" type="image/png" href="favicon.ico" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -89,7 +89,7 @@
             <div id="car-list" class="grid-layout"></div>
 
             <div id="empty-state" class="empty-box" style="display: none;">
-                <div class="empty-icon">🏎️</div>
+                <div class="empty-icon">📁</div>
                 <h2>Гараж пуст</h2>
                 <button class="btn-main" onclick="restoreDefaults()">Восстановить базу</button>
             </div>
@@ -139,4 +139,27 @@
 
     <script src="script.js"></script>
 </body>
+
+
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-info">
+            <h3>🚀 Проект в развитии</h3>
+            <p>База автомобилей постоянно пополняется. Мы работаем над новыми функциями аналитики.</p>
+            <p>Следите за новостями и подписывайтесь на обновления!</p>
+        </div>
+
+        <div class="footer-actions">
+            <button onclick="addToBookmarks()" class="btn-secondary">⭐ В закладки</button>
+            <a href="mailto:info@myrating.autos" class="btn-secondary">✉️ Обратная связь</a>
+        </div>
+
+        <div class="footer-contact">
+            <p>По вопросам предложений и сотрудничества:</p>
+            <a href="https://t.me/твой_логин" target="_blank" class="contact-link">Написать в Telegram</a>
+        </div>
+    </div>
+</footer>
+
+
 </html>
