@@ -1,137 +1,186 @@
-// База данных популярных моделей (20 штук) для анализа
-const carDatabase = [
-    { brand: "Toyota", model: "Camry", avgPrice: 2500000, reliability: 9 },
-    { brand: "Hyundai", model: "Solaris", avgPrice: 1200000, reliability: 7 },
-    { brand: "Kia", model: "Rio", avgPrice: 1150000, reliability: 7 },
-    { brand: "Volkswagen", model: "Polo", avgPrice: 1300000, reliability: 7 },
-    { brand: "Skoda", model: "Octavia", avgPrice: 1800000, reliability: 8 },
-    { brand: "BMW", model: "5 Series", avgPrice: 4500000, reliability: 6 },
-    { brand: "Mercedes-Benz", model: "E-Class", avgPrice: 5000000, reliability: 6 },
-    { brand: "Lada", model: "Vesta", avgPrice: 900000, reliability: 6 },
-    { brand: "Mazda", model: "CX-5", avgPrice: 2800000, reliability: 8 },
-    { brand: "Nissan", model: "Qashqai", avgPrice: 2100000, reliability: 7 },
-    { brand: "Renault", model: "Duster", avgPrice: 1400000, reliability: 8 },
-    { brand: "Toyota", model: "RAV4", avgPrice: 3200000, reliability: 9 },
-    { brand: "Lexus", model: "RX", avgPrice: 5500000, reliability: 9 },
-    { brand: "Ford", model: "Focus", avgPrice: 1000000, reliability: 7 },
-    { brand: "Honda", model: "CR-V", avgPrice: 2900000, reliability: 9 },
-    { brand: "Mitsubishi", model: "Outlander", avgPrice: 2300000, reliability: 7 },
-    { brand: "Audi", model: "A4", avgPrice: 3500000, reliability: 6 },
-    { brand: "Geely", model: "Coolray", avgPrice: 2100000, reliability: 7 },
-    { brand: "Haval", model: "Jolion", avgPrice: 1950000, reliability: 7 },
-    { brand: "Chery", model: "Tiggo 7 Pro", avgPrice: 2200000, reliability: 6 }
+const defaultCars = [
+    { name: "Porsche 911 GT3", price: 195000, rating: 9.9 },
+    { name: "BMW M5 F90", price: 105000, rating: 9.7 },
+    { name: "Toyota LC 300", price: 110000, rating: 9.2 },
+    { name: "Tesla Model S", price: 85000, rating: 8.5 },
+    { name: "Audi RS6 Avant", price: 125000, rating: 9.6 },
+    { name: "Mercedes G63", price: 210000, rating: 9.4 },
+    { name: "Nissan GT-R", price: 115000, rating: 9.5 },
+    { name: "Toyota Camry", price: 32000, rating: 9.1 },
+    { name: "VW Golf R", price: 48000, rating: 9.0 },
+    { name: "Ford Mustang", price: 45000, rating: 8.7 },
+    { name: "Mazda CX-5", price: 29000, rating: 8.8 },
+    { name: "Lexus RX 350", price: 68000, rating: 9.0 },
+    { name: "Honda Civic R", price: 44000, rating: 9.3 },
+    { name: "Subaru WRX STI", price: 38000, rating: 8.9 },
+    { name: "Kia Stinger", price: 35000, rating: 8.2 },
+    { name: "Volvo XC90", price: 72000, rating: 9.1 },
+    { name: "Hyundai Ioniq 5", price: 50000, rating: 8.6 },
+    { name: "Skoda Octavia RS", price: 34000, rating: 8.9 },
+    { name: "Dodge Challenger", price: 55000, rating: 8.4 },
+    { name: "Land Rover Defender", price: 88000, rating: 9.2 }
 ];
 
-// Функция для автозаполнения средней цены (можно вызвать при выборе модели)
-function suggestMarketPrice(modelName) {
-    const car = carDatabase.find(c => c.model.toLowerCase() === modelName.toLowerCase());
-    if (car) {
-        document.getElementById('market-price').value = car.avgPrice;
-        showToast(`Установлена средняя цена для ${car.brand} ${car.model}`);
+let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
+let compareList = [];
+
+function render(data = cars) {
+    const list = document.getElementById('car-list');
+    const statsCount = document.getElementById('stats-count');
+    const emptyState = document.getElementById('empty-state');
+    
+    list.innerHTML = '';
+    statsCount.innerText = `Авто в списке: ${data.length}`;
+
+    if (data.length === 0) {
+        emptyState.style.display = 'block';
+    } else {
+        emptyState.style.display = 'none';
+        data.forEach((car, index) => {
+            const isComparing = compareList.some(c => c.name === car.name);
+            list.innerHTML += `
+                <div class="car-card">
+                    <h2>${car.name}</h2>
+                    <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
+                    <div style="display:flex; justify-content: space-between; align-items: center; margin-top:15px;">
+                        <div style="font-size: 1.4rem; font-weight:900; color:var(--primary);">${car.rating}</div>
+                        <div style="display:flex; gap:8px;">
+                            <button onclick="toggleCompare(${index})" class="btn-main btn-small" style="background:${isComparing ? '#238636' : 'var(--border)'}">⚖️</button>
+                            <button onclick="deleteCar(${index})" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:5px 10px; border-radius:8px; cursor:pointer;">✕</button>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    }
+    updateDashboard();
+    localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
+}
+
+function toggleCompare(index) {
+    const car = cars[index];
+    const exists = compareList.findIndex(c => c.name === car.name);
+    if (exists > -1) {
+        compareList.splice(exists, 1);
+    } else {
+        if (compareList.length >= 3) return alert("Максимум 3 авто!");
+        compareList.push(car);
+    }
+    document.getElementById('compare-float-bar').classList.toggle('active', compareList.length > 0);
+    document.getElementById('compare-text').innerText = `Выбрано: ${compareList.length}`;
+    render();
+}
+
+function openCompare() {
+    const container = document.getElementById('compare-table-container');
+    if (compareList.length < 2) return alert("Выберите минимум 2 авто!");
+    
+    const minPrice = Math.min(...compareList.map(c => c.price));
+    const maxRating = Math.max(...compareList.map(c => c.rating));
+
+    let html = `<table class="compare-table">
+        <tr><th>Параметр</th>${compareList.map(c => `<th>${c.name}</th>`).join('')}</tr>
+        <tr><td>Цена</td>${compareList.map(c => `<td class="${c.price === minPrice ? 'best' : ''}">$${c.price.toLocaleString()}</td>`).join('')}</tr>
+        <tr><td>Рейтинг</td>${compareList.map(c => `<td class="${c.rating === maxRating ? 'best' : ''}">${c.rating}</td>`).join('')}</tr>
+    </table>`;
+    
+    container.innerHTML = html;
+    document.getElementById('compare-modal').style.display = 'block';
+}
+
+function calculateAndAdd() {
+    const name = document.getElementById('car-name').value;
+    const price = Number(document.getElementById('car-price').value);
+    const year = Number(document.getElementById('car-year').value);
+    const mileage = Number(document.getElementById('car-mileage').value);
+    const condition = Number(document.getElementById('car-condition').value);
+
+    if (name && price && year) {
+        let score = 10;
+        const age = 2026 - year;
+        score -= (age * 0.3);
+        const normalMileage = age * 18;
+        if (mileage > normalMileage) score -= (mileage - normalMileage) / 50;
+        score = score * condition;
+        const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
+        
+        cars.push({ name, price, rating: Number(finalRating) });
+        render();
+        document.querySelectorAll('.add-form input').forEach(i => i.value = '');
     }
 }
 
+function closeCompare() { document.getElementById('compare-modal').style.display = 'none'; }
+function resetCompare() { compareList = []; document.getElementById('compare-float-bar').classList.remove('active'); render(); }
+function deleteCar(index) { cars.splice(index, 1); render(); }
+function sortCars(key) { cars.sort((a, b) => b[key] - a[key]); render(); }
+function filterCars() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    render(cars.filter(c => c.name.toLowerCase().includes(query)));
+}
+function restoreDefaults() { cars = [...defaultCars]; render(); }
+function clearAll() { if(confirm("Удалить базу?")) { cars = []; render(); } }
 
-function calculate() {
-    // Сбор данных
-    const carData = {
-        year: parseInt(document.getElementById('car-year').value),
-        mileage: parseInt(document.getElementById('car-mileage').value),
-        owners: parseInt(document.getElementById('car-owners').value),
-        accidents: parseInt(document.getElementById('car-accidents').value),
-        price: parseInt(document.getElementById('car-price').value),
-        marketPrice: parseInt(document.getElementById('market-price').value),
-        region: document.getElementById('region-type').value
-    };
-
-    if (!carData.year || !carData.mileage) {
-        showToast("Пожалуйста, заполните основные поля");
+function updateDashboard() {
+    if (cars.length === 0) {
+        document.getElementById('avg-price').innerText = '$0';
+        document.getElementById('top-car').innerText = '—';
+        document.getElementById('total-value').innerText = '$0';
         return;
     }
-
-    let score = 10;
-    let warnings = [];
-    const yearsOld = new Date().getFullYear() - carData.year;
-
-    // --- УМНЫЕ ПРОВЕРКИ ---
-
-    // 1. Владельцы vs Возраст
-    if (yearsOld < 3 && carData.owners > 2) {
-        score -= 2.5;
-        warnings.push("❌ Подозрительно частая смена владельцев для свежего авто");
-    }
-
-    // 2. Пробег vs Возраст
-    const avgYearlyMileage = carData.mileage / (yearsOld || 1);
-    if (avgYearlyMileage > 35000) {
-        score -= 1.5;
-        warnings.push("⚠️ Пробег выше среднего (вероятно, такси или коммерция)");
-    }
-
-    // 3. Анализ цены
-    if (carData.marketPrice) {
-        const priceDiff = (carData.price / carData.marketPrice) - 1;
-        if (priceDiff < -0.20) {
-            score -= 3;
-            warnings.push("❌ Цена подозрительно низкая! Возможны скрытые проблемы или юр. ограничения");
-        } else if (priceDiff > 0.20) {
-            warnings.push("ℹ️ Цена выше рынка. Проверьте комплектацию");
-        }
-    }
-
-    // 4. ДТП
-    if (carData.accidents > 0) {
-        score -= (carData.accidents * 2);
-        warnings.push(`⚠️ Зафиксировано ДТП: ${carData.accidents} шт.`);
-    }
-
-    // 5. Регион
-    if (carData.region === 'salt' && yearsOld > 5) {
-        score -= 0.5;
-        warnings.push("ℹ️ Эксплуатация в соли: проверьте арки и днище");
-    }
-
-    // Финализация
-    score = Math.max(0, Math.min(10, score)).toFixed(1);
-    displayResult(score, warnings);
+    const total = cars.reduce((sum, car) => sum + car.price, 0);
+    const top = [...cars].sort((a, b) => b.rating - a.rating)[0];
+    document.getElementById('avg-price').innerText = `$${Math.round(total / cars.length).toLocaleString()}`;
+    document.getElementById('top-car').innerText = top.name;
+    document.getElementById('total-value').innerText = `$${total.toLocaleString()}`;
 }
 
-function displayResult(score, warnings) {
-    const section = document.getElementById('result-section');
-    const scoreElement = document.getElementById('final-score');
-    const warningBox = document.getElementById('warning-list');
-    
-    section.classList.remove('hidden');
-    scoreElement.innerText = score;
-    
-    // Красим балл
-    scoreElement.className = '';
-    if (score >= 8) scoreElement.style.color = "#22c55e";
-    else if (score >= 5) scoreElement.style.color = "#eab308";
-    else scoreElement.style.color = "#ef4444";
-
-    warningBox.innerHTML = warnings.length ? 
-        warnings.map(w => `<span class="warning-item">${w}</span>`).join('') :
-        '<span class="warning-item">✅ Критических проблем по указанным данным не найдено</span>';
+function toggleTheme() {
+    document.body.classList.toggle('light-theme');
+    const isLight = document.body.classList.contains('light-theme');
+    document.getElementById('theme-icon').src = isLight ? 'theme_night.png' : 'theme_light.png';
+    localStorage.setItem('myrating_theme', isLight ? 'light' : 'dark');
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('myrating_theme') === 'light') {
+        document.body.classList.add('light-theme');
+        document.getElementById('theme-icon').src = 'theme_night.png';
+    }
+    render();
+});
+
+function setupShareLinks() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent("Смотри, какой крутой сервис для рейтинга и сравнения авто! 🏎️");
+    
+    document.getElementById('share-tg').href = `https://t.me/share/url?url=${url}&text=${text}`;
+    document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
+}
+
+function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        alert("Ссылка скопирована! Отправь её друзьям 🚀");
+    });
+}
+
+// Вызови setupShareLinks при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+    // ... твой старый код ...
+    setupShareLinks();
+});
 
 function addToBookmarks() {
-    showToast("Нажмите Ctrl + D для сохранения сайта!");
-}
+    const title = document.title;
+    const url = window.location.href;
 
-function showToast(msg) {
-    const t = document.createElement('div');
-    t.className = 'toast-notification';
-    t.innerText = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
+    if (window.sidebar && window.sidebar.addPanel) {
+        // Старый Firefox
+        window.sidebar.addPanel(title, url, "");
+    } else if (window.external && ('AddFavorite' in window.external)) {
+        // Старый IE
+        window.external.AddFavorite(url, title);
+    } else {
+        // Современные браузеры (Chrome, Safari, Firefox, Edge)
+        alert("Нажмите " + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 'Cmd' : 'Ctrl') + " + D, чтобы добавить сайт в закладки.");
+    }
 }
-
-// Автоматическое заполнение выпадающего списка из базы
-const selector = document.getElementById('db-selector');
-carDatabase.forEach(car => {
-    let option = document.createElement('option');
-    option.value = car.model;
-    option.text = `${car.brand} ${car.model}`;
-    selector.appendChild(option);
-});
