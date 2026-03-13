@@ -1,3 +1,37 @@
+// База данных популярных моделей (20 штук) для анализа
+const carDatabase = [
+    { brand: "Toyota", model: "Camry", avgPrice: 2500000, reliability: 9 },
+    { brand: "Hyundai", model: "Solaris", avgPrice: 1200000, reliability: 7 },
+    { brand: "Kia", model: "Rio", avgPrice: 1150000, reliability: 7 },
+    { brand: "Volkswagen", model: "Polo", avgPrice: 1300000, reliability: 7 },
+    { brand: "Skoda", model: "Octavia", avgPrice: 1800000, reliability: 8 },
+    { brand: "BMW", model: "5 Series", avgPrice: 4500000, reliability: 6 },
+    { brand: "Mercedes-Benz", model: "E-Class", avgPrice: 5000000, reliability: 6 },
+    { brand: "Lada", model: "Vesta", avgPrice: 900000, reliability: 6 },
+    { brand: "Mazda", model: "CX-5", avgPrice: 2800000, reliability: 8 },
+    { brand: "Nissan", model: "Qashqai", avgPrice: 2100000, reliability: 7 },
+    { brand: "Renault", model: "Duster", avgPrice: 1400000, reliability: 8 },
+    { brand: "Toyota", model: "RAV4", avgPrice: 3200000, reliability: 9 },
+    { brand: "Lexus", model: "RX", avgPrice: 5500000, reliability: 9 },
+    { brand: "Ford", model: "Focus", avgPrice: 1000000, reliability: 7 },
+    { brand: "Honda", model: "CR-V", avgPrice: 2900000, reliability: 9 },
+    { brand: "Mitsubishi", model: "Outlander", avgPrice: 2300000, reliability: 7 },
+    { brand: "Audi", model: "A4", avgPrice: 3500000, reliability: 6 },
+    { brand: "Geely", model: "Coolray", avgPrice: 2100000, reliability: 7 },
+    { brand: "Haval", model: "Jolion", avgPrice: 1950000, reliability: 7 },
+    { brand: "Chery", model: "Tiggo 7 Pro", avgPrice: 2200000, reliability: 6 }
+];
+
+// Функция для автозаполнения средней цены (можно вызвать при выборе модели)
+function suggestMarketPrice(modelName) {
+    const car = carDatabase.find(c => c.model.toLowerCase() === modelName.toLowerCase());
+    if (car) {
+        document.getElementById('market-price').value = car.avgPrice;
+        showToast(`Установлена средняя цена для ${car.brand} ${car.model}`);
+    }
+}
+
+
 function calculate() {
     // Сбор данных
     const carData = {
@@ -92,3 +126,12 @@ function showToast(msg) {
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 3000);
 }
+
+// Автоматическое заполнение выпадающего списка из базы
+const selector = document.getElementById('db-selector');
+carDatabase.forEach(car => {
+    let option = document.createElement('option');
+    option.value = car.model;
+    option.text = `${car.brand} ${car.model}`;
+    selector.appendChild(option);
+});
