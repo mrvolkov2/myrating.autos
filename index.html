@@ -22,6 +22,15 @@
         <section class="calculator-card">
             <h2>Параметры автомобиля</h2>
             
+
+<div class="input-group full-width">
+    <label>Выберите модель для быстрой настройки</label>
+    <select id="db-selector" class="main-input" onchange="suggestMarketPrice(this.value)">
+        <option value="">-- Выберите из списка 20 популярных --</option>
+        </select>
+</div>
+
+
             <div class="input-grid">
                 <div class="input-group">
                     <label>Год выпуска</label>
