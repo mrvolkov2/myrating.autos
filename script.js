@@ -1,28 +1,31 @@
 const defaultCars = [
-    { name: "Porsche 911 GT3", price: 195000, rating: 9.9 },
-    { name: "BMW M5 F90", price: 105000, rating: 9.7 },
-    { name: "Toyota LC 300", price: 110000, rating: 9.2 },
-    { name: "Tesla Model S", price: 85000, rating: 8.5 },
-    { name: "Audi RS6 Avant", price: 125000, rating: 9.6 },
-    { name: "Mercedes G63", price: 210000, rating: 9.4 },
-    { name: "Nissan GT-R", price: 115000, rating: 9.5 },
-    { name: "Toyota Camry", price: 32000, rating: 9.1 },
-    { name: "VW Golf R", price: 48000, rating: 9.0 },
-    { name: "Ford Mustang", price: 45000, rating: 8.7 },
-    { name: "Mazda CX-5", price: 29000, rating: 8.8 },
-    { name: "Lexus RX 350", price: 68000, rating: 9.0 },
-    { name: "Honda Civic R", price: 44000, rating: 9.3 },
-    { name: "Subaru WRX STI", price: 38000, rating: 8.9 },
-    { name: "Kia Stinger", price: 35000, rating: 8.2 },
-    { name: "Volvo XC90", price: 72000, rating: 9.1 },
-    { name: "Hyundai Ioniq 5", price: 50000, rating: 8.6 },
-    { name: "Skoda Octavia RS", price: 34000, rating: 8.9 },
-    { name: "Dodge Challenger", price: 55000, rating: 8.4 },
-    { name: "Land Rover Defender", price: 88000, rating: 9.2 }
+    { name: "Porsche 911 GT3", price: 195000, rating: 9.9, region: "eu" },
+    { name: "BMW M5 F90", price: 105000, rating: 9.7, region: "eu" },
+    { name: "Toyota LC 300", price: 110000, rating: 9.2, region: "asia" },
+    { name: "Tesla Model S", price: 85000, rating: 8.5, region: "usa" },
+    { name: "Audi RS6 Avant", price: 125000, rating: 9.6, region: "eu" },
+    { name: "Mercedes G63", price: 210000, rating: 9.4, region: "eu" },
+    { name: "Nissan GT-R", price: 115000, rating: 9.5, region: "asia" },
+    { name: "Toyota Camry", price: 32000, rating: 9.1, region: "asia" },
+    { name: "VW Golf R", price: 48000, rating: 9.0, region: "eu" },
+    { name: "Ford Mustang", price: 45000, rating: 8.7, region: "usa" },
+    { name: "Mazda CX-5", price: 29000, rating: 8.8, region: "asia" },
+    { name: "Lexus RX 350", price: 68000, rating: 9.0, region: "asia" },
+    { name: "Honda Civic R", price: 44000, rating: 9.3, region: "asia" },
+    { name: "Subaru WRX STI", price: 38000, rating: 8.9, region: "asia" },
+    { name: "Kia Stinger", price: 35000, rating: 8.2, region: "asia" },
+    { name: "Volvo XC90", price: 72000, rating: 9.1, region: "eu" },
+    { name: "Hyundai Ioniq 5", price: 50000, rating: 8.6, region: "asia" },
+    { name: "Skoda Octavia RS", price: 34000, rating: 8.9, region: "eu" },
+    { name: "Dodge Challenger", price: 55000, rating: 8.4, region: "usa" },
+    { name: "Land Rover Defender", price: 88000, rating: 9.2, region: "eu" },
+    { name: "Lada Vesta Sport", price: 18000, rating: 7.5, region: "ru" },
+    { name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru" }
 ];
 
 let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
 let compareList = [];
+let currentRegion = 'all';
 
 function render(data = cars) {
     const list = document.getElementById('car-list');
@@ -32,14 +35,24 @@ function render(data = cars) {
     list.innerHTML = '';
     statsCount.innerText = `Авто в списке: ${data.length}`;
 
+    const regionLabels = {
+        'usa': '🇺🇸 США',
+        'eu': '🇪🇺 Европа',
+        'asia': '🌏 Азия',
+        'ru': '🇷🇺 РФ / Ближнее зарубежье'
+    };
+
     if (data.length === 0) {
         emptyState.style.display = 'block';
     } else {
         emptyState.style.display = 'none';
         data.forEach((car, index) => {
             const isComparing = compareList.some(c => c.name === car.name);
+            const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
+            
             list.innerHTML += `
                 <div class="car-card">
+                    ${regionBadge}
                     <h2>${car.name}</h2>
                     <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
                     <div style="display:flex; justify-content: space-between; align-items: center; margin-top:15px;">
@@ -56,6 +69,29 @@ function render(data = cars) {
     localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
 }
 
+function setRegion(region) {
+    currentRegion = region;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.region === region);
+    });
+    filterCars();
+}
+
+function filterCars() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    let filtered = cars;
+    
+    if (currentRegion !== 'all') {
+        filtered = filtered.filter(c => c.region === currentRegion);
+    }
+    
+    if (query) {
+        filtered = filtered.filter(c => c.name.toLowerCase().includes(query));
+    }
+    
+    render(filtered);
+}
+
 function toggleCompare(index) {
     const car = cars[index];
     const exists = compareList.findIndex(c => c.name === car.name);
@@ -67,7 +103,11 @@ function toggleCompare(index) {
     }
     document.getElementById('compare-float-bar').classList.toggle('active', compareList.length > 0);
     document.getElementById('compare-text').innerText = `Выбрано: ${compareList.length}`;
-    render();
+    render(cars.filter(c => {
+        if (currentRegion !== 'all' && c.region !== currentRegion) return false;
+        const query = document.getElementById('search-input').value.toLowerCase();
+        return c.name.toLowerCase().includes(query);
+    }));
 }
 
 function openCompare() {
@@ -93,6 +133,7 @@ function calculateAndAdd() {
     const year = Number(document.getElementById('car-year').value);
     const mileage = Number(document.getElementById('car-mileage').value);
     const condition = Number(document.getElementById('car-condition').value);
+    const region = document.getElementById('car-region').value;
 
     if (name && price && year) {
         let score = 10;
@@ -103,22 +144,18 @@ function calculateAndAdd() {
         score = score * condition;
         const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
         
-        cars.push({ name, price, rating: Number(finalRating) });
-        render();
+        cars.push({ name, price, rating: Number(finalRating), region });
+        filterCars(); 
         document.querySelectorAll('.add-form input').forEach(i => i.value = '');
     }
 }
 
 function closeCompare() { document.getElementById('compare-modal').style.display = 'none'; }
-function resetCompare() { compareList = []; document.getElementById('compare-float-bar').classList.remove('active'); render(); }
-function deleteCar(index) { cars.splice(index, 1); render(); }
-function sortCars(key) { cars.sort((a, b) => b[key] - a[key]); render(); }
-function filterCars() {
-    const query = document.getElementById('search-input').value.toLowerCase();
-    render(cars.filter(c => c.name.toLowerCase().includes(query)));
-}
-function restoreDefaults() { cars = [...defaultCars]; render(); }
-function clearAll() { if(confirm("Удалить базу?")) { cars = []; render(); } }
+function resetCompare() { compareList = []; document.getElementById('compare-float-bar').classList.remove('active'); filterCars(); }
+function deleteCar(index) { cars.splice(index, 1); filterCars(); }
+function sortCars(key) { cars.sort((a, b) => b[key] - a[key]); filterCars(); }
+function restoreDefaults() { cars = [...defaultCars]; filterCars(); }
+function clearAll() { if(confirm("Удалить базу?")) { cars = []; filterCars(); } }
 
 function updateDashboard() {
     if (cars.length === 0) {
@@ -137,19 +174,15 @@ function updateDashboard() {
 function toggleTheme() {
     document.body.classList.toggle('dark-theme');
     const isDark = document.body.classList.contains('dark-theme');
-    // Если тема темная — показываем иконку солнца (чтобы переключить на свет), 
-    // если светлая — иконку луны.
     document.getElementById('theme-icon').src = isDark ? 'theme_light.png' : 'theme_night.png';
     localStorage.setItem('myrating_theme', isDark ? 'dark' : 'light');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    // Проверяем, если пользователь РАНЕЕ выбрал темную тему
     if (localStorage.getItem('myrating_theme') === 'dark') {
         document.body.classList.add('dark-theme');
         document.getElementById('theme-icon').src = 'theme_light.png';
     } else {
-        // По умолчанию ставим иконку для перехода в темный режим
         document.getElementById('theme-icon').src = 'theme_night.png';
     }
     render();
@@ -170,24 +203,15 @@ function copyLink() {
     });
 }
 
-// Вызови setupShareLinks при загрузке
-window.addEventListener('DOMContentLoaded', () => {
-    // ... твой старый код ...
-    setupShareLinks();
-});
-
 function addToBookmarks() {
     const title = document.title;
     const url = window.location.href;
 
     if (window.sidebar && window.sidebar.addPanel) {
-        // Старый Firefox
         window.sidebar.addPanel(title, url, "");
     } else if (window.external && ('AddFavorite' in window.external)) {
-        // Старый IE
         window.external.AddFavorite(url, title);
     } else {
-        // Современные браузеры (Chrome, Safari, Firefox, Edge)
         alert("Нажмите " + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 'Cmd' : 'Ctrl') + " + D, чтобы добавить сайт в закладки.");
     }
 }
