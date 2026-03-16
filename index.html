@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyRating.autos | Сравнение авто и рейтинг</title>
-    <meta name="description" content="Рассчитай рейтинг автомобиля и сравни модели между собой.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -72,7 +71,8 @@
 
             <div id="empty-state" class="empty-box" style="display: none;">
                 <h2>Гараж пуст</h2>
-                <button class="btn-main" onclick="restoreDefaults()">Восстановить базу</button>
+                <p>Нажмите кнопку ниже, чтобы вернуть стандартный список авто</p>
+                <button class="btn-main" onclick="restoreDefaults()" style="margin-top: 20px;">Восстановить базу</button>
             </div>
 
             <section class="promo-banner">
@@ -81,7 +81,7 @@
                         <h3>🔍 Проверка истории по VIN</h3>
                         <p>ДТП, пробеги и залоги в одном отчете.</p>
                     </div>
-                    <a href="https://autoteka.ru/" target="_blank" class="btn-main btn-small vin-btn">Проверить в Автотеке</a>
+                    <a href="https://autoteka.ru/" target="_blank" class="btn-main btn-small vin-btn">Проверить</a>
                 </div>
             </section>
         </main>
@@ -91,21 +91,21 @@
         <div class="footer-content">
             <button class="btn-main btn-danger" onclick="clearAll()" style="margin-bottom: 30px;">Очистить базу данных</button>
             
-            <section class="share-box">
+            <div class="share-box">
                 <span>Поделиться проектом:</span>
                 <div class="share-buttons">
                     <a href="#" id="share-tg" class="btn-share tg">Telegram</a>
                     <a href="#" id="share-wa" class="btn-share wa">WhatsApp</a>
                     <button onclick="copyLink()" class="btn-share copy">🔗 Ссылка</button>
                 </div>
-            </section>
+            </div>
 
             <div class="footer-info">
                 <h3>🚀 Проект в развитии</h3>
                 <p>База автомобилей постоянно пополняется.</p>
             </div>
 
-            <div class="footer-actions">
+            <div class="footer-actions" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
                 <button onclick="addToBookmarks()" class="btn-secondary">⭐ В закладки</button>
                 <a href="mailto:info@myrating.autos" class="btn-secondary">✉️ Обратная связь</a>
             </div>
