@@ -3,139 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRating.autos | Cравнение авто, экспертные обзоры </title>
-    
-    <meta name="description" content="Рассчитай рейтинг автомобиля и сравни модели между собой. Умный инструмент для выбора авто на myrating.autos.">
-    <meta name="keywords" content="myrating.autos, рейтинг авто, сравнение машин, расчет рейтинга автомобиля, автоаналитика">
-    <link rel="canonical" href="https://myrating.autos">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://myrating.autos">
-    <meta property="og:title" content="myrating.autos | Твой эксперт по подбору авто">
-    <meta property="og:description" content="Узнай реальный балл машины перед покупкой. Умное сравнение и детальная аналитика.">
-    <meta property="og:image" content="og_preview.png">
-    <meta property="og:image:width" content="1424">
-    <meta property="og:image:height" content="752">
-    <meta property="og:site_name" content="myrating.autos">
-
-    <link rel="icon" type="image/png" href="favicon.ico" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>MyRating.autos | Сравнение авто</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
-
-<body>
+<body class="light-theme">
 
     <header class="main-header">
         <div class="header-content">
             <div class="logo-wrapper">
                 <img src="logo.png" alt="MyRating.autos" class="logo-image">
             </div>
-            <div class="header-actions">
-                <button id="theme-toggle" onclick="toggleTheme()" class="theme-btn">
-                    <img src="theme_light.png" id="theme-icon" alt="Тема">
-                    <span>Тема</span>
-                </button>
-            </div>
+            <button id="theme-toggle" class="theme-btn">
+                <img src="theme_light.png" id="theme-icon" alt="Тема">
+                <span>Тема</span>
+            </button>
         </div>
     </header>
 
-    <div class="container">
-        <main>
-            <section class="dashboard">
-                <div class="stat-card">
-                    <span class="label">Средняя цена</span>
-                    <div id="avg-price" class="value">$0</div>
-                </div>
-                <div class="stat-card">
-                    <span class="label">Лидер рейтинга</span>
-                    <div id="top-car" class="value">—</div>
-                </div>
-                <div class="stat-card">
-                    <span class="label">Общая стоимость</span>
-                    <div id="total-value" class="value">$0</div>
-                </div>
-            </section>
-
-            <section class="add-form">
-                <div class="form-grid">
-                    <input type="text" id="car-name" placeholder="Марка и модель">
-                    <input type="number" id="car-price" placeholder="Цена ($)">
-                    <input type="number" id="car-year" placeholder="Год выпуска">
-                    <input type="number" id="car-mileage" placeholder="Пробег (тыс. км)">
-                    <select id="car-condition">
-                        <option value="1.0">💎 Идеал (в родне)</option>
-                        <option value="0.85">🎨 Косметика</option>
-                        <option value="0.6">🔨 Бит/Крашен</option>
-                        <option value="0.3">💀 Тотал</option>
-                    </select>
-                    <select id="car-region">
-                        <option value="eu">🇪🇺 Европа</option>
-                        <option value="usa">🇺🇸 США</option>
-                        <option value="asia">🌏 Азия</option>
-                        <option value="ru">🇷🇺 Ближнее зарубежье (РФ)</option>
-                    </select>
-                </div>
-                <button onclick="calculateAndAdd()" class="btn-main">Просчитать и добавить в список</button>
-            </section>
-
-            <section class="region-filters">
-                <button class="filter-btn active" data-region="all" onclick="setRegion('all')">🌐 Весь мир</button>
-                <button class="filter-btn" data-region="usa" onclick="setRegion('usa')">🇺🇸 США</button>
-                <button class="filter-btn" data-region="eu" onclick="setRegion('eu')">🇪🇺 Европа</button>
-                <button class="filter-btn" data-region="asia" onclick="setRegion('asia')">🌏 Азия</button>
-                <button class="filter-btn" data-region="ru" onclick="setRegion('ru')">🇷🇺 РФ и соседи</button>
-            </section>
-
-            <section class="controls">
-                <input type="text" id="search-input" placeholder="Поиск в гараже..." oninput="filterCars()">
-                <div class="stats-counter" id="stats-count">Авто в списке: 0</div>
-                <div class="sort-buttons">
-                    <button class="btn-main btn-small" onclick="sortCars('rating')">По рейтингу</button>
-                    <button class="btn-main btn-small" onclick="sortCars('price')">По цене</button>
-                </div>
-            </section>
-
-            <div id="car-list" class="grid-layout"></div>
-
-            <div id="empty-state" class="empty-box" style="display: none;">
-                <div class="empty-icon">📁</div>
-                <h2>Гараж пуст</h2>
-                <button class="btn-main" onclick="restoreDefaults()">Восстановить базу</button>
+    <main class="container">
+        <section class="dashboard">
+            <div class="stat-card">
+                <span class="label">Средняя цена</span>
+                <div id="avg-price" class="value">$0</div>
             </div>
+            <div class="stat-card">
+                <span class="label">Лидер рейтинга</span>
+                <div id="top-car" class="value">—</div>
+            </div>
+            <div class="stat-card">
+                <span class="label">Общая стоимость</span>
+                <div id="total-value" class="value">$0</div>
+            </div>
+        </section>
 
-            <section class="promo-banner">
-                <div class="promo-content">
-                    <div class="promo-text">
-                        <h3>🔍 Проверка истории по VIN</h3>
-                        <p>ДТП, пробеги и залоги в одном отчете.</p>
-                    </div>
-                    <a href="https://autoteka.ru/" target="_blank" class="btn-main btn-small vin-btn">Проверить в Автотеке</a>
-                </div>
-            </section>
-        </main>
-        
-        <footer class="main-footer">
-            <button class="btn-main btn-danger" onclick="clearAll()">Очистить базу данных</button>
+        <section class="add-form">
+            <div class="form-grid">
+                <input type="text" id="car-name" placeholder="Марка и модель">
+                <input type="number" id="car-price" placeholder="Цена ($)">
+                <input type="number" id="car-year" placeholder="Год выпуска">
+                <input type="number" id="car-mileage" placeholder="Пробег (тыс. км)">
+                <select id="car-condition">
+                    <option value="1.0">💎 Идеал</option>
+                    <option value="0.85">🎨 Косметика</option>
+                    <option value="0.6">🔨 Бит/Крашен</option>
+                    <option value="0.3">💀 Тотал</option>
+                </select>
+                <select id="car-region">
+                    <option value="eu">🇪🇺 Европа</option>
+                    <option value="usa">🇺🇸 США</option>
+                    <option value="asia">🌏 Азия</option>
+                    <option value="ru">🇷🇺 СНГ</option>
+                </select>
+            </div>
+            <button id="add-car-btn" class="btn-main">Добавить в список</button>
+        </section>
 
-            <section class="share-box">
-                <span>Поделиться проектом:</span>
-                <div class="share-buttons">
-                    <a href="#" id="share-tg" class="btn-share tg">Telegram</a>
-                    <a href="#" id="share-wa" class="btn-share wa">WhatsApp</a>
-                    <button onclick="copyLink()" class="btn-share copy">🔗 Ссылка</button>
-                </div>
-            </section>
-        </footer>
-    </div>
+        <nav class="region-filters" id="region-filters">
+            <button class="filter-btn active" data-region="all">🌐 Весь мир</button>
+            <button class="filter-btn" data-region="usa">🇺🇸 США</button>
+            <button class="filter-btn" data-region="eu">🇪🇺 Европа</button>
+            <button class="filter-btn" data-region="asia">🌏 Азия</button>
+            <button class="filter-btn" data-region="ru">🇷🇺 СНГ</button>
+        </nav>
+
+        <div class="controls">
+            <input type="text" id="search-input" placeholder="Поиск в гараже...">
+            <div id="stats-count" class="stats-counter">Авто в списке: 0</div>
+        </div>
+
+        <div id="car-list" class="grid-layout"></div>
+        <div id="empty-state" class="empty-box" style="display: none;">
+            <div class="empty-icon">📁</div>
+            <h2>Гараж пуст</h2>
+            <button id="restore-btn" class="btn-main">Восстановить базу</button>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <button id="clear-db-btn" class="btn-main btn-danger" onclick="AppState.clearAll()">Очистить базу</button>
+        <div class="footer-content">
+            <div class="share-buttons">
+                <a href="#" id="share-tg" class="btn-share tg">Telegram</a>
+                <button id="copy-link-btn" class="btn-share copy">🔗 Ссылка</button>
+            </div>
+        </div>
+    </footer>
 
     <div id="compare-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Сравнение моделей</h2>
-                <button class="close-btn" onclick="closeCompare()">&times;</button>
+                <h2>Сравнение</h2>
+                <button id="close-modal-btn" class="close-btn">&times;</button>
             </div>
             <div id="compare-table-container"></div>
         </div>
@@ -144,31 +103,11 @@
     <div id="compare-float-bar" class="compare-bar">
         <span id="compare-text">Выбрано: 0</span>
         <div class="bar-buttons">
-            <button class="btn-main btn-small" onclick="openCompare()">Сравнить</button>
-            <button class="btn-main btn-small btn-danger" onclick="resetCompare()">Сброс</button>
+            <button id="open-compare-btn" class="btn-main btn-small">Сравнить</button>
+            <button id="reset-compare-btn" class="btn-main btn-small btn-danger">Сброс</button>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-
-<footer class="site-footer">
-    <div class="footer-content">
-        <div class="footer-info">
-            <h3>🚀 Проект в развитии</h3>
-            <p>База автомобилей постоянно пополняется. Мы работаем над новыми функциями аналитики.</p>
-            <p>Следите за новостями и подписывайтесь на обновления!</p>
-        </div>
-
-        <div class="footer-actions">
-            <button onclick="addToBookmarks()" class="btn-secondary">⭐ В закладки</button>
-            <a href="mailto:info@myrating.autos" class="btn-secondary">✉️ Обратная связь</a>
-        </div>
-
-        <div class="footer-contact">
-            <p>По вопросам предложений и сотрудничества:</p>
-            <a href="https://t.me/твой_логин" target="_blank" class="contact-link">Написать в Telegram</a>
-        </div>
-    </div>
-</footer>
 </html>
