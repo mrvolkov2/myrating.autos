@@ -2,11 +2,18 @@
     --primary: #2563eb;
     --primary-hover: #1d4ed8;
     --danger: #ef4444;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #0f172a;
+    --border: #e2e8f0;
+    --header-height: 80px;
+}
+
+body.dark-theme {
     --bg: #0f172a;
     --card-bg: #1e293b;
     --text: #f8fafc;
     --border: #334155;
-    --header-height: 80px;
 }
 
 body.light-theme {

@@ -135,18 +135,25 @@ function updateDashboard() {
 }
 
 function toggleTheme() {
-    document.body.classList.toggle('light-theme');
-    const isLight = document.body.classList.contains('light-theme');
-    document.getElementById('theme-icon').src = isLight ? 'theme_night.png' : 'theme_light.png';
-    localStorage.setItem('myrating_theme', isLight ? 'light' : 'dark');
+    document.body.classList.toggle('dark-theme');
+    const isDark = document.body.classList.contains('dark-theme');
+    // Если тема темная — показываем иконку солнца (чтобы переключить на свет), 
+    // если светлая — иконку луны.
+    document.getElementById('theme-icon').src = isDark ? 'theme_light.png' : 'theme_night.png';
+    localStorage.setItem('myrating_theme', isDark ? 'dark' : 'light');
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('myrating_theme') === 'light') {
-        document.body.classList.add('light-theme');
+    // Проверяем, если пользователь РАНЕЕ выбрал темную тему
+    if (localStorage.getItem('myrating_theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.getElementById('theme-icon').src = 'theme_light.png';
+    } else {
+        // По умолчанию ставим иконку для перехода в темный режим
         document.getElementById('theme-icon').src = 'theme_night.png';
     }
     render();
+    setupShareLinks();
 });
 
 function setupShareLinks() {
