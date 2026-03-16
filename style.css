@@ -1,4 +1,3 @@
-
 :root {
     --primary: #2563eb;
     --primary-hover: #1d4ed8;
@@ -146,7 +145,3 @@ input, select { background: var(--bg); border: 1px solid var(--border); color: v
 .btn-secondary { background: transparent; border: 1px solid #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 14px; }
 .btn-secondary:hover { background: #3b82f6; }
 .contact-link { color: #3b82f6; text-decoration: underline; font-weight: bold; }
-style.css
-Общая информация
-ТипCSS
-Показан объект "style.css".
