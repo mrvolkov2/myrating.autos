@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,8 +71,22 @@
                         <option value="0.6">🔨 Бит/Крашен</option>
                         <option value="0.3">💀 Тотал</option>
                     </select>
+                    <select id="car-region">
+                        <option value="eu">🇪🇺 Европа</option>
+                        <option value="usa">🇺🇸 США</option>
+                        <option value="asia">🌏 Азия</option>
+                        <option value="ru">🇷🇺 Ближнее зарубежье (РФ)</option>
+                    </select>
                 </div>
                 <button onclick="calculateAndAdd()" class="btn-main">Просчитать и добавить в список</button>
+            </section>
+
+            <section class="region-filters">
+                <button class="filter-btn active" data-region="all" onclick="setRegion('all')">🌐 Весь мир</button>
+                <button class="filter-btn" data-region="usa" onclick="setRegion('usa')">🇺🇸 США</button>
+                <button class="filter-btn" data-region="eu" onclick="setRegion('eu')">🇪🇺 Европа</button>
+                <button class="filter-btn" data-region="asia" onclick="setRegion('asia')">🌏 Азия</button>
+                <button class="filter-btn" data-region="ru" onclick="setRegion('ru')">🇷🇺 РФ и соседи</button>
             </section>
 
             <section class="controls">
@@ -108,14 +120,14 @@
         <footer class="main-footer">
             <button class="btn-main btn-danger" onclick="clearAll()">Очистить базу данных</button>
 
-<section class="share-box">
-    <span>Поделиться проектом:</span>
-    <div class="share-buttons">
-        <a href="#" id="share-tg" class="btn-share tg">Telegram</a>
-        <a href="#" id="share-wa" class="btn-share wa">WhatsApp</a>
-        <button onclick="copyLink()" class="btn-share copy">🔗 Ссылка</button>
-    </div>
-</section>
+            <section class="share-box">
+                <span>Поделиться проектом:</span>
+                <div class="share-buttons">
+                    <a href="#" id="share-tg" class="btn-share tg">Telegram</a>
+                    <a href="#" id="share-wa" class="btn-share wa">WhatsApp</a>
+                    <button onclick="copyLink()" class="btn-share copy">🔗 Ссылка</button>
+                </div>
+            </section>
         </footer>
     </div>
 
@@ -140,7 +152,6 @@
     <script src="script.js"></script>
 </body>
 
-
 <footer class="site-footer">
     <div class="footer-content">
         <div class="footer-info">
@@ -160,6 +171,4 @@
         </div>
     </div>
 </footer>
-
-
 </html>
