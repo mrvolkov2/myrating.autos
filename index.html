@@ -1,33 +1,15 @@
 <!DOCTYPE html>
 <html lang="ru">
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRating.autos | Cравнение авто, экспертные обзоры </title>
-    
-    <meta name="description" content="Рассчитай рейтинг автомобиля и сравни модели между собой. Умный инструмент для выбора авто на myrating.autos.">
-    <meta name="keywords" content="myrating.autos, рейтинг авто, сравнение машин, расчет рейтинга автомобиля, автоаналитика">
-    <link rel="canonical" href="https://myrating.autos">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://myrating.autos">
-    <meta property="og:title" content="myrating.autos | Твой эксперт по подбору авто">
-    <meta property="og:description" content="Узнай реальный балл машины перед покупкой. Умное сравнение и детальная аналитика.">
-    <meta property="og:image" content="og_preview.png">
-    <meta property="og:image:width" content="1424">
-    <meta property="og:image:height" content="752">
-    <meta property="og:site_name" content="myrating.autos">
-
-    <link rel="icon" type="image/png" href="favicon.ico" />
-
+    <title>MyRating.autos | Сравнение авто и рейтинг</title>
+    <meta name="description" content="Рассчитай рейтинг автомобиля и сравни модели между собой.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
     <header class="main-header">
@@ -37,7 +19,7 @@
             </div>
             <div class="header-actions">
                 <button id="theme-toggle" onclick="toggleTheme()" class="theme-btn">
-                    <img src="theme_light.png" id="theme-icon" alt="Тема">
+                    <img src="theme_night.png" id="theme-icon" alt="Тема">
                     <span>Тема</span>
                 </button>
             </div>
@@ -89,7 +71,6 @@
             <div id="car-list" class="grid-layout"></div>
 
             <div id="empty-state" class="empty-box" style="display: none;">
-                <div class="empty-icon">📁</div>
                 <h2>Гараж пуст</h2>
                 <button class="btn-main" onclick="restoreDefaults()">Восстановить базу</button>
             </div>
@@ -104,20 +85,32 @@
                 </div>
             </section>
         </main>
-        
-        <footer class="main-footer">
-            <button class="btn-main btn-danger" onclick="clearAll()">Очистить базу данных</button>
+    </div>
 
-<section class="share-box">
-    <span>Поделиться проектом:</span>
-    <div class="share-buttons">
-        <a href="#" id="share-tg" class="btn-share tg">Telegram</a>
-        <a href="#" id="share-wa" class="btn-share wa">WhatsApp</a>
-        <button onclick="copyLink()" class="btn-share copy">🔗 Ссылка</button>
-    </div>
-</section>
-        </footer>
-    </div>
+    <footer class="site-footer">
+        <div class="footer-content">
+            <button class="btn-main btn-danger" onclick="clearAll()" style="margin-bottom: 30px;">Очистить базу данных</button>
+            
+            <section class="share-box">
+                <span>Поделиться проектом:</span>
+                <div class="share-buttons">
+                    <a href="#" id="share-tg" class="btn-share tg">Telegram</a>
+                    <a href="#" id="share-wa" class="btn-share wa">WhatsApp</a>
+                    <button onclick="copyLink()" class="btn-share copy">🔗 Ссылка</button>
+                </div>
+            </section>
+
+            <div class="footer-info">
+                <h3>🚀 Проект в развитии</h3>
+                <p>База автомобилей постоянно пополняется.</p>
+            </div>
+
+            <div class="footer-actions">
+                <button onclick="addToBookmarks()" class="btn-secondary">⭐ В закладки</button>
+                <a href="mailto:info@myrating.autos" class="btn-secondary">✉️ Обратная связь</a>
+            </div>
+        </div>
+    </footer>
 
     <div id="compare-modal" class="modal">
         <div class="modal-content">
@@ -139,27 +132,4 @@
 
     <script src="script.js"></script>
 </body>
-
-
-<footer class="site-footer">
-    <div class="footer-content">
-        <div class="footer-info">
-            <h3>🚀 Проект в развитии</h3>
-            <p>База автомобилей постоянно пополняется. Мы работаем над новыми функциями аналитики.</p>
-            <p>Следите за новостями и подписывайтесь на обновления!</p>
-        </div>
-
-        <div class="footer-actions">
-            <button onclick="addToBookmarks()" class="btn-secondary">⭐ В закладки</button>
-            <a href="mailto:info@myrating.autos" class="btn-secondary">✉️ Обратная связь</a>
-        </div>
-
-        <div class="footer-contact">
-            <p>По вопросам предложений и сотрудничества:</p>
-            <a href="https://t.me/твой_логин" target="_blank" class="contact-link">Написать в Telegram</a>
-        </div>
-    </div>
-</footer>
-
-
 </html>
