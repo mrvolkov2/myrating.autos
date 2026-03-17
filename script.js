@@ -11,8 +11,6 @@ function escapeHTML(str) {
     );
 }
 
-
-
 const defaultCars = [
     { id: 1, name: "Porsche 911 GT3", price: 195000, rating: 9.9, region: "eu", year: 2022, mileage: 12, condition: 1 },
     { id: 2, name: "BMW M5 F90", price: 105000, rating: 9.7, region: "eu", year: 2021, mileage: 35, condition: 1 },
@@ -38,11 +36,9 @@ const defaultCars = [
     { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru", year: 2023, mileage: 15, condition: 1 }
 ];
 
-
-
 let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
 
-// Миграция старых данных: добавляем уникальные ID автомобилям, если их нет
+// Миграция старых данных
 cars = cars.map((car, index) => {
     if (!car.id) car.id = Date.now() + index;
     return car;
@@ -50,7 +46,6 @@ cars = cars.map((car, index) => {
 
 let compareList = [];
 let currentRegion = 'all';
-
 
 function render(data = cars) {
     const list = document.getElementById('car-list');
@@ -66,7 +61,6 @@ function render(data = cars) {
         'ru': '🇷🇺 РФ / Ближнее зарубежье'
     };
 
-    // Словарь для расшифровки состояния
     const conditionLabels = {
         1: '💎 Идеал',
         0.85: '🎨 Косметика',
@@ -87,7 +81,6 @@ function render(data = cars) {
             const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
             const safeName = escapeHTML(car.name); 
             
-            // Формируем параметры. Если данных нет (старые записи), пишем прочерк
             const yearText = car.year ? `${car.year} г.` : '—';
             const mileageText = car.mileage !== undefined ? `${car.mileage} тыс. км` : '—';
             const conditionText = car.condition ? (conditionLabels[car.condition] || '—') : '—';
@@ -117,7 +110,6 @@ function render(data = cars) {
     updateDashboard();
     localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
 }
-
 
 function setRegion(region) {
     currentRegion = region;
@@ -208,21 +200,19 @@ function calculateAndAdd() {
     score = score * condition;
     const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
     
-    // Добавляем машину с уникальным ID
     cars.push({ 
         id: Date.now(), 
         name, 
         price, 
         rating: Number(finalRating), 
-        region 
-        year,             // <--- Сохраняем год
-        mileage,          // <--- Сохраняем пробег
-        condition         // <--- Сохраняем состояние
+        region,
+        year,
+        mileage,
+        condition
     });
     
     filterCars(); 
     
-    // Полная очистка формы
     document.getElementById('car-name').value = '';
     document.getElementById('car-price').value = '';
     document.getElementById('car-year').value = '';
@@ -235,7 +225,6 @@ function closeCompare() { document.getElementById('compare-modal').style.display
 function resetCompare() { compareList = []; document.getElementById('compare-float-bar').classList.remove('active'); filterCars(); }
 
 function deleteCar(id) { 
-    // Удаляем по ID из основного массива и из списка сравнения (если машина там была)
     cars = cars.filter(c => c.id !== id);
     compareList = compareList.filter(c => c.id !== id);
     
