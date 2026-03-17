@@ -12,33 +12,33 @@ function escapeHTML(str) {
 }
 
 const defaultCars = [
-    { id: 1, name: "Porsche 911 GT3", price: 195000, rating: 9.9, region: "eu" },
-    { id: 2, name: "BMW M5 F90", price: 105000, rating: 9.7, region: "eu" },
-    { id: 3, name: "Toyota LC 300", price: 110000, rating: 9.2, region: "asia" },
-    { id: 4, name: "Tesla Model S", price: 85000, rating: 8.5, region: "usa" },
-    { id: 5, name: "Audi RS6 Avant", price: 125000, rating: 9.6, region: "eu" },
-    { id: 6, name: "Mercedes G63", price: 210000, rating: 9.4, region: "eu" },
-    { id: 7, name: "Nissan GT-R", price: 115000, rating: 9.5, region: "asia" },
-    { id: 8, name: "Toyota Camry", price: 32000, rating: 9.1, region: "asia" },
-    { id: 9, name: "VW Golf R", price: 48000, rating: 9.0, region: "eu" },
-    { id: 10, name: "Ford Mustang", price: 45000, rating: 8.7, region: "usa" },
-    { id: 11, name: "Mazda CX-5", price: 29000, rating: 8.8, region: "asia" },
-    { id: 12, name: "Lexus RX 350", price: 68000, rating: 9.0, region: "asia" },
-    { id: 13, name: "Honda Civic R", price: 44000, rating: 9.3, region: "asia" },
-    { id: 14, name: "Subaru WRX STI", price: 38000, rating: 8.9, region: "asia" },
-    { id: 15, name: "Kia Stinger", price: 35000, rating: 8.2, region: "asia" },
-    { id: 16, name: "Volvo XC90", price: 72000, rating: 9.1, region: "eu" },
-    { id: 17, name: "Hyundai Ioniq 5", price: 50000, rating: 8.6, region: "asia" },
-    { id: 18, name: "Skoda Octavia RS", price: 34000, rating: 8.9, region: "eu" },
-    { id: 19, name: "Dodge Challenger", price: 55000, rating: 8.4, region: "usa" },
-    { id: 20, name: "Land Rover Defender", price: 88000, rating: 9.2, region: "eu" },
-    { id: 21, name: "Lada Vesta Sport", price: 18000, rating: 7.5, region: "ru" },
-    { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru" }
+    { id: 1, name: "Porsche 911 GT3", price: 195000, rating: 9.9, region: "eu", year: 2022, mileage: 12, condition: 1 },
+    { id: 2, name: "BMW M5 F90", price: 105000, rating: 9.7, region: "eu", year: 2021, mileage: 35, condition: 1 },
+    { id: 3, name: "Toyota LC 300", price: 110000, rating: 9.2, region: "asia", year: 2023, mileage: 15, condition: 1 },
+    { id: 4, name: "Tesla Model S", price: 85000, rating: 8.5, region: "usa", year: 2020, mileage: 60, condition: 0.85 },
+    { id: 5, name: "Audi RS6 Avant", price: 125000, rating: 9.6, region: "eu", year: 2022, mileage: 25, condition: 1 },
+    { id: 6, name: "Mercedes G63", price: 210000, rating: 9.4, region: "eu", year: 2023, mileage: 10, condition: 1 },
+    { id: 7, name: "Nissan GT-R", price: 115000, rating: 9.5, region: "asia", year: 2019, mileage: 40, condition: 1 },
+    { id: 8, name: "Toyota Camry", price: 32000, rating: 9.1, region: "asia", year: 2022, mileage: 30, condition: 1 },
+    { id: 9, name: "VW Golf R", price: 48000, rating: 9.0, region: "eu", year: 2021, mileage: 45, condition: 0.85 },
+    { id: 10, name: "Ford Mustang", price: 45000, rating: 8.7, region: "usa", year: 2020, mileage: 50, condition: 0.85 },
+    { id: 11, name: "Mazda CX-5", price: 29000, rating: 8.8, region: "asia", year: 2021, mileage: 40, condition: 1 },
+    { id: 12, name: "Lexus RX 350", price: 68000, rating: 9.0, region: "asia", year: 2022, mileage: 20, condition: 1 },
+    { id: 13, name: "Honda Civic R", price: 44000, rating: 9.3, region: "asia", year: 2023, mileage: 15, condition: 1 },
+    { id: 14, name: "Subaru WRX STI", price: 38000, rating: 8.9, region: "asia", year: 2018, mileage: 70, condition: 0.85 },
+    { id: 15, name: "Kia Stinger", price: 35000, rating: 8.2, region: "asia", year: 2019, mileage: 80, condition: 0.85 },
+    { id: 16, name: "Volvo XC90", price: 72000, rating: 9.1, region: "eu", year: 2021, mileage: 55, condition: 1 },
+    { id: 17, name: "Hyundai Ioniq 5", price: 50000, rating: 8.6, region: "asia", year: 2022, mileage: 30, condition: 1 },
+    { id: 18, name: "Skoda Octavia RS", price: 34000, rating: 8.9, region: "eu", year: 2020, mileage: 65, condition: 0.85 },
+    { id: 19, name: "Dodge Challenger", price: 55000, rating: 8.4, region: "usa", year: 2019, mileage: 50, condition: 0.85 },
+    { id: 20, name: "Land Rover Defender", price: 88000, rating: 9.2, region: "eu", year: 2023, mileage: 18, condition: 1 },
+    { id: 21, name: "Lada Vesta Sport", price: 18000, rating: 7.5, region: "ru", year: 2021, mileage: 45, condition: 0.85 },
+    { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru", year: 2023, mileage: 15, condition: 1 }
 ];
 
 let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
 
-// Миграция старых данных: добавляем уникальные ID автомобилям, если их нет
+// Миграция старых данных
 cars = cars.map((car, index) => {
     if (!car.id) car.id = Date.now() + index;
     return car;
@@ -61,25 +61,40 @@ function render(data = cars) {
         'ru': '🇷🇺 РФ / Ближнее зарубежье'
     };
 
+    const conditionLabels = {
+        1: '💎 Идеал',
+        0.85: '🎨 Косметика',
+        0.6: '🔨 Бит/Крашен',
+        0.3: '💀 Тотал'
+    };
+
     if (data.length === 0) {
         list.innerHTML = '';
         emptyState.style.display = 'block';
     } else {
         emptyState.style.display = 'none';
         
-        // Оптимизация: собираем HTML в строку, чтобы не перерисовывать DOM на каждом шаге цикла
         let htmlString = '';
         
         data.forEach((car) => {
             const isComparing = compareList.some(c => c.id === car.id);
             const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
-            const safeName = escapeHTML(car.name); // Защита от XSS
+            const safeName = escapeHTML(car.name); 
+            
+            const yearText = car.year ? `${car.year} г.` : '—';
+            const mileageText = car.mileage !== undefined ? `${car.mileage} тыс. км` : '—';
+            const conditionText = car.condition ? (conditionLabels[car.condition] || '—') : '—';
             
             htmlString += `
                 <div class="car-card">
                     ${regionBadge}
                     <h2>${safeName}</h2>
-                    <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
+                    <div class="car-specs">
+                        <span>📅 ${yearText}</span>
+                        <span>🛣️ ${mileageText}</span>
+                        <span>🛠️ ${conditionText}</span>
+                    </div>
+                    <p style="margin-top: 10px;">Цена: <strong>$${car.price.toLocaleString()}</strong></p>
                     <div style="display:flex; justify-content: space-between; align-items: center; margin-top:15px;">
                         <div style="font-size: 1.4rem; font-weight:900; color:var(--primary);">${car.rating}</div>
                         <div style="display:flex; gap:8px;">
@@ -185,18 +200,19 @@ function calculateAndAdd() {
     score = score * condition;
     const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
     
-    // Добавляем машину с уникальным ID
     cars.push({ 
         id: Date.now(), 
         name, 
         price, 
         rating: Number(finalRating), 
-        region 
+        region,
+        year,
+        mileage,
+        condition
     });
     
     filterCars(); 
     
-    // Полная очистка формы
     document.getElementById('car-name').value = '';
     document.getElementById('car-price').value = '';
     document.getElementById('car-year').value = '';
@@ -209,7 +225,6 @@ function closeCompare() { document.getElementById('compare-modal').style.display
 function resetCompare() { compareList = []; document.getElementById('compare-float-bar').classList.remove('active'); filterCars(); }
 
 function deleteCar(id) { 
-    // Удаляем по ID из основного массива и из списка сравнения (если машина там была)
     cars = cars.filter(c => c.id !== id);
     compareList = compareList.filter(c => c.id !== id);
     
