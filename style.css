@@ -1,6 +1,8 @@
 :root {
     --primary: #2563eb;
     --primary-hover: #1d4ed8;
+    --success: #238636;
+    --warning: #e3b341;
     --danger: #ef4444;
     --bg: #f8fafc;
     --card-bg: #ffffff;
@@ -16,85 +18,164 @@ body.dark-theme {
     --border: #334155;
 }
 
-body.light-theme {
-    --bg: #f8fafc;
-    --card-bg: #ffffff;
-    --text: #0f172a;
-    --border: #e2e8f0;
-}
-
 body {
     background-color: var(--bg);
     color: var(--text);
     font-family: 'Inter', sans-serif;
-    margin: 0; padding-top: var(--header-height);
-    transition: 0.3s;
+    margin: 0;
+    padding-top: var(--header-height);
+    transition: background 0.3s, color 0.3s;
 }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
-/* ХЕДЕР */
+/* --- ХЕДЕР --- */
 .main-header {
-    position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height);
-    background: var(--card-bg); border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    z-index: 1000;
 }
-.header-content { 
-    width: 100%; max-width: 1200px; margin: 0 auto;
-    display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
+
+.header-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
 }
-.logo-image { height: 35px; display: block; }
+
+.logo-image {
+    height: 35px;
+    display: block;
+}
 
 .theme-btn {
-    display: flex; align-items: center; gap: 8px; background: var(--bg);
-    border: 1px solid var(--border); color: var(--text); padding: 8px 14px;
-    border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
 }
-.theme-btn img { height: 18px; width: 18px; }
 
-/* КНОПКИ */
+/* --- КНОПКИ --- */
 .btn-main {
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 12px 24px; background: var(--primary); color: #fff;
-    border: none; border-radius: 12px; font-weight: 700; cursor: pointer;
-    transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-decoration: none;
-}
-.btn-main:hover { transform: translateY(-2px); background: var(--primary-hover); }
-.btn-small { padding: 10px 18px; font-size: 0.85rem; }
-.btn-danger { background: var(--danger); }
-
-/* ФИЛЬТРЫ РЕГИОНОВ */
-.region-filters {
-    display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
-}
-.filter-btn {
-    background: var(--card-bg); border: 1px solid var(--border); color: var(--text);
-    padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 14px;
-    font-weight: 600; transition: 0.2s;
-}
-.filter-btn:hover { border-color: var(--primary); }
-.filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-/* БЕЙДЖИ РЕГИОНА НА КАРТОЧКЕ */
-.region-badge {
-    display: inline-block; font-size: 0.75rem; font-weight: 600;
-    background: var(--bg); padding: 4px 8px; border-radius: 6px;
-    margin-bottom: 10px; border: 1px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* СЕТКА */
-.grid-layout { display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); margin-top: 20px; }
+.btn-main:hover {
+    transform: translateY(-2px);
+    background: var(--primary-hover);
+}
+
+.btn-small {
+    padding: 10px 18px;
+    font-size: 0.85rem;
+}
+
+.btn-danger {
+    background: var(--danger);
+}
+
+/* --- ФОРМА И ДЕШБОРД --- */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 12px;
+    border-left: 4px solid var(--primary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.add-form {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+input, select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--primary);
+}
+
+/* --- КАРТОЧКИ АВТО --- */
+.grid-layout {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 20px;
+}
+
 @media (max-width: 1000px) { .grid-layout { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 650px) { .grid-layout { grid-template-columns: 1fr; } }
 
-
-/* Улучшенная карточка */
 .car-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     gap: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
     position: relative;
-    overflow: hidden;
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 .card-header {
@@ -103,89 +184,14 @@ body {
     align-items: center;
 }
 
-.car-title {
-    margin: 5px 0;
-    font-size: 1.25rem;
-    line-height: 1.2;
-}
-
-/* Сетка параметров */
-.car-specs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+.region-badge {
+    font-size: 0.7rem;
+    font-weight: 800;
     background: var(--bg);
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.spec-item {
-    font-size: 0.85rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-/* Шкала рейтинга */
-.rating-section {
-    margin-top: 10px;
-}
-
-.rating-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 6px;
-}
-
-.rating-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    opacity: 0.7;
-}
-
-.rating-value {
-    font-size: 1.5rem;
-    font-weight: 900;
-}
-
-.rating-bar-container {
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.rating-bar-fill {
-    height: 100%;
-    transition: width 0.5s ease-out;
-}
-
-/* Кнопки в карточке */
-.card-actions {
-    margin-top: auto;
-    display: flex;
-    gap: 8px;
-}
-
-.btn-compare {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
     border: 1px solid var(--border);
-    background: var(--card-bg);
-    color: var(--text);
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s;
-}
-
-.btn-compare.active {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
+    text-transform: uppercase;
 }
 
 .delete-btn {
@@ -199,62 +205,174 @@ body {
     transition: 0.2s;
 }
 
-.delete-btn:hover {
-    opacity: 1;
+.delete-btn:hover { opacity: 1; }
+
+.car-title {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--text);
 }
 
-
-
-/* БАННЕР VIN */
-.promo-banner {
-    margin: 40px 0; padding: 25px; background: var(--card-bg);
-    border-radius: 20px; border: 1px solid var(--primary);
-}
-.promo-content { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-.promo-text h3 { margin: 0 0 5px 0; color: var(--primary); font-size: 1.2rem; }
-.promo-text p { margin: 0; opacity: 0.8; font-size: 0.95rem; }
-
-@media (max-width: 700px) {
-    .promo-content { flex-direction: column; text-align: center; }
-    .vin-btn { width: 100%; }
+/* Сетка параметров */
+.car-specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: var(--bg);
+    padding: 12px;
+    border-radius: 12px;
 }
 
-/* СРАВНЕНИЕ */
+.spec-item {
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Рейтинг и полоска */
+.rating-section {
+    margin: 5px 0;
+}
+
+.rating-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 8px;
+}
+
+.rating-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: 0.6;
+}
+
+.rating-value {
+    font-size: 1.6rem;
+    font-weight: 900;
+}
+
+.rating-bar-container {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.rating-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-actions {
+    margin-top: 10px;
+    display: flex;
+}
+
+.btn-compare {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-compare.active {
+    background: var(--success);
+    color: white;
+    border-color: var(--success);
+}
+
+/* --- МОДАЛКА И СРАВНЕНИЕ --- */
 .compare-bar {
-    position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
-    background: var(--card-bg); padding: 12px 25px; border-radius: 50px;
-    border: 2px solid var(--primary); display: flex; align-items: center; gap: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1500; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--card-bg);
+    padding: 12px 25px;
+    border-radius: 50px;
+    border: 2px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 1500;
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
 .compare-bar.active { bottom: 30px; }
 
-.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
-.modal-content { background: var(--card-bg); margin: 10vh auto; padding: 25px; width: 90%; max-width: 800px; border-radius: 20px; border: 1px solid var(--border); }
-.compare-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-.compare-table th, .compare-table td { padding: 12px; border: 1px solid var(--border); text-align: center; }
-.best { background: rgba(35, 134, 54, 0.2); color: #4ade80; font-weight: bold; }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+}
 
-/* ПРОЧЕЕ */
-.dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-.stat-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border-left: 4px solid var(--primary); }
-.add-form { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 30px; }
-.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 15px; }
-input, select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-size: 14px; }
-.main-footer { text-align: center; margin: 40px 0; border-top: 1px solid var(--border); padding-top: 30px; }
+.modal-content {
+    background: var(--card-bg);
+    margin: 8vh auto;
+    padding: 25px;
+    width: 95%;
+    max-width: 900px;
+    border-radius: 24px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
 
-.share-box { margin: 40px 0; text-align: center; border-top: 1px solid var(--border); padding-top: 20px; }
-.share-box span { display: block; margin-bottom: 15px; font-weight: 600; opacity: 0.8; }
-.share-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-.btn-share { padding: 8px 16px; border-radius: 10px; text-decoration: none; color: white; font-size: 14px; font-weight: 600; transition: 0.3s; border: none; cursor: pointer; }
-.tg { background: #0088cc; }
-.wa { background: #25d366; }
-.copy { background: var(--border); color: var(--text); }
-.btn-share:hover { opacity: 0.8; transform: translateY(-2px); }
+.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-.site-footer { background: #1e293b; color: white; padding: 40px 20px; margin-top: 50px; border-top: 1px solid #334155; text-align: center; }
+.compare-table th, .compare-table td {
+    padding: 15px;
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.best {
+    background: rgba(35, 134, 54, 0.15);
+    color: #4ade80;
+    font-weight: 900;
+}
+
+/* --- ФУТЕР --- */
+.site-footer {
+    background: #1e293b;
+    color: white;
+    padding: 50px 20px;
+    margin-top: 60px;
+    text-align: center;
+}
+
 .footer-content { max-width: 800px; margin: 0 auto; }
-.footer-info h3 { color: #3b82f6; margin-bottom: 10px; }
-.footer-actions { display: flex; justify-content: center; gap: 15px; margin: 25px 0; }
-.btn-secondary { background: transparent; border: 1px solid #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 14px; }
-.btn-secondary:hover { background: #3b82f6; }
-.contact-link { color: #3b82f6; text-decoration: underline; font-weight: bold; }
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-secondary:hover { background: var(--primary); }
