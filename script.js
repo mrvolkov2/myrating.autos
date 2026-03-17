@@ -12,28 +12,28 @@ function escapeHTML(str) {
 }
 
 const defaultCars = [
-    { id: 1, name: "Porsche 911 GT3", price: 195000, rating: 9.9, region: "eu" },
-    { id: 2, name: "BMW M5 F90", price: 105000, rating: 9.7, region: "eu" },
-    { id: 3, name: "Toyota LC 300", price: 110000, rating: 9.2, region: "asia" },
-    { id: 4, name: "Tesla Model S", price: 85000, rating: 8.5, region: "usa" },
-    { id: 5, name: "Audi RS6 Avant", price: 125000, rating: 9.6, region: "eu" },
-    { id: 6, name: "Mercedes G63", price: 210000, rating: 9.4, region: "eu" },
-    { id: 7, name: "Nissan GT-R", price: 115000, rating: 9.5, region: "asia" },
-    { id: 8, name: "Toyota Camry", price: 32000, rating: 9.1, region: "asia" },
-    { id: 9, name: "VW Golf R", price: 48000, rating: 9.0, region: "eu" },
-    { id: 10, name: "Ford Mustang", price: 45000, rating: 8.7, region: "usa" },
-    { id: 11, name: "Mazda CX-5", price: 29000, rating: 8.8, region: "asia" },
-    { id: 12, name: "Lexus RX 350", price: 68000, rating: 9.0, region: "asia" },
-    { id: 13, name: "Honda Civic R", price: 44000, rating: 9.3, region: "asia" },
-    { id: 14, name: "Subaru WRX STI", price: 38000, rating: 8.9, region: "asia" },
-    { id: 15, name: "Kia Stinger", price: 35000, rating: 8.2, region: "asia" },
-    { id: 16, name: "Volvo XC90", price: 72000, rating: 9.1, region: "eu" },
-    { id: 17, name: "Hyundai Ioniq 5", price: 50000, rating: 8.6, region: "asia" },
-    { id: 18, name: "Skoda Octavia RS", price: 34000, rating: 8.9, region: "eu" },
-    { id: 19, name: "Dodge Challenger", price: 55000, rating: 8.4, region: "usa" },
-    { id: 20, name: "Land Rover Defender", price: 88000, rating: 9.2, region: "eu" },
-    { id: 21, name: "Lada Vesta Sport", price: 18000, rating: 7.5, region: "ru" },
-    { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru" }
+    { id: 1, name: "Porsche 911 GT3", price: 195000, rating: 9.9, region: "eu", year: 2023, mileage: 5 },
+    { id: 2, name: "BMW M5 F90", price: 105000, rating: 9.7, region: "eu", year: 2021, mileage: 25 },
+    { id: 21, name: "Lada Vesta Sport", price: 18000, rating: 7.5, region: "ru", year: 2022, mileage: 40 },
+    { id: 3, name: "Toyota LC 300", price: 110000, rating: 9.2, region: "asia" year: 2023, mileage: 5 },
+    { id: 4, name: "Tesla Model S", price: 85000, rating: 8.5, region: "usa" year: 2023, mileage: 5 },
+    { id: 5, name: "Audi RS6 Avant", price: 125000, rating: 9.6, region: "eu" year: 2023, mileage: 5 },
+    { id: 6, name: "Mercedes G63", price: 210000, rating: 9.4, region: "eu" year: 2023, mileage: 5 },
+    { id: 7, name: "Nissan GT-R", price: 115000, rating: 9.5, region: "asia" year: 2023, mileage: 5 },
+    { id: 8, name: "Toyota Camry", price: 32000, rating: 9.1, region: "asia" year: 2023, mileage: 5 },
+    { id: 9, name: "VW Golf R", price: 48000, rating: 9.0, region: "eu" year: 2023, mileage: 5 },
+    { id: 10, name: "Ford Mustang", price: 45000, rating: 8.7, region: "usa" year: 2023, mileage: 5 },
+    { id: 11, name: "Mazda CX-5", price: 29000, rating: 8.8, region: "asia" year: 2023, mileage: 5 },
+    { id: 12, name: "Lexus RX 350", price: 68000, rating: 9.0, region: "asia" year: 2023, mileage: 5 },
+    { id: 13, name: "Honda Civic R", price: 44000, rating: 9.3, region: "asia" year: 2023, mileage: 5 },
+    { id: 14, name: "Subaru WRX STI", price: 38000, rating: 8.9, region: "asia" year: 2023, mileage: 5 },
+    { id: 15, name: "Kia Stinger", price: 35000, rating: 8.2, region: "asia" year: 2023, mileage: 5 },
+    { id: 16, name: "Volvo XC90", price: 72000, rating: 9.1, region: "eu" year: 2023, mileage: 5 },
+    { id: 17, name: "Hyundai Ioniq 5", price: 50000, rating: 8.6, region: "asia" year: 2023, mileage: 5 },
+    { id: 18, name: "Skoda Octavia RS", price: 34000, rating: 8.9, region: "eu" year: 2023, mileage: 5 },
+    { id: 19, name: "Dodge Challenger", price: 55000, rating: 8.4, region: "usa" year: 2023, mileage: 5 },
+    { id: 20, name: "Land Rover Defender", price: 88000, rating: 9.2, region: "eu" year: 2023, mileage: 5 },
+    { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru"  }
 ];
 
 let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
@@ -46,6 +46,16 @@ cars = cars.map((car, index) => {
 
 let compareList = [];
 let currentRegion = 'all';
+
+
+// Функция для определения цвета рейтинга
+function getRatingColor(rating) {
+    if (rating >= 9) return '#238636'; // Зеленый
+    if (rating >= 7) return '#e3b341'; // Желтый/Золотой
+    return '#da3633'; // Красный
+}
+
+
 
 function render(data = cars) {
     const list = document.getElementById('car-list');
@@ -95,6 +105,7 @@ function render(data = cars) {
     updateDashboard();
     localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
 }
+
 
 function setRegion(region) {
     currentRegion = region;
