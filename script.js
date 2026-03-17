@@ -1,29 +1,49 @@
+// Вспомогательная функция для защиты от XSS
+function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag)
+    );
+}
+
 const defaultCars = [
-    { name: "Porsche 911 GT3", price: 195000, rating: 9.9, region: "eu" },
-    { name: "BMW M5 F90", price: 105000, rating: 9.7, region: "eu" },
-    { name: "Toyota LC 300", price: 110000, rating: 9.2, region: "asia" },
-    { name: "Tesla Model S", price: 85000, rating: 8.5, region: "usa" },
-    { name: "Audi RS6 Avant", price: 125000, rating: 9.6, region: "eu" },
-    { name: "Mercedes G63", price: 210000, rating: 9.4, region: "eu" },
-    { name: "Nissan GT-R", price: 115000, rating: 9.5, region: "asia" },
-    { name: "Toyota Camry", price: 32000, rating: 9.1, region: "asia" },
-    { name: "VW Golf R", price: 48000, rating: 9.0, region: "eu" },
-    { name: "Ford Mustang", price: 45000, rating: 8.7, region: "usa" },
-    { name: "Mazda CX-5", price: 29000, rating: 8.8, region: "asia" },
-    { name: "Lexus RX 350", price: 68000, rating: 9.0, region: "asia" },
-    { name: "Honda Civic R", price: 44000, rating: 9.3, region: "asia" },
-    { name: "Subaru WRX STI", price: 38000, rating: 8.9, region: "asia" },
-    { name: "Kia Stinger", price: 35000, rating: 8.2, region: "asia" },
-    { name: "Volvo XC90", price: 72000, rating: 9.1, region: "eu" },
-    { name: "Hyundai Ioniq 5", price: 50000, rating: 8.6, region: "asia" },
-    { name: "Skoda Octavia RS", price: 34000, rating: 8.9, region: "eu" },
-    { name: "Dodge Challenger", price: 55000, rating: 8.4, region: "usa" },
-    { name: "Land Rover Defender", price: 88000, rating: 9.2, region: "eu" },
-    { name: "Lada Vesta Sport", price: 18000, rating: 7.5, region: "ru" },
-    { name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru" }
+    { id: 1, name: "Porsche 911 GT3", price: 195000, rating: 9.9, region: "eu" },
+    { id: 2, name: "BMW M5 F90", price: 105000, rating: 9.7, region: "eu" },
+    { id: 3, name: "Toyota LC 300", price: 110000, rating: 9.2, region: "asia" },
+    { id: 4, name: "Tesla Model S", price: 85000, rating: 8.5, region: "usa" },
+    { id: 5, name: "Audi RS6 Avant", price: 125000, rating: 9.6, region: "eu" },
+    { id: 6, name: "Mercedes G63", price: 210000, rating: 9.4, region: "eu" },
+    { id: 7, name: "Nissan GT-R", price: 115000, rating: 9.5, region: "asia" },
+    { id: 8, name: "Toyota Camry", price: 32000, rating: 9.1, region: "asia" },
+    { id: 9, name: "VW Golf R", price: 48000, rating: 9.0, region: "eu" },
+    { id: 10, name: "Ford Mustang", price: 45000, rating: 8.7, region: "usa" },
+    { id: 11, name: "Mazda CX-5", price: 29000, rating: 8.8, region: "asia" },
+    { id: 12, name: "Lexus RX 350", price: 68000, rating: 9.0, region: "asia" },
+    { id: 13, name: "Honda Civic R", price: 44000, rating: 9.3, region: "asia" },
+    { id: 14, name: "Subaru WRX STI", price: 38000, rating: 8.9, region: "asia" },
+    { id: 15, name: "Kia Stinger", price: 35000, rating: 8.2, region: "asia" },
+    { id: 16, name: "Volvo XC90", price: 72000, rating: 9.1, region: "eu" },
+    { id: 17, name: "Hyundai Ioniq 5", price: 50000, rating: 8.6, region: "asia" },
+    { id: 18, name: "Skoda Octavia RS", price: 34000, rating: 8.9, region: "eu" },
+    { id: 19, name: "Dodge Challenger", price: 55000, rating: 8.4, region: "usa" },
+    { id: 20, name: "Land Rover Defender", price: 88000, rating: 9.2, region: "eu" },
+    { id: 21, name: "Lada Vesta Sport", price: 18000, rating: 7.5, region: "ru" },
+    { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru" }
 ];
 
 let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
+
+// Миграция старых данных: добавляем уникальные ID автомобилям, если их нет
+cars = cars.map((car, index) => {
+    if (!car.id) car.id = Date.now() + index;
+    return car;
+});
+
 let compareList = [];
 let currentRegion = 'all';
 
@@ -32,7 +52,6 @@ function render(data = cars) {
     const statsCount = document.getElementById('stats-count');
     const emptyState = document.getElementById('empty-state');
     
-    list.innerHTML = '';
     statsCount.innerText = `Авто в списке: ${data.length}`;
 
     const regionLabels = {
@@ -43,27 +62,35 @@ function render(data = cars) {
     };
 
     if (data.length === 0) {
+        list.innerHTML = '';
         emptyState.style.display = 'block';
     } else {
         emptyState.style.display = 'none';
-        data.forEach((car, index) => {
-            const isComparing = compareList.some(c => c.name === car.name);
+        
+        // Оптимизация: собираем HTML в строку, чтобы не перерисовывать DOM на каждом шаге цикла
+        let htmlString = '';
+        
+        data.forEach((car) => {
+            const isComparing = compareList.some(c => c.id === car.id);
             const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
+            const safeName = escapeHTML(car.name); // Защита от XSS
             
-            list.innerHTML += `
+            htmlString += `
                 <div class="car-card">
                     ${regionBadge}
-                    <h2>${car.name}</h2>
+                    <h2>${safeName}</h2>
                     <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
                     <div style="display:flex; justify-content: space-between; align-items: center; margin-top:15px;">
                         <div style="font-size: 1.4rem; font-weight:900; color:var(--primary);">${car.rating}</div>
                         <div style="display:flex; gap:8px;">
-                            <button onclick="toggleCompare(${index})" class="btn-main btn-small" style="background:${isComparing ? '#238636' : 'var(--border)'}">⚖️</button>
-                            <button onclick="deleteCar(${index})" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:5px 10px; border-radius:8px; cursor:pointer;">✕</button>
+                            <button onclick="toggleCompare(${car.id})" class="btn-main btn-small" style="background:${isComparing ? '#238636' : 'var(--border)'}">⚖️</button>
+                            <button onclick="deleteCar(${car.id})" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:5px 10px; border-radius:8px; cursor:pointer;">✕</button>
                         </div>
                     </div>
                 </div>`;
         });
+        
+        list.innerHTML = htmlString;
     }
     updateDashboard();
     localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
@@ -92,22 +119,22 @@ function filterCars() {
     render(filtered);
 }
 
-function toggleCompare(index) {
-    const car = cars[index];
-    const exists = compareList.findIndex(c => c.name === car.name);
-    if (exists > -1) {
-        compareList.splice(exists, 1);
+function toggleCompare(id) {
+    const car = cars.find(c => c.id === id);
+    if (!car) return;
+
+    const existsIndex = compareList.findIndex(c => c.id === id);
+    if (existsIndex > -1) {
+        compareList.splice(existsIndex, 1);
     } else {
         if (compareList.length >= 3) return alert("Максимум 3 авто!");
         compareList.push(car);
     }
+    
     document.getElementById('compare-float-bar').classList.toggle('active', compareList.length > 0);
     document.getElementById('compare-text').innerText = `Выбрано: ${compareList.length}`;
-    render(cars.filter(c => {
-        if (currentRegion !== 'all' && c.region !== currentRegion) return false;
-        const query = document.getElementById('search-input').value.toLowerCase();
-        return c.name.toLowerCase().includes(query);
-    }));
+    
+    filterCars(); 
 }
 
 function openCompare() {
@@ -118,7 +145,7 @@ function openCompare() {
     const maxRating = Math.max(...compareList.map(c => c.rating));
 
     let html = `<table class="compare-table">
-        <tr><th>Параметр</th>${compareList.map(c => `<th>${c.name}</th>`).join('')}</tr>
+        <tr><th>Параметр</th>${compareList.map(c => `<th>${escapeHTML(c.name)}</th>`).join('')}</tr>
         <tr><td>Цена</td>${compareList.map(c => `<td class="${c.price === minPrice ? 'best' : ''}">$${c.price.toLocaleString()}</td>`).join('')}</tr>
         <tr><td>Рейтинг</td>${compareList.map(c => `<td class="${c.rating === maxRating ? 'best' : ''}">${c.rating}</td>`).join('')}</tr>
     </table>`;
@@ -131,30 +158,73 @@ function calculateAndAdd() {
     const name = document.getElementById('car-name').value;
     const price = Number(document.getElementById('car-price').value);
     const year = Number(document.getElementById('car-year').value);
-    const mileage = Number(document.getElementById('car-mileage').value);
-    const condition = Number(document.getElementById('car-condition').value);
-    const region = document.getElementById('car-region').value;
+    const mileageInput = document.getElementById('car-mileage').value;
+    
+    const conditionSelect = document.getElementById('car-condition');
+    const regionSelect = document.getElementById('car-region');
+    const condition = Number(conditionSelect.value);
+    const region = regionSelect.value;
 
-    if (name && price && year) {
-        let score = 10;
-        const age = 2026 - year;
-        score -= (age * 0.3);
-        const normalMileage = age * 18;
-        if (mileage > normalMileage) score -= (mileage - normalMileage) / 50;
-        score = score * condition;
-        const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
-        
-        cars.push({ name, price, rating: Number(finalRating), region });
-        filterCars(); 
-        document.querySelectorAll('.add-form input').forEach(i => i.value = '');
+    const currentYear = new Date().getFullYear();
+
+    if (!name || !price || !year || mileageInput === '') {
+        return alert("Пожалуйста, заполните все поля, включая пробег!");
     }
+
+    if (year > currentYear || year < 1900) {
+        return alert(`Пожалуйста, введите корректный год выпуска (от 1900 до ${currentYear}).`);
+    }
+
+    const mileage = Number(mileageInput);
+    let score = 10;
+    const age = currentYear - year;
+    
+    score -= (age * 0.3);
+    const normalMileage = age * 18;
+    if (mileage > normalMileage) score -= (mileage - normalMileage) / 50;
+    score = score * condition;
+    const finalRating = Math.max(0, Math.min(10, score)).toFixed(1);
+    
+    // Добавляем машину с уникальным ID
+    cars.push({ 
+        id: Date.now(), 
+        name, 
+        price, 
+        rating: Number(finalRating), 
+        region 
+    });
+    
+    filterCars(); 
+    
+    // Полная очистка формы
+    document.getElementById('car-name').value = '';
+    document.getElementById('car-price').value = '';
+    document.getElementById('car-year').value = '';
+    document.getElementById('car-mileage').value = '';
+    conditionSelect.selectedIndex = 0; 
+    regionSelect.selectedIndex = 0; 
 }
 
 function closeCompare() { document.getElementById('compare-modal').style.display = 'none'; }
 function resetCompare() { compareList = []; document.getElementById('compare-float-bar').classList.remove('active'); filterCars(); }
-function deleteCar(index) { cars.splice(index, 1); filterCars(); }
-function sortCars(key) { cars.sort((a, b) => b[key] - a[key]); filterCars(); }
-function restoreDefaults() { cars = [...defaultCars]; filterCars(); }
+
+function deleteCar(id) { 
+    // Удаляем по ID из основного массива и из списка сравнения (если машина там была)
+    cars = cars.filter(c => c.id !== id);
+    compareList = compareList.filter(c => c.id !== id);
+    
+    document.getElementById('compare-float-bar').classList.toggle('active', compareList.length > 0);
+    document.getElementById('compare-text').innerText = `Выбрано: ${compareList.length}`;
+    
+    filterCars(); 
+}
+
+function sortCars(key) { 
+    cars.sort((a, b) => b[key] - a[key]); 
+    filterCars(); 
+}
+
+function restoreDefaults() { cars = JSON.parse(JSON.stringify(defaultCars)); filterCars(); }
 function clearAll() { if(confirm("Удалить базу?")) { cars = []; filterCars(); } }
 
 function updateDashboard() {
@@ -167,7 +237,7 @@ function updateDashboard() {
     const total = cars.reduce((sum, car) => sum + car.price, 0);
     const top = [...cars].sort((a, b) => b.rating - a.rating)[0];
     document.getElementById('avg-price').innerText = `$${Math.round(total / cars.length).toLocaleString()}`;
-    document.getElementById('top-car').innerText = top.name;
+    document.getElementById('top-car').innerText = escapeHTML(top.name);
     document.getElementById('total-value').innerText = `$${total.toLocaleString()}`;
 }
 
@@ -204,14 +274,6 @@ function copyLink() {
 }
 
 function addToBookmarks() {
-    const title = document.title;
-    const url = window.location.href;
-
-    if (window.sidebar && window.sidebar.addPanel) {
-        window.sidebar.addPanel(title, url, "");
-    } else if (window.external && ('AddFavorite' in window.external)) {
-        window.external.AddFavorite(url, title);
-    } else {
-        alert("Нажмите " + (navigator.userAgent.toLowerCase().indexOf('mac') != -1 ? 'Cmd' : 'Ctrl') + " + D, чтобы добавить сайт в закладки.");
-    }
+    const isMac = navigator.userAgent.toLowerCase().includes('mac');
+    alert(`Нажмите ${isMac ? 'Cmd' : 'Ctrl'} + D, чтобы добавить сайт в закладки.`);
 }
