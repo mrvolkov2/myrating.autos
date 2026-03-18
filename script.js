@@ -76,34 +76,60 @@ function render(data = cars) {
         
         let htmlString = '';
         
-        data.forEach((car) => {
-            const isComparing = compareList.some(c => c.id === car.id);
-            const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
-            const safeName = escapeHTML(car.name); 
+        
+         data.forEach((car) => {
+    const isComparing = compareList.some(c => c.id === car.id);
+    const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
+    const safeName = escapeHTML(car.name); 
+    
+    // Определяем цвет в зависимости от балла
+    let ratingColorClass = 'rating-low';
+    if (car.rating >= 8) ratingColorClass = 'rating-high';
+    else if (car.rating >= 5) ratingColorClass = 'rating-mid';
+
+    const yearText = car.year ? `${car.year} г.` : '—';
+    const mileageText = car.mileage !== undefined ? `${car.mileage} тыс. км` : '—';
+    const conditionText = car.condition ? (conditionLabels[car.condition] || '—') : '—';
+    
+    htmlString += `
+        <div class="car-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                ${regionBadge}
+                                <div class="delete-wrapper">
+                  <span class="delete-label">Удалить</span>
+                  <button onclick="deleteCar(${car.id})" class="btn-delete-card" title="Удалить">✕</button>
+                </div>
+            </div>
+            <h2>${safeName}</h2>
+            <div class="car-specs">
+                <span>📅 ${yearText}</span>
+                <span>🛣️ ${mileageText}</span>
+                <span>🛠️ ${conditionText}</span>
+            </div>
+            <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
             
-            const yearText = car.year ? `${car.year} г.` : '—';
-            const mileageText = car.mileage !== undefined ? `${car.mileage} тыс. км` : '—';
-            const conditionText = car.condition ? (conditionLabels[car.condition] || '—') : '—';
-            
-            htmlString += `
-                <div class="car-card">
-                    ${regionBadge}
-                    <h2>${safeName}</h2>
-                    <div class="car-specs">
-                        <span>📅 ${yearText}</span>
-                        <span>🛣️ ${mileageText}</span>
-                        <span>🛠️ ${conditionText}</span>
-                    </div>
-                    <p style="margin-top: 10px;">Цена: <strong>$${car.price.toLocaleString()}</strong></p>
-                    <div style="display:flex; justify-content: space-between; align-items: center; margin-top:15px;">
-                        <div style="font-size: 1.4rem; font-weight:900; color:var(--primary);">${car.rating}</div>
-                        <div style="display:flex; gap:8px;">
-                            <button onclick="toggleCompare(${car.id})" class="btn-main btn-small" style="background:${isComparing ? '#238636' : 'var(--border)'}">⚖️</button>
-                            <button onclick="deleteCar(${car.id})" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:5px 10px; border-radius:8px; cursor:pointer;">✕</button>
-                        </div>
-                    </div>
-                </div>`;
-        });
+            <div class="rating-container">
+                <div class="rating-header">
+                     <div class="rating-value ${ratingColorClass}">${car.rating}</div>
+                     <span style="font-size: 0.8rem; font-weight: 600; opacity: 0.7;">РЕЙТИНГ</span>
+                </div>
+                <div class="rating-scale-bg">
+                     <div class="rating-scale-fill ${ratingColorClass}" 
+                         style="width: ${car.rating * 10}%; background-color: currentColor;"></div>
+                </div>
+            </div>
+
+            <button onclick="toggleCompare(${car.id})" 
+                    class="btn-main btn-small btn-compare-full ${isComparing ? 'active' : ''}">
+                ${isComparing ? '✅ В сравнении' : '⚖️ Добавить к сравнению'}
+            </button>
+        </div>`;
+});
+
+
+
+
+
         
         list.innerHTML = htmlString;
     }
