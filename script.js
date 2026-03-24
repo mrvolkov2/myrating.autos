@@ -318,3 +318,87 @@ function addToBookmarks() {
     const isMac = navigator.userAgent.toLowerCase().includes('mac');
     alert(`Нажмите ${isMac ? 'Cmd' : 'Ctrl'} + D, чтобы добавить сайт в закладки.`);
 }
+
+// --- Управление формой обратной связи ---
+function openContactModal() {
+    document.getElementById('contact-modal').style.display = 'block';
+}
+
+function closeContactModal() {
+    document.getElementById('contact-modal').style.display = 'none';
+}
+
+// Закрытие модалки при клике вне её области
+window.onclick = function(event) {
+    const compareModal = document.getElementById('compare-modal');
+    const contactModal = document.getElementById('contact-modal');
+    if (event.target == compareModal) {
+        closeCompare();
+    }
+    if (event.target == contactModal) {
+        closeContactModal();
+    }
+}
+
+// --- Асинхронная отправка формы (AJAX) ---
+const contactForm = document.getElementById('contact-form');
+const contactStatus = document.getElementById('contact-status');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', async function(event) {
+        event.preventDefault(); // Останавливаем стандартную перезагрузку страницы
+        
+        // Меняем текст кнопки на время отправки, чтобы пользователь не кликал дважды
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.innerText = 'Отправка...';
+        submitBtn.disabled = true;
+
+        const data = new FormData(event.target);
+
+        try {
+            // Отправляем запрос на Formspree
+            const response = await fetch(event.target.action, {
+                method: contactForm.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Если всё супер
+                contactStatus.innerText = '✅ Сообщение успешно отправлено!';
+                contactStatus.style.color = '#22c55e'; // Зеленый цвет успеха
+                contactStatus.style.display = 'block';
+                contactForm.reset(); // Очищаем поля формы
+                
+                // Закрываем модалку через 3 секунды
+                setTimeout(() => {
+                    closeContactModal();
+                    contactStatus.style.display = 'none';
+                }, 3000);
+
+            } else {
+                // Если Formspree вернул ошибку (например, неверный email)
+                const responseData = await response.json();
+                if (Object.hasOwn(responseData, 'errors')) {
+                    contactStatus.innerText = responseData.errors.map(error => error.message).join(", ");
+                } else {
+                    contactStatus.innerText = '❌ Произошла ошибка при отправке.';
+                }
+                contactStatus.style.color = 'var(--danger)'; // Красный цвет из твоих переменных
+                contactStatus.style.display = 'block';
+            }
+        } catch (error) {
+            // Если пропал интернет
+            contactStatus.innerText = '❌ Ошибка сети. Проверьте подключение.';
+            contactStatus.style.color = 'var(--danger)';
+            contactStatus.style.display = 'block';
+        } finally {
+            // В любом случае возвращаем кнопку в исходное состояние
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
+        }
+    });
+}

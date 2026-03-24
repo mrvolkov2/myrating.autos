@@ -141,7 +141,7 @@
 
                 <div class="footer-actions">
                     <button onclick="addToBookmarks()" class="btn-secondary">⭐ В закладки</button>
-                    <a href="mailto:support@myrating.autos" class="btn-secondary">✉️ Обратная связь</a>
+                    <button onclick="openContactModal()" class="btn-secondary">✉️ Обратная связь</button>
                 </div>
 
                 <div class="footer-contact">
@@ -150,6 +150,26 @@
                 </div>
             </div>
         </footer>
+
+        <div id="contact-modal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0; font-size: 1.5rem;">Написать нам</h2>
+                    <button class="close-btn" onclick="closeContactModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text); padding: 0;">&times;</button>
+                </div>
+        
+                <form action="https://formspree.io/f/ВАШ_КОД_ФОРМЫ" method="POST" id="contact-form">
+                    <div class="form-grid" style="grid-template-columns: 1fr; gap: 15px;">
+                        <input type="text" name="name" placeholder="Ваше имя" required>
+                        <input type="email" name="_replyto" placeholder="Ваш Email (чтобы мы могли ответить)" required>
+                        <textarea name="message" placeholder="Ваш вопрос или предложение..." required style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-size: 14px; resize: vertical; min-height: 120px; font-family: inherit; width: 100%; box-sizing: border-box;"></textarea>
+                    </div>
+                    <input type="hidden" name="_subject" value="Новое сообщение с сайта MyRating.autos!">
+                    <button type="submit" class="btn-main" style="width: 100%; margin-top: 20px;">Отправить сообщение</button>
+                    <p id="contact-status" style="text-align: center; margin-top: 15px; font-weight: 600; display: none;"></p>
+                </form>
+            </div>
+        </div>
 
     <div id="compare-modal" class="modal">
         <div class="modal-content">
