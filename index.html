@@ -72,10 +72,10 @@
                         <option value="0.3">💀 Тотал</option>
                     </select>
                     <select id="car-region">
-                        <option value="eu">🏛️ Европа</option>
-                        <option value="usa">🗽 США</option>
+                        <option value="eu">🇪🇺 Европа</option>
+                        <option value="usa">🇺🇸 США</option>
                         <option value="asia">🌏 Азия</option>
-                        <option value="ru">🛡️ Ближнее зарубежье (РФ)</option>
+                        <option value="ru">🇷🇺 РФ / СНГ</option>
                     </select>
                 </div>
                 <button onclick="calculateAndAdd()" class="btn-main">Просчитать и добавить в список</button>
@@ -83,15 +83,18 @@
 
             <section class="region-filters">
                 <button class="filter-btn active" data-region="all" onclick="setRegion('all')">🌐 Весь мир</button>
-                <button class="filter-btn" data-region="usa" onclick="setRegion('usa')">🗽 США</button>
-                <button class="filter-btn" data-region="eu" onclick="setRegion('eu')">🏛️ Европа</button>
-                <button class="filter-btn" data-region="asia" onclick="setRegion('asia')">🌏 Азия</button>
-                <button class="filter-btn" data-region="ru" onclick="setRegion('ru')">🛡️ РФ и соседи</button>
+                <button class="filter-btn" data-region="usa" onclick="setRegion('usa')"><img src="flag-usa.svg" class="flag-icon" alt=""> США</button>
+                <button class="filter-btn" data-region="eu" onclick="setRegion('eu')"><img src="flag-eu.svg" class="flag-icon" alt=""> Европа</button>
+                <button class="filter-btn" data-region="asia" onclick="setRegion('asia')"><img src="flag-asia.svg" class="flag-icon" alt=""> Азия</button>
+                <button class="filter-btn" data-region="ru" onclick="setRegion('ru')"><img src="flag-ru.svg" class="flag-icon" alt=""> РФ / СНГ</button>
             </section>
+
+            <div class="stats-row">
+                <div class="stats-counter" id="stats-count">Авто в списке: 0</div>
+            </div>
 
             <section class="controls">
                 <input type="text" id="search-input" placeholder="Поиск в гараже..." oninput="filterCars()">
-                <div class="stats-counter" id="stats-count">Авто в списке: 0</div>
                 <div class="sort-buttons">
                     <button class="btn-main btn-small" onclick="sortCars('rating')">По рейтингу</button>
                     <button class="btn-main btn-small" onclick="sortCars('price')">По цене</button>
@@ -118,7 +121,7 @@
         </main>
         
         <footer class="main-footer">
-            <button class="btn-main btn-danger" onclick="clearAll()">Очистить базу данных</button>
+            <button id="clear-all-btn" class="btn-main btn-danger" onclick="clearAll()">Очистить базу данных</button>
 
             <section class="share-box">
                 <span>Поделиться проектом:</span>
@@ -173,6 +176,20 @@
             </div>
         </div>
 
+        <div id="clear-modal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                    <h2 style="margin: 0; font-size: 1.4rem;">Очистить всю базу?</h2>
+                    <button class="close-btn" onclick="closeClearModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text); padding: 0;">&times;</button>
+                </div>
+                <p style="margin: 0 0 20px; opacity: 0.85;">Все автомобили будут удалены. Продолжить?</p>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="btn-main btn-small" onclick="closeClearModal()">Отмена</button>
+                    <button class="btn-main btn-small btn-danger" onclick="confirmClearAll()">Удалить всё</button>
+                </div>
+            </div>
+        </div>
+
     <div id="compare-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -190,6 +207,11 @@
             <button class="btn-main btn-small" onclick="openCompare()">Сравнить</button>
             <button class="btn-main btn-small btn-danger" onclick="resetCompare()">Сброс</button>
         </div>
+    </div>
+
+    <div id="undo-clear-toast" class="undo-toast" aria-live="polite">
+        <span>База очищена. Оменить в течении <strong id="undo-countdown">5</strong> сек.</span>
+        <button class="btn-main btn-small" onclick="undoClearAll()">Отменить</button>
     </div>
 
 

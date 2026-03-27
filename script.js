@@ -36,11 +36,21 @@ const defaultCars = [
     { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru", year: 2023, mileage: 15, condition: 1 }
 ];
 
+function normalizeRegionValue(region) {
+    const value = String(region || '').toLowerCase().trim();
+    if (value === 'ru' || value === 'rf' || value === 'russia' || value === 'cis' || value === 'sng') return 'ru';
+    if (value === 'usa' || value === 'us') return 'usa';
+    if (value === 'eu' || value === 'europe') return 'eu';
+    if (value === 'asia') return 'asia';
+    return value;
+}
+
 let cars = JSON.parse(localStorage.getItem('myrating_v3_db')) || defaultCars;
 
 // Миграция старых данных
 cars = cars.map((car, index) => {
     if (!car.id) car.id = Date.now() + index;
+    car.region = normalizeRegionValue(car.region);
     return car;
 });
 
@@ -48,6 +58,10 @@ let compareList = [];
 let currentRegion = 'all';
 let compareLimitNoteTimer = null;
 const compareLimit = 3;
+let clearUndoTimer = null;
+let clearUndoInterval = null;
+let lastClearedState = null;
+let statsPulseTimer = null;
 
 function updateCompareBarUI() {
     const hasItems = compareList.length > 0;
@@ -56,18 +70,33 @@ function updateCompareBarUI() {
     document.body.classList.toggle('compare-bar-visible', hasItems);
 }
 
+function updateClearButtonState() {
+    const clearBtn = document.getElementById('clear-all-btn');
+    if (!clearBtn) return;
+
+    clearBtn.disabled = cars.length === 0;
+    if (clearBtn.disabled) {
+        closeClearModal();
+    }
+}
+
 function render(data = cars) {
     const list = document.getElementById('car-list');
     const statsCount = document.getElementById('stats-count');
     const emptyState = document.getElementById('empty-state');
     
-    statsCount.innerText = `Авто в списке: ${data.length}`;
+    statsCount.innerHTML = `<span class="stats-icon">🚘</span><span>В гараже:</span> <strong class="stats-value">${data.length}</strong>`;
+    statsCount.classList.remove('pulse');
+    void statsCount.offsetWidth;
+    statsCount.classList.add('pulse');
+    if (statsPulseTimer) clearTimeout(statsPulseTimer);
+    statsPulseTimer = setTimeout(() => statsCount.classList.remove('pulse'), 350);
 
     const regionLabels = {
-        'usa': '🗽 США',
-        'eu': '🏛️ Европа',
-        'asia': '🌏 Азия',
-        'ru': '🛡️ РФ / Ближнее зарубежье'
+        'usa': '<img src="flag-usa.svg" class="flag-icon" alt=""> США',
+        'eu': '<img src="flag-eu.svg" class="flag-icon" alt=""> Европа',
+        'asia': '<img src="flag-asia.svg" class="flag-icon" alt=""> Азия',
+        'ru': '<img src="flag-ru.svg" class="flag-icon" alt=""> РФ / СНГ'
     };
 
     const conditionLabels = {
@@ -146,6 +175,7 @@ function render(data = cars) {
         list.innerHTML = htmlString;
     }
     updateDashboard();
+    updateClearButtonState();
     localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
 }
 
@@ -219,7 +249,7 @@ function calculateAndAdd() {
     const conditionSelect = document.getElementById('car-condition');
     const regionSelect = document.getElementById('car-region');
     const condition = Number(conditionSelect.value);
-    const region = regionSelect.value;
+    const region = normalizeRegionValue(regionSelect.value);
 
     const currentYear = new Date().getFullYear();
 
@@ -306,7 +336,82 @@ function sortCars(key) {
 }
 
 function restoreDefaults() { cars = JSON.parse(JSON.stringify(defaultCars)); filterCars(); }
-function clearAll() { if(confirm("Удалить базу?")) { cars = []; filterCars(); } }
+function clearAll() { openClearModal(); }
+
+function openClearModal() {
+    document.getElementById('clear-modal').style.display = 'block';
+}
+
+function closeClearModal() {
+    document.getElementById('clear-modal').style.display = 'none';
+}
+
+function confirmClearAll() {
+    lastClearedState = {
+        cars: JSON.parse(JSON.stringify(cars)),
+        compareList: JSON.parse(JSON.stringify(compareList))
+    };
+
+    cars = [];
+    compareList = [];
+    setCompareLimitNote('');
+    updateCompareBarUI();
+    closeClearModal();
+    filterCars();
+    showUndoClearToast();
+}
+
+function showUndoClearToast() {
+    const toast = document.getElementById('undo-clear-toast');
+    const countdown = document.getElementById('undo-countdown');
+    if (!toast) return;
+
+    toast.classList.add('active');
+    let secondsLeft = 5;
+    if (countdown) countdown.innerText = String(secondsLeft);
+
+    if (clearUndoTimer) clearTimeout(clearUndoTimer);
+    if (clearUndoInterval) clearInterval(clearUndoInterval);
+
+    clearUndoInterval = setInterval(() => {
+        secondsLeft -= 1;
+        if (countdown && secondsLeft >= 0) {
+            countdown.innerText = String(secondsLeft);
+        }
+    }, 1000);
+
+    clearUndoTimer = setTimeout(() => {
+        toast.classList.remove('active');
+        lastClearedState = null;
+        if (clearUndoInterval) {
+            clearInterval(clearUndoInterval);
+            clearUndoInterval = null;
+        }
+        clearUndoTimer = null;
+    }, 5000);
+}
+
+function undoClearAll() {
+    if (!lastClearedState) return;
+
+    cars = lastClearedState.cars;
+    compareList = lastClearedState.compareList;
+    lastClearedState = null;
+
+    const toast = document.getElementById('undo-clear-toast');
+    if (toast) toast.classList.remove('active');
+    if (clearUndoTimer) {
+        clearTimeout(clearUndoTimer);
+        clearUndoTimer = null;
+    }
+    if (clearUndoInterval) {
+        clearInterval(clearUndoInterval);
+        clearUndoInterval = null;
+    }
+
+    updateCompareBarUI();
+    filterCars();
+}
 
 function updateDashboard() {
     if (cars.length === 0) {
@@ -367,11 +472,15 @@ function closeContactModal() {
 window.onclick = function(event) {
     const compareModal = document.getElementById('compare-modal');
     const contactModal = document.getElementById('contact-modal');
+    const clearModal = document.getElementById('clear-modal');
     if (event.target == compareModal) {
         closeCompare();
     }
     if (event.target == contactModal) {
         closeContactModal();
+    }
+    if (event.target == clearModal) {
+        closeClearModal();
     }
 }
 

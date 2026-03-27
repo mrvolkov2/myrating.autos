@@ -63,6 +63,11 @@ body.compare-bar-visible {
     transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-decoration: none;
 }
 .btn-main:hover { transform: translateY(-2px); background: var(--primary-hover); }
+.btn-main:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
 .btn-small { padding: 10px 18px; font-size: 0.85rem; }
 .btn-danger { background: var(--danger); }
 
@@ -77,6 +82,58 @@ body.compare-bar-visible {
 }
 .filter-btn:hover { border-color: var(--primary); }
 .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.stats-row {
+    margin: 0 0 10px;
+}
+.flag-icon {
+    width: 16px;
+    height: 12px;
+    vertical-align: -2px;
+    margin-right: 4px;
+    border-radius: 2px;
+}
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.controls #search-input {
+    flex: 1 1 320px;
+    min-width: 220px;
+}
+.controls .sort-buttons {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+.stats-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    font-weight: 600;
+}
+.stats-counter .stats-icon {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+.stats-counter .stats-value {
+    color: var(--primary);
+    font-size: 1rem;
+}
+.stats-counter.pulse {
+    animation: statsPulse 0.35s ease;
+}
+@keyframes statsPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
 
 /* БЕЙДЖИ РЕГИОНА НА КАРТОЧКЕ */
 .region-badge {
@@ -238,6 +295,27 @@ body.compare-bar-visible {
     font-weight: 600;
 }
 .compare-note.visible { display: inline; }
+.undo-toast {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    z-index: 2100;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.undo-toast.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
 
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
 .modal-content { background: var(--card-bg); margin: 10vh auto; padding: 25px; width: 90%; max-width: 800px; border-radius: 20px; border: 1px solid var(--border); }
