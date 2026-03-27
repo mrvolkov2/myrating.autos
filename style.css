@@ -30,6 +30,9 @@ body {
     margin: 0; padding-top: var(--header-height);
     transition: 0.3s;
 }
+body.compare-bar-visible {
+    padding-bottom: 110px;
+}
 
 .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
@@ -90,6 +93,8 @@ body {
 .car-card { 
     background: var(--card-bg); padding: 20px; border-radius: 18px; border: 1px solid var(--border);
     animation: fadeIn 0.4s ease forwards;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -148,6 +153,7 @@ body {
 /* Кнопка сравнения на всю ширину */
 .btn-compare-full {
     width: 100%;
+    margin-top: auto;
     margin-bottom: 10px;
     background: var(--border);
     color: var(--text);
@@ -157,6 +163,11 @@ body {
     background: #238636 !important;
     color: #fff;
     border-color: #238636;
+}
+.btn-compare-full:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
 }
 
 /* Кнопка удаления */
@@ -220,6 +231,13 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 1500; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .compare-bar.active { bottom: 30px; }
+.compare-note {
+    display: none;
+    color: var(--danger);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.compare-note.visible { display: inline; }
 
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
 .modal-content { background: var(--card-bg); margin: 10vh auto; padding: 25px; width: 90%; max-width: 800px; border-radius: 20px; border: 1px solid var(--border); }
@@ -233,9 +251,9 @@ body {
 .add-form { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 30px; }
 .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 15px; }
 input, select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-size: 14px; }
-.main-footer { text-align: center; margin: 40px 0; border-top: 1px solid var(--border); padding-top: 30px; }
+.main-footer { text-align: center; margin: 30px 0 0; border-top: 1px solid var(--border); padding-top: 24px; }
 
-.share-box { margin: 40px 0; text-align: center; border-top: 1px solid var(--border); padding-top: 20px; }
+.share-box { margin: 30px 0 12px; text-align: center; border-top: 1px solid var(--border); padding-top: 20px; }
 .share-box span { display: block; margin-bottom: 15px; font-weight: 600; opacity: 0.8; }
 .share-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .btn-share { padding: 8px 16px; border-radius: 10px; text-decoration: none; color: white; font-size: 14px; font-weight: 600; transition: 0.3s; border: none; cursor: pointer; }
@@ -244,9 +262,9 @@ input, select { background: var(--bg); border: 1px solid var(--border); color: v
 .copy { background: var(--border); color: var(--text); }
 .btn-share:hover { opacity: 0.8; transform: translateY(-2px); }
 
-.site-footer { background: #1e293b; color: white; padding: 40px 20px; margin-top: 50px; border-top: 1px solid #334155; text-align: center; }
+.site-footer { background: #1e293b; color: white; padding: 20px 20px 40px; margin-top: 0; border-top: 1px solid #334155; text-align: center; }
 .footer-content { max-width: 800px; margin: 0 auto; }
-.footer-info h3 { color: #3b82f6; margin-bottom: 10px; }
+.footer-info h3 { color: #3b82f6; margin: 0 0 10px; }
 .footer-actions { display: flex; justify-content: center; gap: 15px; margin: 25px 0; }
 .btn-secondary { background: transparent; border: 1px solid #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 14px; }
 .btn-secondary:hover { background: #3b82f6; }

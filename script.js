@@ -46,6 +46,15 @@ cars = cars.map((car, index) => {
 
 let compareList = [];
 let currentRegion = 'all';
+let compareLimitNoteTimer = null;
+const compareLimit = 3;
+
+function updateCompareBarUI() {
+    const hasItems = compareList.length > 0;
+    document.getElementById('compare-float-bar').classList.toggle('active', hasItems);
+    document.getElementById('compare-text').innerText = `Выбрано: ${compareList.length}/${compareLimit}`;
+    document.body.classList.toggle('compare-bar-visible', hasItems);
+}
 
 function render(data = cars) {
     const list = document.getElementById('car-list');
@@ -55,10 +64,10 @@ function render(data = cars) {
     statsCount.innerText = `Авто в списке: ${data.length}`;
 
     const regionLabels = {
-        'usa': '🇺🇸 США',
-        'eu': '🇪🇺 Европа',
+        'usa': '🗽 США',
+        'eu': '🏛️ Европа',
         'asia': '🌏 Азия',
-        'ru': '🇷🇺 РФ / Ближнее зарубежье'
+        'ru': '🛡️ РФ / Ближнее зарубежье'
     };
 
     const conditionLabels = {
@@ -79,6 +88,8 @@ function render(data = cars) {
         
          data.forEach((car) => {
     const isComparing = compareList.some(c => c.id === car.id);
+    const isCompareLimitReached = compareList.length >= compareLimit;
+    const shouldDisableCompareButton = isCompareLimitReached && !isComparing;
     const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
     const safeName = escapeHTML(car.name); 
     
@@ -120,8 +131,9 @@ function render(data = cars) {
             </div>
 
             <button onclick="toggleCompare(${car.id})" 
-                    class="btn-main btn-small btn-compare-full ${isComparing ? 'active' : ''}">
-                ${isComparing ? '✅ В сравнении' : '⚖️ Добавить к сравнению'}
+                    class="btn-main btn-small btn-compare-full ${isComparing ? 'active' : ''}"
+                    ${shouldDisableCompareButton ? 'disabled' : ''}>
+                ${isComparing ? `✅ В сравнении (${compareList.length}/${compareLimit})` : `⚖️ Добавить к сравнению (${compareList.length}/${compareLimit})`}
             </button>
         </div>`;
 });
@@ -168,12 +180,15 @@ function toggleCompare(id) {
     if (existsIndex > -1) {
         compareList.splice(existsIndex, 1);
     } else {
-        if (compareList.length >= 3) return alert("Максимум 3 авто!");
+        if (compareList.length >= compareLimit) {
+            setCompareLimitNote(`Максимум ${compareLimit} авто для сравнения`);
+            return;
+        }
         compareList.push(car);
     }
-    
-    document.getElementById('compare-float-bar').classList.toggle('active', compareList.length > 0);
-    document.getElementById('compare-text').innerText = `Выбрано: ${compareList.length}`;
+
+    setCompareLimitNote('');
+    updateCompareBarUI();
     
     filterCars(); 
 }
@@ -248,16 +263,41 @@ function calculateAndAdd() {
 }
 
 function closeCompare() { document.getElementById('compare-modal').style.display = 'none'; }
-function resetCompare() { compareList = []; document.getElementById('compare-float-bar').classList.remove('active'); filterCars(); }
+function resetCompare() {
+    compareList = [];
+    setCompareLimitNote('');
+    updateCompareBarUI();
+    filterCars();
+}
 
 function deleteCar(id) { 
     cars = cars.filter(c => c.id !== id);
     compareList = compareList.filter(c => c.id !== id);
-    
-    document.getElementById('compare-float-bar').classList.toggle('active', compareList.length > 0);
-    document.getElementById('compare-text').innerText = `Выбрано: ${compareList.length}`;
+    setCompareLimitNote('');
+    updateCompareBarUI();
     
     filterCars(); 
+}
+
+function setCompareLimitNote(message) {
+    const note = document.getElementById('compare-limit-note');
+    if (!note) return;
+
+    if (compareLimitNoteTimer) {
+        clearTimeout(compareLimitNoteTimer);
+        compareLimitNoteTimer = null;
+    }
+
+    note.innerText = message;
+    note.classList.toggle('visible', Boolean(message));
+
+    if (message) {
+        compareLimitNoteTimer = setTimeout(() => {
+            note.innerText = '';
+            note.classList.remove('visible');
+            compareLimitNoteTimer = null;
+        }, 2500);
+    }
 }
 
 function sortCars(key) { 
@@ -312,11 +352,6 @@ function copyLink() {
     navigator.clipboard.writeText(window.location.href).then(() => {
         alert("Ссылка скопирована! Отправь её друзьям 🚀");
     });
-}
-
-function addToBookmarks() {
-    const isMac = navigator.userAgent.toLowerCase().includes('mac');
-    alert(`Нажмите ${isMac ? 'Cmd' : 'Ctrl'} + D, чтобы добавить сайт в закладки.`);
 }
 
 // --- Управление формой обратной связи ---
