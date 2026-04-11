@@ -16,6 +16,14 @@ body.dark-theme {
     --border: #334155;
 }
 
+body.dark-theme .logo-image {
+    filter: brightness(0) invert(1);
+}
+
+body.dark-theme #theme-icon {
+    filter: brightness(0) invert(1);
+}
+
 body.light-theme {
     --bg: #f8fafc;
     --card-bg: #ffffff;
