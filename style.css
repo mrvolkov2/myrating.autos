@@ -472,6 +472,32 @@ input, select { background: var(--bg); border: 1px solid var(--border); color: v
     transform: translateY(-2px); 
 }
 
+.btn-footer i {
+    font-size: 1.2rem; /* Размер иконки */
+    margin-right: 8px; /* Отступ от текста */
+}
+
+/* Эффект при наведении именно для иконок */
+.btn-tg-channel:hover i, .btn-tg-bot:hover i {
+    transform: scale(1.1);
+    transition: 0.2s;
+}
+
+.tg-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+/* Настройка цвета: fill="currentColor" в SVG заставляет иконку 
+   краситься в цвет текста кнопки автоматически */
+.btn-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Подпись разработчика в футере */
 .footer-dev {margin-top: 8px; opacity: 0.8; }
 .footer-dev span {color: #ffffff; font-weight: 800; letter-spacing: 0.8px; font-size: 0.85rem; }
