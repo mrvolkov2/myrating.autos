@@ -28,6 +28,7 @@
 
 <body>
 
+<!-- start header -->
     <header class="main-header">
         <div class="header-content">
             <div class="logo-wrapper">
@@ -41,7 +42,9 @@
             </div>
         </div>
     </header>
+<!-- end header -->
 
+<!-- start container -->
     <div class="container">
         <main>
             <section class="dashboard">
@@ -98,6 +101,7 @@
                 <div class="sort-buttons">
                     <button class="btn-main btn-small" onclick="sortCars('rating')">По рейтингу</button>
                     <button class="btn-main btn-small" onclick="sortCars('price')">По цене</button>
+                    <button id="clear-all-btn" class="btn-main btn-danger" onclick="clearAll()">Очистить сравнение</button>
                 </div>
             </section>
 
@@ -106,7 +110,7 @@
             <div id="empty-state" class="empty-box" style="display: none;">
                 <div class="empty-icon">📁</div>
                 <h2>Гараж пуст</h2>
-                <button class="btn-main" onclick="restoreDefaults()">Восстановить базу</button>
+                <button class="btn-main" onclick="restoreDefaults()">Восстановить мой гараж</button>
             </div>
 
             <section class="promo-banner">
@@ -119,22 +123,20 @@
                 </div>
             </section>
         </main>
+
+        <section class="share-box">
+            <span>Поделиться проектом:</span>
+            <div class="share-buttons">
+                <a href="#" id="share-tg" class="btn-share tg">Telegram</a>
+                <a href="#" id="share-wa" class="btn-share wa">WhatsApp</a>
+                <button onclick="copyLink()" class="btn-share copy">🔗 Ссылка</button>
+            </div>
+        </section>
         
-        <footer class="main-footer">
-            <button id="clear-all-btn" class="btn-main btn-danger" onclick="clearAll()">Очистить базу данных</button>
-
-            <section class="share-box">
-                <span>Поделиться проектом:</span>
-                <div class="share-buttons">
-                    <a href="#" id="share-tg" class="btn-share tg">Telegram</a>
-                    <a href="#" id="share-wa" class="btn-share wa">WhatsApp</a>
-                    <button onclick="copyLink()" class="btn-share copy">🔗 Ссылка</button>
-                </div>
-            </section>
-        </footer>
-
     </div>
+<!-- end container -->
 
+<!-- start footer -->
 <footer class="site-footer">
     <div class="footer-content">
         <div class="footer-info">
@@ -153,9 +155,9 @@
         </div>
     </div>
 </footer>
+<!-- end footer -->
 
-
-<!-- Всплывающие модальные окна -->
+<!-- start modal windows -->
     <div id="contact-modal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -216,7 +218,7 @@
         <span>База очищена. Оменить в течении <strong id="undo-countdown">5</strong> сек.</span>
         <button class="btn-main btn-small" onclick="undoClearAll()">Отменить</button>
     </div>
-<!-- Конец модальных всплывающих окон -->
+<!-- end modal windows -->
 
 <!-- Script -->
     <script src="script.js"></script>
