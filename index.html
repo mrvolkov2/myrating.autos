@@ -141,24 +141,39 @@
 <!-- start footer -->
 <footer class="site-footer">
     <div class="footer-content">
+        <div class="footer-contacts-grid">
+            <div class="contact-block">
+                <p>Есть предложения или заметили баг?</p>
+                <a href="https://t.me/твой_бот" target="_blank" class="btn-footer btn-tg-bot">
+                    <span>🤖</span> Написать в чат-бот
+                </a>
+            </div>
+
+            <div class="contact-block">
+                <p>Присоединяйтесь к нашему сообществу и обсуждению:</p>
+                <a href="https://t.me/твой_канал" target="_blank" class="btn-footer btn-tg-channel">
+                    <span>📢</span> Канал в Telegram
+                </a>
+            </div>
+
+            <div class="contact-block">
+                <p>Остались вопросы?</p>
+                <button onclick="openContactModal()" class="btn-footer btn-email">
+                    <span>✉️</span> Написать письмо
+                </button>
+            </div>
+        </div>
+
         <div class="footer-info">
             <h3>🚀 Проект в развитии</h3>
             <p>База автомобилей постоянно пополняется. Мы работаем над новыми функциями аналитики.</p>
-            <p>Следите за новостями и подписывайтесь на обновления!</p>
         </div>
 
-        <div class="footer-actions">
-            <button onclick="openContactModal()" class="btn-secondary">✉️ Написать письмо</button>
-        </div>
-
-        <div class="footer-contact">
-            <p>По вопросам предложений и сотрудничества:</p>
-            <a href="https://t.me/твой_логин" target="_blank" class="contact-link">Написать в Telegram</a>
-        </div>
         <div class="footer-bottom">
             <p>&copy; 2026 MyRating.autos. Все права защищены.</p>
             <p class="footer-dev">Разработка сайта: <span>volkovteam development studio</span></p>
         </div>
+    </div>
 </footer>
 <!-- end footer -->
 
