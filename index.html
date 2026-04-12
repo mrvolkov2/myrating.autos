@@ -132,63 +132,66 @@
                 </div>
             </section>
         </footer>
+
     </div>
 
-        <footer class="site-footer">
-            <div class="footer-content">
-                <div class="footer-info">
-                    <h3>🚀 Проект в развитии</h3>
-                    <p>База автомобилей постоянно пополняется. Мы работаем над новыми функциями аналитики.</p>
-                    <p>Следите за новостями и подписывайтесь на обновления!</p>
-                </div>
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-info">
+            <h3>🚀 Проект в развитии</h3>
+            <p>База автомобилей постоянно пополняется. Мы работаем над новыми функциями аналитики.</p>
+            <p>Следите за новостями и подписывайтесь на обновления!</p>
+        </div>
 
-                <div class="footer-actions">
-                    <button onclick="openContactModal()" class="btn-secondary">✉️ Написать письмо</button>
-                </div>
+        <div class="footer-actions">
+            <button onclick="openContactModal()" class="btn-secondary">✉️ Написать письмо</button>
+        </div>
 
-                <div class="footer-contact">
-                    <p>По вопросам предложений и сотрудничества:</p>
-                    <a href="https://t.me/твой_логин" target="_blank" class="contact-link">Написать в Telegram</a>
+        <div class="footer-contact">
+            <p>По вопросам предложений и сотрудничества:</p>
+            <a href="https://t.me/твой_логин" target="_blank" class="contact-link">Написать в Telegram</a>
+        </div>
+    </div>
+</footer>
+
+
+<!-- Всплывающие модальные окна -->
+    <div id="contact-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <h2 style="margin: 0; font-size: 1.5rem;">Отправить письмо</h2>
+                    <p style="margin: 6px 0 0; font-size: 0.9rem; opacity: 0.8;">Сообщение придет нам на email</p>
                 </div>
+                <button class="close-btn" onclick="closeContactModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text); padding: 0;">&times;</button>
             </div>
-        </footer>
-
-        <div id="contact-modal" class="modal">
-            <div class="modal-content" style="max-width: 500px;">
-                <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <div>
-                        <h2 style="margin: 0; font-size: 1.5rem;">Отправить письмо</h2>
-                        <p style="margin: 6px 0 0; font-size: 0.9rem; opacity: 0.8;">Сообщение придет нам на email</p>
-                    </div>
-                    <button class="close-btn" onclick="closeContactModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text); padding: 0;">&times;</button>
-                </div>
         
-                <form action="https://formspree.io/f/mojpvnkk" method="POST" id="contact-form">
-                    <div class="form-grid" style="grid-template-columns: 1fr; gap: 15px;">
-                        <input type="text" name="name" placeholder="Ваше имя" required>
-                        <input type="email" name="_replyto" placeholder="Ваш Email (чтобы мы могли ответить)" required>
-                        <textarea name="message" placeholder="Ваш вопрос или предложение..." required style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-size: 14px; resize: vertical; min-height: 120px; font-family: inherit; width: 100%; box-sizing: border-box;"></textarea>
-                    </div>
+            <form action="https://formspree.io/f/mojpvnkk" method="POST" id="contact-form">
+                <div class="form-grid" style="grid-template-columns: 1fr; gap: 15px;">
+                    <input type="text" name="name" placeholder="Ваше имя" required>
+                    <input type="email" name="_replyto" placeholder="Ваш Email (чтобы мы могли ответить)" required>
+                    <textarea name="message" placeholder="Ваш вопрос или предложение..." required style="background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-size: 14px; resize: vertical; min-height: 120px; font-family: inherit; width: 100%; box-sizing: border-box;"></textarea>
+                </div>
                     <input type="hidden" name="_subject" value="Новое сообщение с сайта MyRating.autos!">
                     <button type="submit" class="btn-main" style="width: 100%; margin-top: 20px;">Отправить сообщение</button>
                     <p id="contact-status" style="text-align: center; margin-top: 15px; font-weight: 600; display: none;"></p>
-                </form>
-            </div>
+            </form>
         </div>
+    </div>
 
-        <div id="clear-modal" class="modal">
-            <div class="modal-content" style="max-width: 500px;">
-                <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                    <h2 style="margin: 0; font-size: 1.4rem;">Очистить всю базу?</h2>
-                    <button class="close-btn" onclick="closeClearModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text); padding: 0;">&times;</button>
-                </div>
-                <p style="margin: 0 0 20px; opacity: 0.85;">Все автомобили будут удалены. Продолжить?</p>
-                <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button class="btn-main btn-small" onclick="closeClearModal()">Отмена</button>
-                    <button class="btn-main btn-small btn-danger" onclick="confirmClearAll()">Удалить всё</button>
-                </div>
+    <div id="clear-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <h2 style="margin: 0; font-size: 1.4rem;">Очистить всю базу?</h2>
+                <button class="close-btn" onclick="closeClearModal()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text); padding: 0;">&times;</button>
+            </div>
+            <p style="margin: 0 0 20px; opacity: 0.85;">Все автомобили будут удалены. Продолжить?</p>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn-main btn-small" onclick="closeClearModal()">Отмена</button>
+                <button class="btn-main btn-small btn-danger" onclick="confirmClearAll()">Удалить всё</button>
             </div>
         </div>
+    </div>
 
     <div id="compare-modal" class="modal">
         <div class="modal-content">
@@ -213,10 +216,11 @@
         <span>База очищена. Оменить в течении <strong id="undo-countdown">5</strong> сек.</span>
         <button class="btn-main btn-small" onclick="undoClearAll()">Отменить</button>
     </div>
+<!-- Конец модальных всплывающих окон -->
 
-
+<!-- Script -->
     <script src="script.js"></script>
-</body>
 
+</body>
 
 </html>
