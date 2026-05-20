@@ -385,6 +385,20 @@ body.compare-bar-visible {
 
 /* ПРОЧЕЕ */
 .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+/* Стили для названий авто в дашборде (с адаптацией под темы) */
+.dashboard-car-name {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e3a8a; /* Глубокий темно-синий для светлой темы */
+    transition: color 0.3s ease;
+}
+
+/* Переключаем на легко читаемый синий в темной теме */
+body.dark-theme .dashboard-car-name {
+    color: #60a5fa; 
+}
+
 .stat-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border-left: 4px solid var(--primary); }
 .add-form { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 30px; }
 .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 15px; }

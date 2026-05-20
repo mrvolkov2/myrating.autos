@@ -32,8 +32,11 @@ const defaultCars = [
     { id: 18, name: "Skoda Octavia RS", price: 34000, rating: 8.9, region: "eu", year: 2020, mileage: 65, condition: 0.85 },
     { id: 19, name: "Dodge Challenger", price: 55000, rating: 8.4, region: "usa", year: 2019, mileage: 50, condition: 0.85 },
     { id: 20, name: "Land Rover Defender", price: 88000, rating: 9.2, region: "eu", year: 2023, mileage: 18, condition: 1 },
-    { id: 21, name: "Lada Vesta Sport", price: 18000, rating: 7.5, region: "ru", year: 2021, mileage: 45, condition: 0.85 },
-    { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru", year: 2023, mileage: 15, condition: 1 }
+    { id: 21, name: "Lada Vesta Sport", price: 14000, rating: 6.0, region: "ru", year: 2019, mileage: 45, condition: 0.85 },
+    { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru", year: 2023, mileage: 15, condition: 1 },
+    { id: 22, name: "VW Polo", price: 14500, rating: 6.5, region: "eu", year: 2020, mileage: 65, condition: 0.85 },
+    { id: 23, name: "Kia Rio", price: 14000, rating: 6.3, region: "asia", year: 2019, mileage: 80, condition: 0.80 },
+    { id: 24, name: "Hyundai Solaris", price: 15200, rating: 7.4, region: "asia", year: 2020, mileage: 70, condition: 0.85 },
 ];
 
 function normalizeRegionValue(region) {
@@ -413,19 +416,52 @@ function undoClearAll() {
     filterCars();
 }
 
+
 function updateDashboard() {
+    const topCarEl = document.getElementById('top-car');
+    const cheapestCarEl = document.getElementById('cheapest-car');
+    const bestValueCarEl = document.getElementById('best-value-car');
+
+    // Если гараж пуст, сбрасываем всё в дефолтное состояние
     if (cars.length === 0) {
-        document.getElementById('avg-price').innerText = '$0';
-        document.getElementById('top-car').innerText = '—';
-        document.getElementById('total-value').innerText = '$0';
+        topCarEl.innerText = '—';
+        cheapestCarEl.innerText = '—';
+        bestValueCarEl.innerText = '—';
         return;
     }
-    const total = cars.reduce((sum, car) => sum + car.price, 0);
-    const top = [...cars].sort((a, b) => b.rating - a.rating)[0];
-    document.getElementById('avg-price').innerText = `$${Math.round(total / cars.length).toLocaleString()}`;
-    document.getElementById('top-car').innerText = escapeHTML(top.name);
-    document.getElementById('total-value').innerText = `$${total.toLocaleString()}`;
+
+    // Вспомогательная функция для генерации HTML-содержимого карточки
+    const renderCardContent = (car) => {
+        const usdPerPoint = Math.round(car.price / car.rating);
+        return `
+            <strong class="dashboard-car-name">${escapeHTML(car.name)}</strong>
+            <span style="font-size: 0.9rem; font-weight: 400; opacity: 0.7; display: block; margin-top: 4px;">
+                $${car.price.toLocaleString()} | ${car.rating} ★
+            </span>
+            <span style="font-size: 0.8rem; font-weight: 600; color: #2563eb; opacity: 0.9; display: block; margin-top: 2px;">
+                $${usdPerPoint.toLocaleString()} за 1 балл
+            </span>
+        `;
+    };
+
+    // 1. Лидер рейтинга (самый высокий балл)
+    const topCar = [...cars].sort((a, b) => b.rating - a.rating)[0];
+    topCarEl.innerHTML = renderCardContent(topCar);
+
+    // 2. Авто с минимальной ценой
+    const cheapestCar = [...cars].sort((a, b) => a.price - b.price)[0];
+    cheapestCarEl.innerHTML = renderCardContent(cheapestCar);
+
+    // 3. Лучший по соотношению Цена/Качество (минимальная стоимость одного балла)
+    const bestValueCar = [...cars].sort((a, b) => {
+        const costPerPointA = a.price / a.rating;
+        const costPerPointB = b.price / b.rating;
+        return costPerPointA - costPerPointB;
+    })[0];
+    bestValueCarEl.innerHTML = renderCardContent(bestValueCar);
 }
+
+
 
 function toggleTheme() {
     document.body.classList.toggle('dark-theme');
