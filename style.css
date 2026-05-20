@@ -348,6 +348,7 @@ body.compare-bar-visible {
     font-weight: 600;
 }
 .compare-note.visible { display: inline; }
+
 .undo-toast {
     position: fixed;
     left: 50%;
@@ -363,11 +364,17 @@ body.compare-bar-visible {
     padding: 10px 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     z-index: 2100;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    /* убираем чтобы не закрывало контент */
+    visibility: hidden; 
+    pointer-events: none; 
 }
+
 .undo-toast.active {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
