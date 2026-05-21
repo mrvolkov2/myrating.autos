@@ -108,7 +108,6 @@ function filterCars() {
     render(currentFilteredCars);
 }
 
-
 function render(data = cars) {
     const list = document.getElementById('car-list');
     const statsCount = document.getElementById('stats-count');
