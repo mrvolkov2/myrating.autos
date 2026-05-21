@@ -108,6 +108,7 @@ function filterCars() {
     render(currentFilteredCars);
 }
 
+
 function render(data = cars) {
     const list = document.getElementById('car-list');
     const statsCount = document.getElementById('stats-count');
@@ -653,3 +654,139 @@ if (contactForm) {
         }
     });
 }
+
+
+// База данных новостей портала (новые добавляй вверх массива)
+const newsDatabase = [
+    {
+        id: 1,
+        date: "21.05.2026",
+        tag: "Обновление",
+        title: "Юбилейное обновление: Внедрена умная пагинация гаража",
+        excerpt: "Наш портал преодолел отметку в 100 коммитов! В честь этого события мы полностью переработали интерфейс вывода автомобилей. Теперь длинные списки автоматически скрываются под кнопку «Показать еще», разгружая процессор и память вашего устройства, а сворачивание списка мгновенно возвращает вас к панели фильтров.",
+        fullText: "<p>Наш портал преодолел знаковую отметку в 100 коммитов! В честь этого технологического юбилея мы полностью переработали архитектуру вывода карточек в вашем гараже.</p><p>При добавлении большого количества машин страница больше не превращается в бесконечную простыню контента. Теперь система отображает порции по 6 автомобилей. Интерактивная кнопка «Показать еще» позволяет плавно расширять список, а умная кнопка «Свернуть» аккуратно возвращает вас назад, автоматически центрируя экран на блоке выбора стран и регионов.</p><p>Это обновление значительно снизило нагрузку на DOM-дерево и сделало использование агрегатора на мобильных телефонах максимально премиальным и быстрым.</p>"
+    },
+    {
+        id: 2,
+        date: "14.05.2026",
+        tag: "Аналитика",
+        title: "Цены за балл рейтинга: как не переплатить в 2026 году?",
+        excerpt: "Мы провели масштабное исследование добавленных пользователями автомобилей за весну. На основе нашей уникальной метрики «Цена за балл» были выявлены явные лидеры вторичного рынка в сегментах Азии и Европы.",
+        fullText: "<p>Использование разработанного нами коэффициента стоимости одного балла экспертной оценки показало удивительные результаты при анализе рынка.</p><p>В ходе весеннего аудита выяснилось, что наиболее эффективное вложение средств среди б/у сегментов обеспечивают автомобили азиатского региона возрастом 3-5 лет в состоянии «Косметика» — их цена за балл рейтинга в среднем на 18% выгоднее идеальных моделей из автосалонов. В то же время европейский премиум-сегмент демонстрирует самую высокую удельную стоимость за один балл, что обусловлено резким падением остаточной стоимости электрокаров.</p>"
+    },
+    {
+        id: 3,
+        date: "01.05.2026",
+        tag: "Функционал",
+        title: "Запуск системы кросс-сравнения моделей",
+        excerpt: "Разработан и запущен долгожданный плавающий модуль сравнения характеристик. Выбирайте до 3 машин одновременно и оценивайте их параметры лоб в лоб в один клик.",
+        fullText: "<p>В CodLod Studio разработан интерактивный модуль для сопоставления автомобилей. Теперь вам не нужно переключаться между вкладками или сверять параметры по памяти.</p><p>Достаточно нажать кнопку «Добавить к сравнению» на любых карточках (лимит системы — до 3 моделей одновременно). Внизу экрана появится плавающий бар, фиксирующий ваш выбор. При клике на кнопку «Сравнить» открывается детальная интерактивная таблица, наглядно демонстрирующая разницу в ценах, пробеге, годе выпуска и, самое главное, в итоговом рейтинге машин.</p>"
+    },
+    {
+        id: 4,
+        date: "15.04.2026",
+        tag: "База данных",
+        title: "Миграция данных из Excel таблиц успешно завершена",
+        excerpt: "Локальное хранилище портала полностью синхронизировано. Все экспертные оценки, собранные аналитиками вручную, теперь обрабатываются встроенным JavaScript-движком.",
+        fullText: "<p>Мы официально завершили этап ручного проектирования архитектуры в таблицах Excel. Все накопленные данные перенесены в полноценные структуры объектов JavaScript и интегрированы со встроенным хранилищем LocalStorage браузера.</p><p>Это позволило внедрить систему мгновенной фильтрации по регионам происхождения (США, Европа, Азия, СНГ), защитить пользовательские сессии от случайной потери данных при перезагрузке и заложить прочный фундамент под будущую интеграцию полноценных серверных баз данных.</p>"
+    }
+];
+
+let isArchiveExpanded = false; // Флаг: развернут ли архив старых новостей
+
+
+// NEWS START
+// Функция рендеринга новостей
+function renderNews() {
+    const newsGrid = document.getElementById('news-grid');
+    if (!newsGrid) return;
+
+    // Определяем, сколько новостей выводить: 3 или все
+    const newsToRender = isArchiveExpanded ? newsDatabase : newsDatabase.slice(0, 3);
+    
+    let html = '';
+    newsToRender.forEach(item => {
+        html += `
+            <div class="news-card">
+                <div>
+                    <div class="news-card-header">
+                        <span class="news-date">🗓️ ${item.date}</span>
+                        <span class="news-tag">${item.tag}</span>
+                    </div>
+                    <h3>${escapeHTML(item.title)}</h3>
+                    <p class="news-excerpt">${escapeHTML(item.excerpt)}</p>
+                </div>
+                <button class="btn-read-more" onclick="openNewsModal(${item.id})">Подробнее →</button>
+            </div>
+        `;
+    });
+    
+    newsGrid.innerHTML = html;
+}
+
+// Переключение режима "Все новости / Скрыть старые"
+// Переключение режима "Все новости / Скрыть старые"
+function toggleNewsArchive() {
+    const btn = document.getElementById('toggle-archive-btn');
+    isArchiveExpanded = !isArchiveExpanded;
+    
+    renderNews();
+    
+    if (isArchiveExpanded) {
+        btn.textContent = "Скрыть старые новости";
+    } else {
+        btn.textContent = "Показать все новости";
+        
+        // Находим блок дашборда статистики, который идет перед новостями
+        const dashboardElement = document.querySelector('.dashboard');
+        
+        if (dashboardElement) {
+            // Считаем точные координаты дашборда на странице
+            const elementPosition = dashboardElement.getBoundingClientRect().top + window.pageYOffset;
+            
+            // Вычитаем высоту шапки (80px) + 15px для красивого отступа
+            const offsetPosition = elementPosition - 95;
+            
+            // Плавно поднимаем пользователя так, чтобы дашборд встал ровно под шапку
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    }
+}
+
+// Открытие модального окна новости
+function openNewsModal(id) {
+    const newsItem = newsDatabase.find(item => item.id === id);
+    if (!newsItem) return;
+
+    document.getElementById('modal-news-date').textContent = `🗓️ Дата публикации: ${newsItem.date} | Категория: ${newsItem.tag}`;
+    document.getElementById('modal-news-title').textContent = newsItem.title;
+    document.getElementById('modal-news-content').innerHTML = newsItem.fullText;
+
+    const modal = document.getElementById('news-modal');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // Запрещаем скролл страницы под модалкой
+}
+
+// Закрытие модального окна новости
+function closeNewsModal() {
+    const modal = document.getElementById('news-modal');
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = ''; // Возвращаем скролл
+}
+
+// Инициализация вызова при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    renderNews();
+    // Закрытие модалки по клику на оверлей вне контента
+    const newsModal = document.getElementById('news-modal');
+    if (newsModal) {
+        newsModal.addEventListener('click', (e) => {
+            if (e.target === newsModal) closeNewsModal();
+        });
+    }
+});

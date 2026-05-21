@@ -63,6 +63,30 @@
                 </div>
             </section>
 
+
+            <section class="news-section container">
+                <div class="news-header">
+                    <h2 class="news-title">📰 Свежие обновления и автоновости</h2>
+                    <button id="toggle-archive-btn" class="link-more" onclick="toggleNewsArchive()">Показать все новости</button>
+                </div>
+        
+                <div id="news-grid" class="news-grid">
+                </div>
+            </section>
+
+    <div id="news-modal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-news-date" class="news-date"></span>
+                <button class="close-btn" onclick="closeNewsModal()">&times;</button>
+            </div>
+            <h2 id="modal-news-title" style="margin-top: 10px;"></h2>
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
+            <div id="modal-news-content" class="news-full-text"></div>
+        </div>
+    </div>
+
+
             <section class="add-form">
                 <div class="form-grid">
                     <input type="text" id="car-name" placeholder="Марка и модель">

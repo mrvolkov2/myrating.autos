@@ -434,6 +434,192 @@ body.dark-theme .btn-secondary {
 .best { background: rgba(35, 134, 54, 0.2); color: #4ade80; font-weight: bold; }
 
 /* ПРОЧЕЕ */
+/* Блок новостей */
+.news-section {
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+.news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.news-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+.link-more {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: opacity 0.2s;
+}
+.link-more:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+/* Сетка карточек новостей */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+.news-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.news-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+body.dark-theme .news-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+.news-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.news-date {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+}
+body.dark-theme .news-date {
+    color: #94a3b8;
+}
+.news-tag {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+}
+.news-card h3 {
+    font-size: 1.05rem;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+.news-excerpt {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    opacity: 0.85;
+    margin: 0 0 15px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Обрезает текст после 3 строк */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.news-card .btn-read-more {
+    align-self: flex-start;
+    background: transparent;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0;
+}
+.news-card .btn-read-more:hover {
+    text-decoration: underline;
+}
+
+/* Стилизация текста внутри модалки новостей */
+.news-full-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+.news-full-text p {
+    margin-bottom: 12px;
+}
+
+/* Базовые стили для модального окна новостей */
+#news-modal.modal {
+    display: none; /* Изначально скрыто */
+    position: fixed;
+    z-index: 2000; /* Чтобы быть поверх фиксированной шапки */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный темный фон */
+    backdrop-filter: blur(4px); /* Легкое размытие заднего плана */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Класс, который JS добавляет при клике на "Подробнее" */
+#news-modal.modal.open {
+    display: flex; /* Показываем модалку */
+}
+
+/* Контентное окно */
+#news-modal .modal-content {
+    background-color: var(--card-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 650px;
+    max-height: 85vh;
+    overflow-y: auto; /* Если текст новости будет очень длинным, появится внутренний скролл */
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: fadeInModal 0.3s ease;
+}
+
+/* Верхняя часть модалки */
+#news-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Кнопка закрытия (крестик) */
+#news-modal .close-btn {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+    padding: 0;
+}
+#news-modal .close-btn:hover {
+    color: var(--danger);
+}
+
+/* Анимация плавного появления */
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
 .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
 /* Стили для названий авто в дашборде (с адаптацией под темы) */
 .dashboard-car-name {
