@@ -318,6 +318,56 @@ body.compare-bar-visible {
     transform: scale(1.2);
 }
 
+/* Кнопка Показать еще */
+/* Кнопка Показать еще */
+#load-more-btn {
+    padding: 12px 45px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    background: transparent;          /* Прозрачный фон по умолчанию */
+    color: var(--primary);            /* Цвет текста — наш основной синий */
+    border: 2px solid var(--primary); /* Четкая синяя обводка */
+    border-radius: 8px;               /* Скругляем углы для современного вида */
+    cursor: pointer;
+    transition: all 0.3s ease;        /* Плавная анимация при наведении */
+    box-shadow: none;
+}
+
+#load-more-btn:hover {
+    background: var(--primary);       /* При наведении заливаем синим */
+    color: #fff;                      /* Текст становится белым */
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2); /* Мягкое синее свечение */
+    transform: translateY(-2px);      /* Легкий отрыв вверх */
+}
+
+#load-more-btn:active {
+    transform: translateY(0);         /* Эффект нажатия */
+}
+
+/* Кнопка Свернуть */
+.btn-secondary {
+    padding: 12px 35px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    background: transparent;
+    color: #64748b;                   /* Спокойный серый цвет */
+    border: 2px solid var(--border);  /* Обводка в цвет стандартных границ сайта */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: rgba(100, 116, 139, 0.1); /* Легкий фон при наведении */
+    color: var(--text);
+    border-color: #64748b;
+    transform: translateY(-2px);
+}
+
+body.dark-theme .btn-secondary {
+    color: #94a3b8;
+}
+
 
 /* БАННЕР VIN */
 .promo-banner {

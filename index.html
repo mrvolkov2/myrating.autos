@@ -85,7 +85,7 @@
                 <button onclick="calculateAndAdd()" class="btn-main">Просчитать и добавить в список</button>
             </section>
 
-            <section class="region-filters">
+            <section id="region-filters" class="region-filters">
                 <button class="filter-btn active" data-region="all" onclick="setRegion('all')">🌐 Весь мир</button>
                 <button class="filter-btn" data-region="usa" onclick="setRegion('usa')"><img src="flag-usa.svg" class="flag-icon" alt=""> США</button>
                 <button class="filter-btn" data-region="eu" onclick="setRegion('eu')"><img src="flag-eu.svg" class="flag-icon" alt=""> Европа</button>
@@ -109,6 +109,16 @@
             </section>
 
             <div id="car-list" class="grid-layout"></div>
+
+
+            <div id="car-list" class="grid-layout"></div>
+            <div id="load-more-container" style="text-align: center; margin-top: 30px; display: none;">
+                <div style="display: inline-flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                    <button id="load-more-btn" class="btn-main" onclick="loadMoreCars()">Показать еще</button>
+                    <button id="collapse-btn" class="btn-main btn-secondary" onclick="collapseCars()" style="display: none;">Свернуть</button>
+                </div>
+            </div>
+
 
             <div id="empty-state" class="empty-box" style="display: none;">
                 <div class="empty-icon">📁</div>

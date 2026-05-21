@@ -11,6 +11,10 @@ function escapeHTML(str) {
     );
 }
 
+const CARS_PER_PAGE = 6; // Сколько машин показывать изначально и за один клик
+let visibleCarsCount = CARS_PER_PAGE; // Текущее количество отображаемых машин
+let currentFilteredCars = []; // Хранилище для отфильтрованного списка
+
 const defaultCars = [
     { id: 1, name: "Porsche 911 GT3", price: 195000, rating: 9.9, region: "eu", year: 2022, mileage: 12, condition: 1 },
     { id: 2, name: "BMW M5 F90", price: 105000, rating: 9.7, region: "eu", year: 2021, mileage: 35, condition: 1 },
@@ -83,11 +87,38 @@ function updateClearButtonState() {
     }
 }
 
+function filterCars() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    let filtered = cars;
+    
+    if (currentRegion !== 'all') {
+        filtered = filtered.filter(c => c.region === currentRegion);
+    }
+    
+    if (query) {
+        filtered = filtered.filter(c => c.name.toLowerCase().includes(query));
+    }
+    
+    // Сохраняем отфильтрованный список в глобальную переменную
+    currentFilteredCars = filtered;
+    
+    // При любом изменении фильтра или поиска — сбрасываем счетчик на начальный
+    visibleCarsCount = CARS_PER_PAGE;
+    
+    render(currentFilteredCars);
+}
+
+
 function render(data = cars) {
     const list = document.getElementById('car-list');
     const statsCount = document.getElementById('stats-count');
     const emptyState = document.getElementById('empty-state');
+    const loadMoreContainer = document.getElementById('load-more-container');
     
+    if (data === cars) {
+        currentFilteredCars = cars;
+    }
+
     statsCount.innerHTML = `<span class="stats-icon">🚘</span><span>В гараже:</span> <strong class="stats-value">${data.length}</strong>`;
     statsCount.classList.remove('pulse');
     void statsCount.offsetWidth;
@@ -112,75 +143,130 @@ function render(data = cars) {
     if (data.length === 0) {
         list.innerHTML = '';
         emptyState.style.display = 'block';
+        if (loadMoreContainer) loadMoreContainer.style.display = 'none';
     } else {
         emptyState.style.display = 'none';
         
+        const carsToRender = data.slice(0, visibleCarsCount);
         let htmlString = '';
         
-        
-         data.forEach((car) => {
-    const isComparing = compareList.some(c => c.id === car.id);
-    const isCompareLimitReached = compareList.length >= compareLimit;
-    const shouldDisableCompareButton = isCompareLimitReached && !isComparing;
-    const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
-    const safeName = escapeHTML(car.name); 
-    
-    // Определяем цвет в зависимости от балла
-    let ratingColorClass = 'rating-low';
-    if (car.rating >= 8) ratingColorClass = 'rating-high';
-    else if (car.rating >= 5) ratingColorClass = 'rating-mid';
-
-    const yearText = car.year ? `${car.year} г.` : '—';
-    const mileageText = car.mileage !== undefined ? `${car.mileage} тыс. км` : '—';
-    const conditionText = car.condition ? (conditionLabels[car.condition] || '—') : '—';
-    
-    htmlString += `
-        <div class="car-card">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                ${regionBadge}
-                                <div class="delete-wrapper">
-                  <span class="delete-label">Удалить</span>
-                  <button onclick="deleteCar(${car.id})" class="btn-delete-card" title="Удалить">✕</button>
-                </div>
-            </div>
-            <h2>${safeName}</h2>
-            <div class="car-specs">
-                <span>📅 ${yearText}</span>
-                <span>🛣️ ${mileageText}</span>
-                <span>🛠️ ${conditionText}</span>
-            </div>
-            <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
+        carsToRender.forEach((car) => {
+            const isComparing = compareList.some(c => c.id === car.id);
+            const isCompareLimitReached = compareList.length >= compareLimit;
+            const shouldDisableCompareButton = isCompareLimitReached && !isComparing;
+            const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
+            const safeName = escapeHTML(car.name); 
             
-            <div class="rating-container">
-                <div class="rating-header">
-                     <div class="rating-value ${ratingColorClass}">${car.rating}</div>
-                     <span style="font-size: 0.8rem; font-weight: 600; opacity: 0.7;">РЕЙТИНГ</span>
-                </div>
-                <div class="rating-scale-bg">
-                     <div class="rating-scale-fill ${ratingColorClass}" 
-                         style="width: ${car.rating * 10}%; background-color: currentColor;"></div>
-                </div>
-            </div>
+            let ratingColorClass = 'rating-low';
+            if (car.rating >= 8) ratingColorClass = 'rating-high';
+            else if (car.rating >= 5) ratingColorClass = 'rating-mid';
 
-            <button onclick="toggleCompare(${car.id})" 
-                    class="btn-main btn-small btn-compare-full ${isComparing ? 'active' : ''}"
-                    ${shouldDisableCompareButton ? 'disabled' : ''}>
-                ${isComparing ? `✅ В сравнении (${compareList.length}/${compareLimit})` : `⚖️ Добавить к сравнению (${compareList.length}/${compareLimit})`}
-            </button>
-        </div>`;
-});
+            const yearText = car.year ? `${car.year} г.` : '—';
+            const mileageText = car.mileage !== undefined ? `${car.mileage} тыс. км` : '—';
+            const conditionText = car.condition ? (conditionLabels[car.condition] || '—') : '—';
+            
+            htmlString += `
+                <div class="car-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        ${regionBadge}
+                        <div class="delete-wrapper">
+                          <span class="delete-label">Удалить</span>
+                          <button onclick="deleteCar(${car.id})" class="btn-delete-card" title="Удалить">✕</button>
+                        </div>
+                    </div>
+                    <h2>${safeName}</h2>
+                    <div class="car-specs">
+                        <span>📅 ${yearText}</span>
+                        <span>🛣️ ${mileageText}</span>
+                        <span>🛠️ ${conditionText}</span>
+                    </div>
+                    <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
+                    
+                    <div class="rating-container">
+                        <div class="rating-header">
+                             <div class="rating-value ${ratingColorClass}">${car.rating}</div>
+                             <span style="font-size: 0.8rem; font-weight: 600; opacity: 0.7;">РЕЙТИНГ</span>
+                        </div>
+                        <div class="rating-scale-bg">
+                             <div class="rating-scale-fill ${ratingColorClass}" 
+                                 style="width: ${car.rating * 10}%; background-color: currentColor;"></div>
+                        </div>
+                    </div>
 
-
-
-
-
+                    <button onclick="toggleCompare(${car.id})" 
+                            class="btn-main btn-small btn-compare-full ${isComparing ? 'active' : ''}"
+                            ${shouldDisableCompareButton ? 'disabled' : ''}>
+                        ${isComparing ? `✅ В сравнении (${compareList.length}/${compareLimit})` : `⚖️ Добавить к сравнению (${compareList.length}/${compareLimit})`}
+                    </button>
+                </div>`;
+        });
         
         list.innerHTML = htmlString;
-    }
+        
+        if (loadMoreContainer) {
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            const collapseBtn = document.getElementById('collapse-btn');
+            
+            // 1. Показываем или прячем весь блок кнопок
+            if (data.length > CARS_PER_PAGE) {
+                loadMoreContainer.style.display = 'block';
+            } else {
+                loadMoreContainer.style.display = 'none';
+            }
+
+            // 2. Логика для кнопки "Показать еще" (нужна, пока видны не все машины)
+            if (visibleCarsCount < data.length) {
+                loadMoreBtn.style.display = 'inline-block';
+            } else {
+                loadMoreBtn.style.style.display = 'none'; // Все машины на экране — прячем её
+            }
+
+            // 3. Логика для кнопки "Свернуть" (появляется, как только вышли за лимит 6 машин)
+            if (visibleCarsCount > CARS_PER_PAGE) {
+                collapseBtn.style.display = 'inline-block';
+            } else {
+                collapseBtn.style.display = 'none';
+            }
+        }
+
+
+    } // Закрыли else
+
     updateDashboard();
     updateClearButtonState();
     localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
+} // Закрыли функцию render
+
+
+function loadMoreCars() {
+    visibleCarsCount += CARS_PER_PAGE;
+    render(currentFilteredCars);
 }
+
+
+function collapseCars() {
+    visibleCarsCount = CARS_PER_PAGE; // Сбрасываем до начальных 6
+    render(currentFilteredCars);
+    
+    // Находим секцию фильтров по региону
+    const filtersElement = document.getElementById('region-filters');
+    
+    if (filtersElement) {
+        // Получаем точное расстояние от верха страницы до панели фильтров
+        const elementPosition = filtersElement.getBoundingClientRect().top + window.pageYOffset;
+        
+        // Высота твоей фиксированной шапки (80px) + берем небольшой запас в 15px для красоты
+        const offsetPosition = elementPosition - 95; 
+
+        // Плавно скроллим страницу с учетом отступа под шапку
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
+    }
+}
+
+
 
 function setRegion(region) {
     currentRegion = region;
@@ -190,20 +276,6 @@ function setRegion(region) {
     filterCars();
 }
 
-function filterCars() {
-    const query = document.getElementById('search-input').value.toLowerCase();
-    let filtered = cars;
-    
-    if (currentRegion !== 'all') {
-        filtered = filtered.filter(c => c.region === currentRegion);
-    }
-    
-    if (query) {
-        filtered = filtered.filter(c => c.name.toLowerCase().includes(query));
-    }
-    
-    render(filtered);
-}
 
 function toggleCompare(id) {
     const car = cars.find(c => c.id === id);
