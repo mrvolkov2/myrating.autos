@@ -34,6 +34,12 @@
             <div class="logo-wrapper">
                 <img src="logo.png" alt="MyRating.autos" class="logo-image">
             </div>
+
+        <nav class="nav-links" style="display: flex; gap: 15px; margin-right: auto; margin-left: 20px;">
+            <a href="#" id="nav-main" class="nav-link active" onclick="switchScreen('main'); return false;">Главная</a>
+            <a href="#" id="nav-encyclopedia" class="nav-link" onclick="switchScreen('encyclopedia'); return false;">База надежности</a>
+        </nav>
+
             <div class="header-actions">
                 <button id="theme-toggle" onclick="toggleTheme()" class="theme-btn">
                     <img src="theme_light.png" id="theme-icon" alt="Тема">
@@ -41,6 +47,7 @@
                 </button>
             </div>
         </div>
+
     </header>
 <!-- end header -->
 
@@ -48,21 +55,41 @@
     <div class="container">
         <main>
 
-            <section class="dashboard">
-                <div class="stat-card">
-                    <span class="label">Лидер рейтинга</span>
-                    <div id="top-car" class="value">—</div>
+            <section id="promo-database-section" class="main-section">
+                <div class="section-header">
+                    <h2>🔥 База надежности авто</h2>
+                    <p>Честные обзоры двигателей, коробок передач и стойкости кузова к коррозии</p>
                 </div>
-                <div class="stat-card">
-                    <span class="label">Минимальная цена</span>
-                    <div id="cheapest-car" class="value">—</div>
-                </div>
-                <div class="stat-card">
-                    <span class="label">Цена / Качество</span>
-                    <div id="best-value-car" class="value">—</div>
+    
+                <div id="promo-database-container" class="db-promo-grid"></div>
+    
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn-main" onclick="switchScreen('encyclopedia')">Смотреть всю базу знаний →</button>
                 </div>
             </section>
 
+            <section id="encyclopedia-screen" class="container hidden" style="margin-top: 30px; margin-bottom: 5px;">
+                    <div style="margin-bottom: 30px;">
+                    <h1 style="font-size: 2.2rem; margin-bottom: 10px;">📚 Энциклопедия надежности MyRating</h1>
+                    <p style="color: #64748b; margin: 0;">Детальный разбор слабых мест, ресурса агрегатов и стойкости к ржавчине популярных автомобилей</p>
+                </div>
+
+                <div style="margin-bottom: 30px; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
+                    <input type="text" id="db-search" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 16px; box-sizing: border-box;" placeholder="Поиск по марке или модели (например: Volvo, Passat, Focus)..." oninput="filterDatabase()">
+                </div>
+
+                <div class="encyclopedia-tabs">
+                    <button class="enc-tab-btn active" data-tab="all">🚗 Автомобили (Всё)</button>
+                    <button class="enc-tab-btn" data-tab="engines">🔧 Двигатели</button>
+                    <button class="enc-tab-btn" data-tab="transmissions">⚙️ Коробки и Трансмиссия</button>
+                    <button class="enc-tab-btn" data-tab="body">🛡️ Кузов</button>
+                    <button class="enc-tab-btn" data-tab="safety">🚨 Безопасность</button>
+                    <button class="enc-tab-btn" data-tab="weak-points">⚠️ Частые болячки</button>
+                </div>
+
+                <div id="encyclopedia-main-container">
+                    </div>
+            </section>
 
             <section class="news-section container">
                 <div class="news-header">
@@ -107,6 +134,21 @@
                     </select>
                 </div>
                 <button onclick="calculateAndAdd()" class="btn-main">Просчитать и добавить в список</button>
+            </section>
+
+            <section class="dashboard">
+                <div class="stat-card">
+                    <span class="label">Лидер рейтинга</span>
+                    <div id="top-car" class="value">—</div>
+                </div>
+                <div class="stat-card">
+                    <span class="label">Минимальная цена</span>
+                    <div id="cheapest-car" class="value">—</div>
+                </div>
+                <div class="stat-card">
+                    <span class="label">Цена / Качество</span>
+                    <div id="best-value-car" class="value">—</div>
+                </div>
             </section>
 
             <section id="region-filters" class="region-filters">
@@ -286,7 +328,9 @@
 <!-- end modal windows -->
 
 <!-- Script -->
-    <script src="script.js"></script>
+<script src="script.js"></script>
+<script src="encyclopedia.js"></script>
+
 
 </body>
 

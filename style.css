@@ -205,6 +205,7 @@ body.compare-bar-visible {
     animation: fadeIn 0.4s ease forwards;
     display: flex;
     flex-direction: column;
+
 }
 
 
@@ -319,7 +320,6 @@ body.compare-bar-visible {
 }
 
 /* Кнопка Показать еще */
-/* Кнопка Показать еще */
 #load-more-btn {
     padding: 12px 45px;
     font-size: 0.95rem;
@@ -433,7 +433,151 @@ body.dark-theme .btn-secondary {
 .compare-table th, .compare-table td { padding: 12px; border: 1px solid var(--border); text-align: center; }
 .best { background: rgba(35, 134, 54, 0.2); color: #4ade80; font-weight: bold; }
 
+
+
+
+
 /* ПРОЧЕЕ */
+
+/* База надежности */
+/* Переключение экранов */
+.hidden {
+    display: none !important;
+}
+
+/* Стили навигационных ссылок в шапке */
+.nav-link {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: 0.3s;
+    font-size: 14px;
+}
+.nav-link:hover {
+    background: rgba(37, 99, 235, 0.1);
+}
+.nav-link.active {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+/* Бейджи надежности в карточках */
+.reliability-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.reliability-high { background-color: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+.reliability-medium { background-color: rgba(234, 179, 8, 0.15); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.3); }
+.reliability-low { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+/* Сетка для детального обзора автомобиля */
+.db-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+}
+.db-details-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: 0.3s;
+}
+.db-details-card h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+}
+.db-back-btn {
+    margin-bottom: 20px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+.db-back-btn:hover {
+    background: var(--border);
+    transform: none;
+}
+
+
+/* Сетка для промо-карточек базы знаний (строго 3 в ряд на ПК) */
+.db-promo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* На ПК делим строго на 3 равные колонки */
+    gap: 24px; /* Расстояние между карточками */
+    margin-top: 20px;
+}
+
+/* Медиа-запрос для планшетов (ноутбуков поменьше) */
+@media (max-width: 992px) {
+    .db-promo-grid {
+        grid-template-columns: repeat(2, 1fr); /* На планшетах показываем по 2 карточки в ряд */
+    }
+}
+
+/* Медиа-запрос для мобильных телефонов */
+@media (max-width: 600px) {
+    .db-promo-grid {
+        grid-template-columns: 1fr; /* На мобилках карточки выстраиваются одна под другой */
+        gap: 16px;
+    }
+}
+
+
+/* Контейнер для табов */
+.encyclopedia-tabs {
+    display: flex;
+    gap: 12px;
+    margin: 20px auto 30px auto;
+    max-width: 1200px;
+    padding: 0 20px;
+    overflow-x: auto; /* На мобилках можно будет скроллить пальцем, если не влезут */
+    scrollbar-width: none; /* Прячем скроллбар в Firefox */
+}
+.encyclopedia-tabs::-webkit-scrollbar {
+    display: none; /* Прячем скроллбар в Chrome/Safari */
+}
+
+/* Стили кнопок-вкладок */
+.enc-tab-btn {
+    background-color: var(--card-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    border-radius: 20px; /* Скругленные "пилюли" выглядят аккуратно */
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap; /* Чтобы текст не переносителся */
+}
+
+/* Эффект ховера для неактивных кнопок */
+.enc-tab-btn:hover {
+    background-color: rgba(37, 99, 235, 0.08);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Активное состояние кнопки */
+.enc-tab-btn.active {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+
+
 /* Блок новостей */
 .news-section {
     margin-top: 20px;
