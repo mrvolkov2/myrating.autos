@@ -24,13 +24,6 @@ body.dark-theme #theme-icon {
     filter: brightness(0) invert(1);
 }
 
-body.light-theme {
-    --bg: #f8fafc;
-    --card-bg: #ffffff;
-    --text: #0f172a;
-    --border: #e2e8f0;
-}
-
 body {
     background-color: var(--bg);
     color: var(--text);
@@ -369,18 +362,51 @@ body.dark-theme .btn-secondary {
 }
 
 
-/* БАННЕР VIN */
-.promo-banner {
-    margin: 40px 0; padding: 25px; background: var(--card-bg);
-    border-radius: 20px; border: 1px solid var(--primary);
+/* Рекомендуемые сервисы (VIN) */
+.vin-services-section {
+    margin: 40px 0 10px;
+    padding: 30px 0 10px;
+    border-top: 1px solid var(--border);
 }
-.promo-content { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-.promo-text h3 { margin: 0 0 5px 0; color: var(--primary); font-size: 1.2rem; }
-.promo-text p { margin: 0; opacity: 0.8; font-size: 0.95rem; }
+
+.vin-services-section .promo-banner {
+    margin: 8px 0 0;
+}
+
+.promo-banner {
+    padding: 25px;
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--primary);
+}
+
+.promo-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.promo-text h3 {
+    margin: 0 0 5px 0;
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.promo-text p {
+    margin: 0;
+    opacity: 0.8;
+    font-size: 0.95rem;
+}
 
 @media (max-width: 700px) {
-    .promo-content { flex-direction: column; text-align: center; }
-    .vin-btn { width: 100%; }
+    .promo-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    .vin-btn {
+        width: 100%;
+    }
 }
 
 /* СРАВНЕНИЕ */
@@ -578,35 +604,189 @@ body.dark-theme .btn-secondary {
 
 
 
-/* Блок новостей */
-.news-section {
-    margin-top: 20px;
-    margin-bottom: 25px;
+/* Главная и экраны */
+.main-section {
+    margin-bottom: 50px;
 }
-.news-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+
+.app-screen {
+    margin-top: 30px;
+    margin-bottom: 5px;
 }
-.news-title {
-    font-size: 1.25rem;
-    font-weight: 700;
+
+.screen-intro {
+    margin-bottom: 30px;
+}
+.screen-intro h1 {
+    font-size: 2.2rem;
+    margin: 0 0 10px;
+}
+.screen-intro p {
+    color: #64748b;
     margin: 0;
 }
-.link-more {
-    background: none;
-    border: none;
-    color: var(--primary);
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    padding: 5px 10px;
-    transition: opacity 0.2s;
+
+.section-cta {
+    text-align: center;
+    margin-top: 30px;
 }
-.link-more:hover {
-    text-decoration: underline;
+
+.section-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+.section-header h2 {
+    margin: 0 0 8px;
+    font-size: 1.6rem;
+}
+.section-header p {
+    margin: 0;
+    color: #64748b;
+}
+.section-header--left {
+    text-align: left;
+}
+
+.screen-search-box {
+    margin-bottom: 30px;
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+.screen-search-box input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.card-emoji {
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+.card-emoji--large {
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.card-meta {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+.btn-card-full {
+    width: 100%;
+    margin-top: auto;
+}
+.promo-badges {
+    margin-bottom: 15px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.promo-card-title {
+    font-size: 1.05rem;
+    margin: 12px 0 8px;
+}
+.promo-card-excerpt {
+    font-size: 14px;
+    opacity: 0.85;
+    flex-grow: 1;
+    margin-bottom: 15px;
+}
+
+.news-excerpt--promo {
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+    min-height: 0;
+}
+
+.car-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.rating-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0.7;
+}
+
+.promo-garage-grid {
+    margin-top: 20px;
+}
+
+.promo-rating {
+    font-size: 1.8rem;
+    margin: 12px 0;
+}
+.rating-highlight {
+    color: var(--primary);
+}
+.tab-card-preview {
+    min-height: 80px;
+    margin-bottom: 15px;
+}
+.tab-preview-summary {
+    font-size: 14px;
     opacity: 0.8;
+    min-height: 40px;
+    margin: 0;
+}
+.tab-preview-text {
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--text);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.tab-preview-title {
+    margin: 0 0 5px;
+    font-size: 14px;
+}
+.tab-preview-title--engines { color: var(--primary); }
+.tab-preview-title--safety { color: #06b6d4; }
+.tab-preview-title--danger { color: var(--danger); }
+.tab-preview-list {
+    font-size: 13px;
+    margin: 0;
+    padding-left: 15px;
+}
+.tab-badge-row {
+    margin-bottom: 10px;
+}
+.details-text {
+    margin-top: 15px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+.details-list {
+    margin-top: 10px;
+    padding-left: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.empty-message {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+}
+.empty-message--grid {
+    grid-column: 1 / -1;
+}
+
+.news-promo-card {
+    display: flex;
+    flex-direction: column;
 }
 
 /* Сетка карточек новостей */
@@ -665,9 +845,11 @@ body.dark-theme .news-date {
     opacity: 0.85;
     margin: 0 0 15px 0;
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Обрезает текст после 3 строк */
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    flex-grow: 1;
 }
 .news-card .btn-read-more {
     align-self: flex-start;
@@ -752,6 +934,17 @@ body.dark-theme .news-date {
 }
 
 /* Анимация плавного появления */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes fadeInModal {
     from {
         opacity: 0;
@@ -784,6 +977,42 @@ body.dark-theme .dashboard-car-name {
 .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 15px; }
 input, select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 10px; font-size: 14px; }
 
+/* Обратная связь (на всех вкладках) */
+.feedback-section {
+    margin: 40px 0 10px;
+    padding: 30px 0 10px;
+    border-top: 1px solid var(--border);
+}
+
+.feedback-contacts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.feedback-section .contact-block {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.feedback-section .contact-block p {
+    color: var(--text);
+    opacity: 0.85;
+}
+
+.feedback-section .btn-email {
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.feedback-section .btn-email:hover {
+    background: rgba(37, 99, 235, 0.08);
+    border-color: var(--primary);
+}
+
 .share-box { margin: 30px 0 12px; text-align: center; border-top: 1px solid var(--border); padding-top: 20px; }
 .share-box span { display: block; margin-bottom: 15px; font-weight: 600; opacity: 0.8; }
 .share-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
@@ -797,14 +1026,6 @@ input, select { background: var(--bg); border: 1px solid var(--border); color: v
 .footer-content { max-width: 800px; margin: 0 auto; }
 .footer-info h3 { color: #3b82f6; margin: 0 0 10px; }
 .footer-bottom {margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.85rem; opacity: 0.6;}
-/* --- СЕТКА КОНТАКТОВ В ФУТЕРЕ --- */
-.footer-contacts-grid { 
-    display: flex; 
-    flex-wrap: wrap; 
-    justify-content: center; 
-    gap: 15px; 
-    margin: 30px 0; 
-}
 
 .contact-block { 
     background: rgba(255, 255, 255, 0.05); 
@@ -889,14 +1110,6 @@ input, select { background: var(--bg); border: 1px solid var(--border); color: v
     height: 20px;
     margin-right: 8px;
     flex-shrink: 0;
-}
-
-/* Настройка цвета: fill="currentColor" в SVG заставляет иконку 
-   краситься в цвет текста кнопки автоматически */
-.btn-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 /* Подпись разработчика в футере */

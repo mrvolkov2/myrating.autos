@@ -1,5 +1,5 @@
 /**
- * БАЗА ДАННЫХ ЭНЦИКЛОПЕДИИ НАДЕЖНОСТИ (MyRating.autos)
+ * База данных энциклопедии надежности (MyRating.autos)
  */
 const encyclopediaDatabase = [
     {
@@ -16,7 +16,6 @@ const encyclopediaDatabase = [
         safety: "Традиционные 5 звезд Euro NCAP. Один из самых безопасных автомобилей в классе благодаря прочнейшей капсуле салона из бористой стали и комплексу систем безопасности City Safety (автоторможение, удержание в полосе).",
         weakPoints: ["Глюки мультимедиа Sensus на ранних версиях прошивок", "Быстрый износ оригинальных тормозных дисков", "Датчики пневмоподвески боятся грязи и соли"]
     },
-
     {
         id: "vw-passat-b8",
         name: "Volkswagen Passat B8",
@@ -25,13 +24,13 @@ const encyclopediaDatabase = [
         isPopular: true,
         imagePlaceholder: "🚗",
         summary: "Эталон управляемости и эргономики в классе, но требует качественного обслуживания сложных узлов.",
-        body: { 
-            rating: "high", 
-            text: "Кузов автомобиля имеет полную двустороннюю гальваническую оцинковку. ЛКП прочное, однако на стыках бамперов с крыльями и в районе колесных арок со временем могут появляться сколы, которые долго не цветут благодаря качественному металлу." 
+        body: {
+            rating: "high",
+            text: "Кузов автомобиля имеет полную двустороннюю гальваническую оцинковку. ЛКП прочное, однако на стыках бамперов с крыльями и в районе колесных арок со временем могут появляться сколы, которые долго не цветут благодаря качественному металлу."
         },
-        transmission: { 
-            rating: "medium", 
-            text: "Роботы DSG-7 (DQ200 с сухими сцеплениями) после 2014 года стали значительно надежнее, но в пробках всё же изнашиваются быстрее. Модификации с DSG-6 (DQ250) и DSG-7 (DQ381) с мокрыми сцеплениями на мощных моторах ходят до 250 000 км при замене масла каждые 60 000 км." 
+        transmission: {
+            rating: "medium",
+            text: "Роботы DSG-7 (DQ200 с сухими сцеплениями) после 2014 года стали значительно надежнее, но в пробках всё же изнашиваются быстрее. Модификации с DSG-6 (DQ250) и DSG-7 (DQ381) с мокрыми сцеплениями на мощных моторах ходят до 250 000 км при замене масла каждые 60 000 км."
         },
         engines: "Бензиновые моторы серии ЕА211 (1.4 TSI) избавились от проблем с цепью (теперь там ремень) и масложором. 2.0 TSI (серия EA888 Gen3) динамичен, но требователен к качеству помпы и термостата. Дизели 2.0 TDI (EA288) — одни из лучших и самых живучих, легко выхаживают за 300 000 км.",
         safety: "5 звезд Euro NCAP (95% за безопасность взрослых). В базе идут фронтальные и боковые подушки, шторки безопасности, система распознавания усталости водителя и функция автоторможения Multi-collision Brake. В богатых комплектациях доступен отличный адаптивный круиз-контроль (ACC) и удержание в полосе.",
@@ -42,7 +41,6 @@ const encyclopediaDatabase = [
             "Капризный термостат в сборе с помпой на моторах 1.8 и 2.0 TSI"
         ]
     },
-
     {
         id: "ford-focus-iii",
         name: "Ford Focus III (Рестайлинг)",
@@ -59,290 +57,222 @@ const encyclopediaDatabase = [
     }
 ];
 
+const MAIN_PROMO_SECTIONS = [
+    'promo-database-section',
+    'promo-news-section',
+    'promo-garage-section'
+];
 
-// Вспомогательная функция экранирования HTML
-function escapeHTML(str) {
-    if (!str) return '';
-    return str.replace(/[&<>'"]/g, 
-        tag => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            "'": '&#39;',
-            '"': '&quot;'
-        }[tag] || tag)
-    );
-}
+const APP_SCREENS = {
+    encyclopedia: 'encyclopedia-screen',
+    news: 'news-screen',
+    garage: 'garage-screen'
+};
 
+const BODY_RELIABILITY_LABEL = { high: 'Отличный', medium: 'Средний', low: 'Слабый' };
+const TRANSMISSION_RELIABILITY_LABEL = { high: 'Надежная', medium: 'Средняя', low: 'Слабая' };
+const BODY_STRENGTH_LABEL = { high: 'Отличная стойкость', medium: 'Средняя стойкость', low: 'Слабая стойкость' };
+const TRANSMISSION_STRENGTH_LABEL = { high: 'Высокая надежность', medium: 'Есть нюансы / Средняя', low: 'Зона риска / Требует внимания' };
 
-/**
- * 1. ВКЛАДКИ И ДИНАМИЧЕСКИЙ РЕНДЕР КАРТОЧЕК
- */
 let currentEncTab = 'all';
 
-// Функция инициализации табов
-function initEncyclopediaTabs() {
-    const tabButtons = document.querySelectorAll('.enc-tab-btn');
-    
-    tabButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            
-            currentEncTab = e.currentTarget.getAttribute('data-tab');
-            renderEncyclopedia(); // Перерисовываем карточки в соответствии с новым табом
-        });
-    });
-}
-
-// Универсальная функция рендера карточек для любой вкладки
-function renderEncyclopedia() {
-    const container = document.getElementById('encyclopedia-main-container') || document.getElementById('encyclopedia-container');
-    if (!container) return;
-
-    container.innerHTML = ''; // Очищаем контейнер
-
-    // Создаем обертку-сетку, чтобы карточки не шли сплошной строкой
-    const gridWrapper = document.createElement('div');
-    gridWrapper.className = 'db-promo-grid'; 
-
-    encyclopediaDatabase.forEach(car => {
-        let tabContent = '';
-
-        // Формируем контент для центральной части карточки в зависимости от выбранного таба
-        if (currentEncTab === 'all') {
-            tabContent = `<p style="font-size: 14px; opacity: 0.8; min-height: 40px;">${escapeHTML(car.summary)}</p>`;
-        } 
-        else if (currentEncTab === 'body') {
-            tabContent = `
-                <div style="margin-bottom: 10px;">
-                    <span class="reliability-badge reliability-${car.body.rating}">Кузов: ${car.body.rating === 'high' ? 'Отличный' : 'Средний'}</span>
-                </div>
-                <p style="font-size: 13px; line-height: 1.4; color: var(--text); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                    ${escapeHTML(car.body.text)}
-                </p>`;
-        } 
-        else if (currentEncTab === 'engines') {
-            tabContent = `
-                <h4 style="margin-bottom: 5px; font-size: 14px; color: var(--primary);">🔧 Двигатели:</h4>
-                <p style="font-size: 13px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                    ${escapeHTML(car.engines)}
-                </p>`;
-        } 
-        else if (currentEncTab === 'transmissions') {
-            tabContent = `
-                <div style="margin-bottom: 10px;">
-                    <span class="reliability-badge reliability-${car.transmission.rating}">КПП: ${car.transmission.rating === 'high' ? 'Надежная' : car.transmission.rating === 'medium' ? 'Средняя' : 'Слабая'}</span>
-                </div>
-                <p style="font-size: 13px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                    ${escapeHTML(car.transmission.text)}
-                </p>`;
-        } 
-        else if (currentEncTab === 'safety') {
-            tabContent = `
-                <h4 style="margin-bottom: 5px; font-size: 14px; color: #06b6d4;">🚨 Безопасность:</h4>
-                <p style="font-size: 13px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                    ${car.safety ? escapeHTML(car.safety) : 'Информация обновляется...'}
-                </p>`;
-        } 
-        else if (currentEncTab === 'weak-points') {
-            tabContent = `
-                <h4 style="margin-bottom: 5px; font-size: 14px; color: var(--danger);">⚠️ Известные проблемы:</h4>
-                <ul style="font-size: 13px; margin: 0; padding-left: 15px; list-style-type: disc;">
-                    ${car.weakPoints.slice(0, 2).map(point => `<li>${escapeHTML(point)}</li>`).join('')}
-                    ${car.weakPoints.length > 2 ? '<li>и другие нюансы...</li>' : ''}
-                </ul>`;
-        }
-
-        // Рендерим элемент как полноценную карточку .car-card
-        const carCard = document.createElement('div');
-        carCard.className = 'car-card';
-        carCard.innerHTML = `
-            <div style="font-size: 30px; margin-bottom: 5px;">${car.imagePlaceholder}</div>
-            <h3>${escapeHTML(car.name)}</h3>
-            <p style="color: #64748b; font-size: 13px; margin-bottom: 10px;">Выпуск: ${car.years}</p>
-            
-            <div class="tab-card-preview" style="min-height: 80px; margin-bottom: 15px;">
-                ${tabContent}
+function getEncyclopediaTabContent(car, tab) {
+    if (tab === 'body') {
+        return `
+            <div class="tab-badge-row">
+                <span class="reliability-badge reliability-${car.body.rating}">Кузов: ${BODY_RELIABILITY_LABEL[car.body.rating] || 'Средний'}</span>
             </div>
-            
-            <button class="btn-main btn-small" style="width: 100%; margin-top: auto;" onclick="viewCarDetails('${car.id}')">Читать обзор →</button>
-        `;
-        gridWrapper.appendChild(carCard);
-    });
-
-    container.appendChild(gridWrapper);
+            <p class="tab-preview-text">${escapeHTML(car.body.text)}</p>`;
+    }
+    if (tab === 'engines') {
+        return `
+            <h4 class="tab-preview-title tab-preview-title--engines">🔧 Двигатели:</h4>
+            <p class="tab-preview-text">${escapeHTML(car.engines)}</p>`;
+    }
+    if (tab === 'transmissions') {
+        return `
+            <div class="tab-badge-row">
+                <span class="reliability-badge reliability-${car.transmission.rating}">КПП: ${TRANSMISSION_RELIABILITY_LABEL[car.transmission.rating] || 'Средняя'}</span>
+            </div>
+            <p class="tab-preview-text">${escapeHTML(car.transmission.text)}</p>`;
+    }
+    if (tab === 'safety') {
+        return `
+            <h4 class="tab-preview-title tab-preview-title--safety">🚨 Безопасность:</h4>
+            <p class="tab-preview-text">${escapeHTML(car.safety || 'Информация обновляется...')}</p>`;
+    }
+    if (tab === 'weak-points') {
+        const points = car.weakPoints.slice(0, 2).map(point => `<li>${escapeHTML(point)}</li>`).join('');
+        const more = car.weakPoints.length > 2 ? '<li>и другие нюансы...</li>' : '';
+        return `
+            <h4 class="tab-preview-title tab-preview-title--danger">⚠️ Известные проблемы:</h4>
+            <ul class="tab-preview-list">${points}${more}</ul>`;
+    }
+    return `<p class="tab-preview-summary">${escapeHTML(car.summary)}</p>`;
 }
 
-// Заменяем старый вызов renderEncyclopediaList в switchScreen, чтобы при переходе открывался правильный плиточный вид
-function renderEncyclopediaList(filterText = '') {
+function buildEncyclopediaCardHTML(car, options = {}) {
+    const tab = options.searchMode ? 'all' : currentEncTab;
+    const tabContent = options.searchMode
+        ? `<p class="tab-preview-summary">${escapeHTML(car.summary)}</p>`
+        : getEncyclopediaTabContent(car, tab);
+
+    return `
+        <div class="car-card">
+            <div class="card-emoji">${car.imagePlaceholder}</div>
+            <h3>${escapeHTML(car.name)}</h3>
+            <p class="card-meta">Выпуск: ${car.years}</p>
+            <div class="tab-card-preview">${tabContent}</div>
+            <button class="btn-main btn-small btn-card-full" onclick="viewCarDetails('${car.id}')">Читать обзор →</button>
+        </div>`;
+}
+
+function renderEncyclopedia(filterText = '') {
     const container = document.getElementById('encyclopedia-main-container');
     if (!container) return;
 
-    // Если есть поисковый запрос, фильтруем базу на лету
-    const filtered = encyclopediaDatabase.filter(car => 
-        car.name.toLowerCase().includes(filterText.toLowerCase())
-    );
+    const query = filterText.trim().toLowerCase();
+    const filtered = query
+        ? encyclopediaDatabase.filter(car => car.name.toLowerCase().includes(query))
+        : encyclopediaDatabase;
 
     if (filtered.length === 0) {
         container.innerHTML = `
-            <div style="text-align:center; padding: 40px; color: #64748b;">
-                <p>Ничего не найдено по запросу "${escapeHTML(filterText)}"</p>
-                <button class="btn-main btn-small" style="margin-top:10px;" onclick="renderEncyclopediaList('')">Показать все модели</button>
+            <div class="empty-message">
+                <p>Ничего не найдено${query ? ` по запросу «${escapeHTML(filterText)}»` : ''}.</p>
+                <button class="btn-main btn-small" onclick="clearDatabaseSearch()">Показать все модели</button>
             </div>`;
         return;
     }
 
-    container.innerHTML = '';
-    const gridWrapper = document.createElement('div');
-    gridWrapper.className = 'db-promo-grid';
-
-    filtered.forEach(car => {
-        const carCard = document.createElement('div');
-        carCard.className = 'car-card';
-        carCard.innerHTML = `
-            <div style="font-size: 30px; margin-bottom: 5px;">${car.imagePlaceholder}</div>
-            <h3>${escapeHTML(car.name)}</h3>
-            <p style="color: #64748b; font-size: 13px; margin-bottom: 10px;">Выпуск: ${car.years}</p>
-            <p style="font-size: 14px; opacity: 0.8; min-height: 40px;">${escapeHTML(car.summary)}</p>
-            <button class="btn-main btn-small" style="width: 100%; margin-top: 15px;" onclick="viewCarDetails('${car.id}')">Читать обзор →</button>
-        `;
-        gridWrapper.appendChild(carCard);
-    });
-    container.appendChild(gridWrapper);
+    container.innerHTML = `<div class="db-promo-grid">${filtered.map(car => buildEncyclopediaCardHTML(car, { searchMode: Boolean(query) })).join('')}</div>`;
 }
 
-// Перехват ввода в поисковой строке базы
+function clearDatabaseSearch() {
+    const searchInput = document.getElementById('db-search');
+    if (searchInput) searchInput.value = '';
+    renderEncyclopedia();
+}
+
 function filterDatabase() {
-    const text = document.getElementById('db-search').value;
-    renderEncyclopediaList(text);
+    const text = document.getElementById('db-search')?.value || '';
+    renderEncyclopedia(text);
 }
 
+function initEncyclopediaTabs() {
+    document.querySelectorAll('.enc-tab-btn[data-tab]').forEach(button => {
+        button.addEventListener('click', (e) => {
+            document.querySelectorAll('.enc-tab-btn[data-tab]').forEach(btn => btn.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            currentEncTab = e.currentTarget.getAttribute('data-tab');
+            renderEncyclopedia(document.getElementById('db-search')?.value || '');
+        });
+    });
+}
 
-/**
- * 2. УПРАВЛЕНИЕ ОТОБРАЖЕНИЕМ (Переключение экранов)
- */
+function setNavActive(screenName) {
+    const navMap = {
+        main: 'nav-main',
+        encyclopedia: 'nav-encyclopedia',
+        news: 'nav-news',
+        garage: 'nav-garage'
+    };
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    document.getElementById(navMap[screenName])?.classList.add('active');
+}
+
 function switchScreen(screenName) {
-    const mainCalculator = document.getElementById('analytics-section') || document.querySelector('.analytics-section'); 
-    const promoDatabase = document.getElementById('promo-database-section');
-    const newsSection = document.getElementById('news-section');
-    const encyclopediaScreen = document.getElementById('encyclopedia-screen');
-    const navMain = document.getElementById('nav-main');
-    const navEncy = document.getElementById('nav-encyclopedia');
+    MAIN_PROMO_SECTIONS.forEach(id => document.getElementById(id)?.classList.add('hidden'));
+    Object.values(APP_SCREENS).forEach(id => document.getElementById(id)?.classList.add('hidden'));
+    document.getElementById('main-vin-banner')?.classList.add('hidden');
 
-    if (screenName === 'encyclopedia') {
-        if (mainCalculator) mainCalculator.classList.add('hidden');
-        if (promoDatabase) promoDatabase.classList.add('hidden');
-        if (newsSection) newsSection.classList.add('hidden');
-        if (encyclopediaScreen) encyclopediaScreen.classList.remove('hidden');
-        if (navMain) navMain.classList.remove('active');
-        if (navEncy) navEncy.classList.add('active');
-        
+    if (screenName === 'main') {
+        MAIN_PROMO_SECTIONS.forEach(id => document.getElementById(id)?.classList.remove('hidden'));
+        document.getElementById('main-vin-banner')?.classList.remove('hidden');
+        setNavActive('main');
+    } else if (screenName === 'encyclopedia') {
+        document.getElementById(APP_SCREENS.encyclopedia)?.classList.remove('hidden');
+        setNavActive('encyclopedia');
         const searchInput = document.getElementById('db-search');
         if (searchInput) searchInput.value = '';
-        
-        // По умолчанию при входе рендерим текущую выбранную вкладку плиткой
         renderEncyclopedia();
-    } else {
-        if (mainCalculator) mainCalculator.classList.remove('hidden');
-        if (promoDatabase) promoDatabase.classList.remove('hidden');
-        if (newsSection) newsSection.classList.remove('hidden');
-        if (encyclopediaScreen) encyclopediaScreen.classList.add('hidden');
-        if (navMain) navMain.classList.add('active');
-        if (navEncy) navEncy.classList.remove('active');
+    } else if (screenName === 'news') {
+        document.getElementById(APP_SCREENS.news)?.classList.remove('hidden');
+        setNavActive('news');
+        renderNewsScreen();
+    } else if (screenName === 'garage') {
+        document.getElementById(APP_SCREENS.garage)?.classList.remove('hidden');
+        setNavActive('garage');
+        filterCars();
     }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-
-/**
- * 3. РЕНДЕРИНГ 3-Х ПРОМО-КАРТОЧЕК НА ГЛАВНОЙ
- */
 function renderPromoCards() {
     const container = document.getElementById('promo-database-container');
     if (!container) return;
-    
-    const popularCars = encyclopediaDatabase.filter(car => car.isPopular).slice(0, 3);
-    
-    container.innerHTML = popularCars.map(car => `
-        <div class="car-card">
-            <div style="font-size: 40px; text-align: center; margin-bottom: 10px;">${car.imagePlaceholder}</div>
-            <h3>${escapeHTML(car.name)}</h3>
-            <p style="color: #64748b; font-size: 13px;">Годы: ${car.years}</p>
-            <p style="margin: 10px 0; font-size: 14px; color: var(--text); opacity: 0.8;">${escapeHTML(car.summary)}</p>
-            <div style="margin-bottom: 15px; display: flex; gap: 8px; flex-wrap: wrap;">
-                <span class="reliability-badge reliability-${car.body.rating}">Кузов: ${car.body.rating === 'high' ? 'Отличный' : 'Средний'}</span>
-                <span class="reliability-badge reliability-${car.transmission.rating}">КПП: ${car.transmission.rating === 'high' ? 'Надежная' : car.transmission.rating === 'medium' ? 'Средняя' : 'Слабая'}</span>
-            </div>
-            <button class="btn-main btn-small" style="width: 100%;" onclick="viewCarDetails('${car.id}')">Читать обзор</button>
-        </div>
-    `).join('');
+
+    container.innerHTML = encyclopediaDatabase
+        .filter(car => car.isPopular)
+        .slice(0, 3)
+        .map(car => `
+            <div class="car-card">
+                <div class="card-emoji card-emoji--large">${car.imagePlaceholder}</div>
+                <h3>${escapeHTML(car.name)}</h3>
+                <p class="card-meta">Годы: ${car.years}</p>
+                <p class="tab-preview-summary">${escapeHTML(car.summary)}</p>
+                <div class="promo-badges">
+                    <span class="reliability-badge reliability-${car.body.rating}">Кузов: ${BODY_RELIABILITY_LABEL[car.body.rating] || 'Средний'}</span>
+                    <span class="reliability-badge reliability-${car.transmission.rating}">КПП: ${TRANSMISSION_RELIABILITY_LABEL[car.transmission.rating] || 'Средняя'}</span>
+                </div>
+                <button class="btn-main btn-small btn-card-full" onclick="viewCarDetails('${car.id}')">Читать обзор</button>
+            </div>`)
+        .join('');
 }
 
-
-/**
- * 4. СТРАНИЦА КОНКРЕТНОЙ МАШИНЫ (ДЕТАЛЬНЫЙ ОБЗОР)
- */
 function viewCarDetails(carId) {
     const encyclopediaScreen = document.getElementById('encyclopedia-screen');
-    if (encyclopediaScreen && encyclopediaScreen.classList.contains('hidden')) {
+    if (encyclopediaScreen?.classList.contains('hidden')) {
         switchScreen('encyclopedia');
     }
 
     const car = encyclopediaDatabase.find(c => c.id === carId);
-    if (!car) return;
-
     const container = document.getElementById('encyclopedia-main-container');
-    if (!container) return;
-    
+    if (!car || !container) return;
+
     container.innerHTML = `
         <button class="btn-main btn-small db-back-btn" onclick="renderEncyclopedia()">← Вернуться к списку авто</button>
-        
-        <div class="section-header" style="text-align: left; margin-bottom: 25px;">
-            <h2>${escapeHTML(car.name)} <span style="color: var(--primary);">⭐ ${car.rating}/10</span></h2>
+        <div class="section-header section-header--left">
+            <h2>${escapeHTML(car.name)} <span class="rating-highlight">⭐ ${car.rating}/10</span></h2>
             <p>Период выпуска: <strong>${car.years}</strong></p>
         </div>
-
         <div class="db-details-grid">
             <div class="db-details-card">
                 <h3>🛡️ Стойкость кузова к коррозии</h3>
-                <span class="reliability-badge reliability-${car.body.rating}">
-                    ${car.body.rating === 'high' ? 'Отличная стойкость' : car.body.rating === 'medium' ? 'Средняя стойкость' : 'Слабая стойкость'}
-                </span>
-                <p style="margin-top: 15px; font-size: 15px; line-height: 1.5;">${escapeHTML(car.body.text)}</p>
+                <span class="reliability-badge reliability-${car.body.rating}">${BODY_STRENGTH_LABEL[car.body.rating] || 'Средняя стойкость'}</span>
+                <p class="details-text">${escapeHTML(car.body.text)}</p>
             </div>
-
             <div class="db-details-card">
                 <h3>⚙️ Transmission и коробки передач</h3>
-                <span class="reliability-badge reliability-${car.transmission.rating}">
-                    ${car.transmission.rating === 'high' ? 'Высокая надежность' : car.transmission.rating === 'medium' ? 'Есть нюансы / Средняя' : 'Зона риска / Требует внимания'}
-                </span>
-                <p style="margin-top: 15px; font-size: 15px; line-height: 1.5;">${escapeHTML(car.transmission.text)}</p>
+                <span class="reliability-badge reliability-${car.transmission.rating}">${TRANSMISSION_STRENGTH_LABEL[car.transmission.rating] || 'Средняя'}</span>
+                <p class="details-text">${escapeHTML(car.transmission.text)}</p>
             </div>
-
             <div class="db-details-card">
                 <h3>🔧 Надежность линейки двигателей</h3>
-                <p style="font-size: 15px; line-height: 1.5; margin-top: 10px;">${escapeHTML(car.engines)}</p>
+                <p class="details-text">${escapeHTML(car.engines)}</p>
             </div>
-
             <div class="db-details-card">
                 <h3>⚠️ Частые болячки и слабые места</h3>
-                <ul style="margin-top: 10px; padding-left: 20px; font-size: 15px; line-height: 1.6;">
-                    ${car.weakPoints.map(point => `<li>${escapeHTML(point)}</li>`).join('')}
-                </ul>
+                <ul class="details-list">${car.weakPoints.map(point => `<li>${escapeHTML(point)}</li>`).join('')}</ul>
             </div>
-        </div>
-    `;
-    
+        </div>`;
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-
-/**
- * ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ
- */
-document.addEventListener('DOMContentLoaded', () => {
+function initEncyclopediaApp() {
     initEncyclopediaTabs();
     renderPromoCards();
-    renderEncyclopedia(); 
-});
+    renderEncyclopedia();
+}

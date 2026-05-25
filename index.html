@@ -35,9 +35,11 @@
                 <img src="logo.png" alt="MyRating.autos" class="logo-image">
             </div>
 
-        <nav class="nav-links" style="display: flex; gap: 15px; margin-right: auto; margin-left: 20px;">
+        <nav class="nav-links" style="display: flex; gap: 15px; margin-right: auto; margin-left: 20px; flex-wrap: wrap;">
             <a href="#" id="nav-main" class="nav-link active" onclick="switchScreen('main'); return false;">Главная</a>
             <a href="#" id="nav-encyclopedia" class="nav-link" onclick="switchScreen('encyclopedia'); return false;">База надежности</a>
+            <a href="#" id="nav-news" class="nav-link" onclick="switchScreen('news'); return false;">Новости</a>
+            <a href="#" id="nav-garage" class="nav-link" onclick="switchScreen('garage'); return false;">Мой гараж</a>
         </nav>
 
             <div class="header-actions">
@@ -63,19 +65,47 @@
     
                 <div id="promo-database-container" class="db-promo-grid"></div>
     
-                <div style="text-align: center; margin-top: 30px;">
+                <div class="section-cta">
                     <button class="btn-main" onclick="switchScreen('encyclopedia')">Смотреть всю базу знаний →</button>
                 </div>
             </section>
 
-            <section id="encyclopedia-screen" class="container hidden" style="margin-top: 30px; margin-bottom: 5px;">
-                    <div style="margin-bottom: 30px;">
-                    <h1 style="font-size: 2.2rem; margin-bottom: 10px;">📚 Энциклопедия надежности MyRating</h1>
-                    <p style="color: #64748b; margin: 0;">Детальный разбор слабых мест, ресурса агрегатов и стойкости к ржавчине популярных автомобилей</p>
+            <section id="promo-news-section" class="main-section">
+                <div class="section-header">
+                    <h2>📰 Свежие обновления и автоновости</h2>
+                    <p>Инсайды портала, аналитика рынка и анонсы новых функций</p>
                 </div>
 
-                <div style="margin-bottom: 30px; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
-                    <input type="text" id="db-search" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 16px; box-sizing: border-box;" placeholder="Поиск по марке или модели (например: Volvo, Passat, Focus)..." oninput="filterDatabase()">
+                <div id="promo-news-container" class="db-promo-grid"></div>
+
+                <div class="section-cta">
+                    <button class="btn-main" onclick="switchScreen('news')">Читать все новости →</button>
+                </div>
+            </section>
+
+            <section id="promo-garage-section" class="main-section">
+                <div class="section-header">
+                    <h2>🏎️ Мой гараж</h2>
+                    <p>Рассчитывай рейтинг, сравнивай модели и храни подборку в одном месте</p>
+                </div>
+
+                <div id="promo-garage-container" class="grid-layout promo-garage-grid"></div>
+
+                <div class="section-cta">
+                    <button class="btn-main" onclick="switchScreen('garage')">Открыть мой гараж →</button>
+                </div>
+            </section>
+
+            <div id="main-vin-banner" data-vin-banner></div>
+
+            <section id="encyclopedia-screen" class="app-screen container hidden">
+                <div class="screen-intro">
+                    <h1>📚 Энциклопедия надежности MyRating</h1>
+                    <p>Детальный разбор слабых мест, ресурса агрегатов и стойкости к ржавчине популярных автомобилей</p>
+                </div>
+
+                <div class="screen-search-box">
+                    <input type="text" id="db-search" placeholder="Поиск по марке или модели (например: Volvo, Passat, Focus)..." oninput="filterDatabase()">
                 </div>
 
                 <div class="encyclopedia-tabs">
@@ -89,16 +119,29 @@
 
                 <div id="encyclopedia-main-container">
                     </div>
+                <div data-vin-banner></div>
             </section>
 
-            <section class="news-section container">
-                <div class="news-header">
-                    <h2 class="news-title">📰 Свежие обновления и автоновости</h2>
-                    <button id="toggle-archive-btn" class="link-more" onclick="toggleNewsArchive()">Показать все новости</button>
+            <section id="news-screen" class="app-screen container hidden">
+                <div class="screen-intro">
+                    <h1>📰 Новости MyRating.autos</h1>
+                    <p>Обновления портала, аналитика рынка и полезные инсайды для автовладельцев</p>
                 </div>
-        
-                <div id="news-grid" class="news-grid">
+
+                <div class="screen-search-box">
+                    <input type="text" id="news-search" placeholder="Поиск по заголовку или тексту новости..." oninput="filterNews()">
                 </div>
+
+                <div class="encyclopedia-tabs">
+                    <button class="enc-tab-btn active" data-news-tab="all">📋 Все</button>
+                    <button class="enc-tab-btn" data-news-tab="Обновление">🚀 Обновления</button>
+                    <button class="enc-tab-btn" data-news-tab="Аналитика">📊 Аналитика</button>
+                    <button class="enc-tab-btn" data-news-tab="Функционал">⚙️ Функционал</button>
+                    <button class="enc-tab-btn" data-news-tab="База данных">🗄️ База данных</button>
+                </div>
+
+                <div id="news-screen-grid" class="news-grid"></div>
+                <div data-vin-banner></div>
             </section>
 
     <div id="news-modal" class="modal" aria-hidden="true">
@@ -113,6 +156,12 @@
         </div>
     </div>
 
+
+            <section id="garage-screen" class="app-screen container hidden">
+                <div class="screen-intro">
+                    <h1>🏎️ Мой гараж</h1>
+                    <p>Добавляй автомобили, считай рейтинг и сравнивай до трёх моделей одновременно</p>
+                </div>
 
             <section class="add-form">
                 <div class="form-grid">
@@ -189,16 +238,46 @@
                 <button class="btn-main" onclick="restoreDefaults()">Восстановить мой гараж</button>
             </div>
 
-            <section class="promo-banner">
-                <div class="promo-content">
-                    <div class="promo-text">
-                        <h3>🔍 Проверка истории по VIN</h3>
-                        <p>ДТП, пробеги и залоги в одном отчете.</p>
-                    </div>
-                    <a href="https://autoteka.ru/" target="_blank" class="btn-main btn-small vin-btn">Проверить в Автотеке</a>
-                </div>
+            <div data-vin-banner></div>
+
             </section>
         </main>
+
+        <section id="feedback-section" class="feedback-section" aria-labelledby="feedback-heading">
+            <div class="section-header">
+                <h2 id="feedback-heading">💬 Обратная связь</h2>
+                <p>Предложения, баги и вопросы — мы на связи в Telegram и по email</p>
+            </div>
+
+            <div class="feedback-contacts-grid">
+                <div class="contact-block">
+                    <p>Есть предложения или заметили баг?</p>
+                    <a href="https://t.me/myrating_autos_bot" target="_blank" rel="noopener noreferrer" class="btn-footer btn-tg-bot">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M21.43 3.9L2.3 11.28c-1.3.52-1.3 1.25-.24 1.57l4.9 1.53 1.14 3.5c.14.38.07.53.47.53.3 0 .44-.14.6-.3l1.55-1.5 3.22 2.37c.6.33 1.02.16 1.17-.55l2.1-9.92c.22-.88-.34-1.28-1.1-1.1z" fill="currentColor"/>
+                        </svg>
+                        <span>Написать в чат-бот</span>
+                    </a>
+                </div>
+
+                <div class="contact-block">
+                    <p>Присоединяйтесь к нашему сообществу:</p>
+                    <a href="https://t.me/myrating_autos" target="_blank" rel="noopener noreferrer" class="btn-footer btn-tg-channel">
+                        <svg class="tg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M21.43 3.9L2.3 11.28c-1.3.52-1.3 1.25-.24 1.57l4.9 1.53 1.14 3.5c.14.38.07.53.47.53.3 0 .44-.14.6-.3l1.55-1.5 3.22 2.37c.6.33 1.02.16 1.17-.55l2.1-9.92c.22-.88-.34-1.28-1.1-1.1z" fill="currentColor"/>
+                        </svg>
+                        <span>Канал в Telegram</span>
+                    </a>
+                </div>
+
+                <div class="contact-block">
+                    <p>Остались вопросы?</p>
+                    <button type="button" onclick="openContactModal()" class="btn-footer btn-email">
+                        <span aria-hidden="true">✉️</span> Написать письмо
+                    </button>
+                </div>
+            </div>
+        </section>
 
         <section class="share-box">
             <span>Поделиться проектом:</span>
@@ -215,36 +294,6 @@
 <!-- start footer -->
 <footer class="site-footer">
     <div class="footer-content">
-        <div class="footer-contacts-grid">
-
-<div class="contact-block">
-    <p>Есть предложения или заметили баг?</p>
-    <a href="https://t.me/myrating_autos_bot" target="_blank" class="btn-footer btn-tg-bot">
-        <svg class="tg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21.43 3.9L2.3 11.28c-1.3.52-1.3 1.25-.24 1.57l4.9 1.53 1.14 3.5c.14.38.07.53.47.53.3 0 .44-.14.6-.3l1.55-1.5 3.22 2.37c.6.33 1.02.16 1.17-.55l2.1-9.92c.22-.88-.34-1.28-1.1-1.1z" fill="currentColor"/>
-        </svg>
-        <span>Написать в чат-бот</span>
-    </a>
-</div>
-
-<div class="contact-block">
-    <p>Присоединяйтесь к нашему сообществу:</p>
-    <a href="https://t.me/myrating_autos" target="_blank" class="btn-footer btn-tg-channel">
-        <svg class="tg-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21.43 3.9L2.3 11.28c-1.3.52-1.3 1.25-.24 1.57l4.9 1.53 1.14 3.5c.14.38.07.53.47.53.3 0 .44-.14.6-.3l1.55-1.5 3.22 2.37c.6.33 1.02.16 1.17-.55l2.1-9.92c.22-.88-.34-1.28-1.1-1.1z" fill="currentColor"/>
-        </svg>
-        <span>Канал в Telegram</span>
-    </a>
-</div>
-
-            <div class="contact-block">
-                <p>Остались вопросы?</p>
-                <button onclick="openContactModal()" class="btn-footer btn-email">
-                    <span>✉️</span> Написать письмо
-                </button>
-            </div>
-        </div>
-
         <div class="footer-info">
             <h3>🚀 Проект в развитии</h3>
             <p>База автомобилей постоянно пополняется. Мы работаем над новыми функциями аналитики.</p>

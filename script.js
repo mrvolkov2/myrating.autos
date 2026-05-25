@@ -1,6 +1,29 @@
-// Вспомогательная функция для защиты от XSS
+const HEADER_SCROLL_OFFSET = 95;
+
+const REGION_LABELS = {
+    usa: '<img src="flag-usa.svg" class="flag-icon" alt=""> США',
+    eu: '<img src="flag-eu.svg" class="flag-icon" alt=""> Европа',
+    asia: '<img src="flag-asia.svg" class="flag-icon" alt=""> Азия',
+    ru: '<img src="flag-ru.svg" class="flag-icon" alt=""> РФ / СНГ'
+};
+
+const REGION_LABELS_SHORT = {
+    usa: '🇺🇸 США',
+    eu: '🇪🇺 Европа',
+    asia: '🌏 Азия',
+    ru: '🇷🇺 РФ / СНГ'
+};
+
+const CONDITION_LABELS = {
+    1: '💎 Идеал',
+    0.85: '🎨 Косметика',
+    0.6: '🔨 Бит/Крашен',
+    0.3: '💀 Тотал'
+};
+
 function escapeHTML(str) {
-    return str.replace(/[&<>'"]/g, 
+    if (!str) return '';
+    return String(str).replace(/[&<>'"]/g,
         tag => ({
             '&': '&amp;',
             '<': '&lt;',
@@ -9,6 +32,19 @@ function escapeHTML(str) {
             '"': '&quot;'
         }[tag] || tag)
     );
+}
+
+function getRatingColorClass(rating) {
+    if (rating >= 8) return 'rating-high';
+    if (rating >= 5) return 'rating-mid';
+    return 'rating-low';
+}
+
+function scrollToElement(elementOrId, offset = HEADER_SCROLL_OFFSET) {
+    const el = typeof elementOrId === 'string' ? document.getElementById(elementOrId) : elementOrId;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
 }
 
 const CARS_PER_PAGE = 6; // Сколько машин показывать изначально и за один клик
@@ -38,7 +74,7 @@ const defaultCars = [
     { id: 20, name: "Land Rover Defender", price: 88000, rating: 9.2, region: "eu", year: 2023, mileage: 18, condition: 1 },
     { id: 21, name: "Lada Vesta Sport", price: 14000, rating: 6.0, region: "ru", year: 2019, mileage: 45, condition: 0.85 },
     { id: 22, name: "Geely Monjaro", price: 38000, rating: 8.8, region: "ru", year: 2023, mileage: 15, condition: 1 },
-    { id: 22, name: "VW Polo", price: 14500, rating: 6.5, region: "eu", year: 2020, mileage: 65, condition: 0.85 },
+    { id: 25, name: "VW Polo", price: 14500, rating: 6.5, region: "eu", year: 2020, mileage: 65, condition: 0.85 },
     { id: 23, name: "Kia Rio", price: 14000, rating: 6.3, region: "asia", year: 2019, mileage: 80, condition: 0.80 },
     { id: 24, name: "Hyundai Solaris", price: 15200, rating: 7.4, region: "asia", year: 2020, mileage: 70, condition: 0.85 },
 ];
@@ -87,6 +123,63 @@ function updateClearButtonState() {
     }
 }
 
+function buildGarageCardHTML(car, options = {}) {
+    const { showCompare = false, showDelete = false } = options;
+    const ratingColorClass = getRatingColorClass(car.rating);
+    const yearText = car.year ? `${car.year} г.` : '—';
+    const mileageText = car.mileage !== undefined ? `${car.mileage} тыс. км` : '—';
+    const conditionText = car.condition ? (CONDITION_LABELS[car.condition] || '—') : '—';
+    const regionBadge = car.region
+        ? `<div class="region-badge">${REGION_LABELS[car.region] || '🌐 Другое'}</div>`
+        : '';
+
+    const headerRight = showDelete
+        ? `<div class="delete-wrapper">
+              <span class="delete-label">Удалить</span>
+              <button onclick="deleteCar(${car.id})" class="btn-delete-card" title="Удалить">✕</button>
+           </div>`
+        : '';
+
+    let compareButton = '';
+    if (showCompare) {
+        const isComparing = compareList.some(c => c.id === car.id);
+        const isCompareLimitReached = compareList.length >= compareLimit;
+        const shouldDisableCompareButton = isCompareLimitReached && !isComparing;
+        compareButton = `
+            <button onclick="toggleCompare(${car.id})"
+                    class="btn-main btn-small btn-compare-full ${isComparing ? 'active' : ''}"
+                    ${shouldDisableCompareButton ? 'disabled' : ''}>
+                ${isComparing ? `✅ В сравнении (${compareList.length}/${compareLimit})` : `⚖️ Добавить к сравнению (${compareList.length}/${compareLimit})`}
+            </button>`;
+    }
+
+    return `
+        <div class="car-card">
+            <div class="car-card-top">
+                ${regionBadge}
+                ${headerRight}
+            </div>
+            <h2>${escapeHTML(car.name)}</h2>
+            <div class="car-specs">
+                <span>📅 ${yearText}</span>
+                <span>🛣️ ${mileageText}</span>
+                <span>🛠️ ${conditionText}</span>
+            </div>
+            <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
+            <div class="rating-container">
+                <div class="rating-header">
+                    <div class="rating-value ${ratingColorClass}">${car.rating}</div>
+                    <span class="rating-label">РЕЙТИНГ</span>
+                </div>
+                <div class="rating-scale-bg">
+                    <div class="rating-scale-fill ${ratingColorClass}"
+                         style="width: ${car.rating * 10}%; background-color: currentColor;"></div>
+                </div>
+            </div>
+            ${compareButton}
+        </div>`;
+}
+
 function filterCars() {
     const query = document.getElementById('search-input').value.toLowerCase();
     let filtered = cars;
@@ -126,20 +219,6 @@ function render(data = cars) {
     if (statsPulseTimer) clearTimeout(statsPulseTimer);
     statsPulseTimer = setTimeout(() => statsCount.classList.remove('pulse'), 350);
 
-    const regionLabels = {
-        'usa': '<img src="flag-usa.svg" class="flag-icon" alt=""> США',
-        'eu': '<img src="flag-eu.svg" class="flag-icon" alt=""> Европа',
-        'asia': '<img src="flag-asia.svg" class="flag-icon" alt=""> Азия',
-        'ru': '<img src="flag-ru.svg" class="flag-icon" alt=""> РФ / СНГ'
-    };
-
-    const conditionLabels = {
-        1: '💎 Идеал',
-        0.85: '🎨 Косметика',
-        0.6: '🔨 Бит/Крашен',
-        0.3: '💀 Тотал'
-    };
-
     if (data.length === 0) {
         list.innerHTML = '';
         emptyState.style.display = 'block';
@@ -151,54 +230,7 @@ function render(data = cars) {
         let htmlString = '';
         
         carsToRender.forEach((car) => {
-            const isComparing = compareList.some(c => c.id === car.id);
-            const isCompareLimitReached = compareList.length >= compareLimit;
-            const shouldDisableCompareButton = isCompareLimitReached && !isComparing;
-            const regionBadge = car.region ? `<div class="region-badge">${regionLabels[car.region] || '🌐 Другое'}</div>` : '';
-            const safeName = escapeHTML(car.name); 
-            
-            let ratingColorClass = 'rating-low';
-            if (car.rating >= 8) ratingColorClass = 'rating-high';
-            else if (car.rating >= 5) ratingColorClass = 'rating-mid';
-
-            const yearText = car.year ? `${car.year} г.` : '—';
-            const mileageText = car.mileage !== undefined ? `${car.mileage} тыс. км` : '—';
-            const conditionText = car.condition ? (conditionLabels[car.condition] || '—') : '—';
-            
-            htmlString += `
-                <div class="car-card">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        ${regionBadge}
-                        <div class="delete-wrapper">
-                          <span class="delete-label">Удалить</span>
-                          <button onclick="deleteCar(${car.id})" class="btn-delete-card" title="Удалить">✕</button>
-                        </div>
-                    </div>
-                    <h2>${safeName}</h2>
-                    <div class="car-specs">
-                        <span>📅 ${yearText}</span>
-                        <span>🛣️ ${mileageText}</span>
-                        <span>🛠️ ${conditionText}</span>
-                    </div>
-                    <p>Цена: <strong>$${car.price.toLocaleString()}</strong></p>
-                    
-                    <div class="rating-container">
-                        <div class="rating-header">
-                             <div class="rating-value ${ratingColorClass}">${car.rating}</div>
-                             <span style="font-size: 0.8rem; font-weight: 600; opacity: 0.7;">РЕЙТИНГ</span>
-                        </div>
-                        <div class="rating-scale-bg">
-                             <div class="rating-scale-fill ${ratingColorClass}" 
-                                 style="width: ${car.rating * 10}%; background-color: currentColor;"></div>
-                        </div>
-                    </div>
-
-                    <button onclick="toggleCompare(${car.id})" 
-                            class="btn-main btn-small btn-compare-full ${isComparing ? 'active' : ''}"
-                            ${shouldDisableCompareButton ? 'disabled' : ''}>
-                        ${isComparing ? `✅ В сравнении (${compareList.length}/${compareLimit})` : `⚖️ Добавить к сравнению (${compareList.length}/${compareLimit})`}
-                    </button>
-                </div>`;
+            htmlString += buildGarageCardHTML(car, { showCompare: true, showDelete: true });
         });
         
         list.innerHTML = htmlString;
@@ -218,7 +250,7 @@ function render(data = cars) {
             if (visibleCarsCount < data.length) {
                 loadMoreBtn.style.display = 'inline-block';
             } else {
-                loadMoreBtn.style.style.display = 'none'; // Все машины на экране — прячем её
+                loadMoreBtn.style.display = 'none'; // Все машины на экране — прячем её
             }
 
             // 3. Логика для кнопки "Свернуть" (появляется, как только вышли за лимит 6 машин)
@@ -230,12 +262,13 @@ function render(data = cars) {
         }
 
 
-    } // Закрыли else
+    }
 
     updateDashboard();
     updateClearButtonState();
     localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
-} // Закрыли функцию render
+    renderPromoGarage();
+}
 
 
 function loadMoreCars() {
@@ -245,25 +278,9 @@ function loadMoreCars() {
 
 
 function collapseCars() {
-    visibleCarsCount = CARS_PER_PAGE; // Сбрасываем до начальных 6
+    visibleCarsCount = CARS_PER_PAGE;
     render(currentFilteredCars);
-    
-    // Находим секцию фильтров по региону
-    const filtersElement = document.getElementById('region-filters');
-    
-    if (filtersElement) {
-        // Получаем точное расстояние от верха страницы до панели фильтров
-        const elementPosition = filtersElement.getBoundingClientRect().top + window.pageYOffset;
-        
-        // Высота твоей фиксированной шапки (80px) + берем небольшой запас в 15px для красоты
-        const offsetPosition = elementPosition - 95; 
-
-        // Плавно скроллим страницу с учетом отступа под шапку
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-        });
-    }
+    scrollToElement('region-filters');
 }
 
 
@@ -542,16 +559,57 @@ function toggleTheme() {
     localStorage.setItem('myrating_theme', isDark ? 'dark' : 'light');
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('myrating_theme') === 'dark') {
-        document.body.classList.add('dark-theme');
-        document.getElementById('theme-icon').src = 'theme_light.png';
-    } else {
-        document.getElementById('theme-icon').src = 'theme_night.png';
-    }
+function initTheme() {
+    const isDark = localStorage.getItem('myrating_theme') === 'dark';
+    document.body.classList.toggle('dark-theme', isDark);
+    document.getElementById('theme-icon').src = isDark ? 'theme_light.png' : 'theme_night.png';
+}
+
+function initNewsModal() {
+    const newsModal = document.getElementById('news-modal');
+    if (!newsModal) return;
+    newsModal.addEventListener('click', (e) => {
+        if (e.target === newsModal) closeNewsModal();
+    });
+}
+
+const VIN_BANNER_HTML = `
+    <section class="vin-services-section" aria-label="Рекомендуемые сервисы">
+        <div class="section-header">
+            <h2>⭐ Рекомендуемые сервисы</h2>
+            <p>Проверенные партнёры для проверки автомобиля по VIN перед покупкой</p>
+        </div>
+        <section class="promo-banner">
+            <div class="promo-content">
+                <div class="promo-text">
+                    <h3>🔍 Проверка истории по VIN</h3>
+                    <p>ДТП, пробеги и залоги в одном отчете.</p>
+                </div>
+                <a href="https://autoteka.ru/" target="_blank" rel="noopener noreferrer" class="btn-main btn-small vin-btn">Проверить в Автотеке</a>
+            </div>
+        </section>
+    </section>`;
+
+function mountVinBanners() {
+    document.querySelectorAll('[data-vin-banner]').forEach(slot => {
+        slot.innerHTML = VIN_BANNER_HTML;
+    });
+}
+
+function initApp() {
+    initTheme();
     render();
     setupShareLinks();
-});
+    renderPromoNews();
+    initNewsTabs();
+    initNewsModal();
+    initModalClickOutside();
+    initContactForm();
+    mountVinBanners();
+    if (typeof initEncyclopediaApp === 'function') initEncyclopediaApp();
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
 
 function setupShareLinks() {
     const url = encodeURIComponent(window.location.href);
@@ -576,79 +634,55 @@ function closeContactModal() {
     document.getElementById('contact-modal').style.display = 'none';
 }
 
-// Закрытие модалки при клике вне её области
-window.onclick = function(event) {
-    const compareModal = document.getElementById('compare-modal');
-    const contactModal = document.getElementById('contact-modal');
-    const clearModal = document.getElementById('clear-modal');
-    if (event.target == compareModal) {
-        closeCompare();
-    }
-    if (event.target == contactModal) {
-        closeContactModal();
-    }
-    if (event.target == clearModal) {
-        closeClearModal();
-    }
+function initModalClickOutside() {
+    window.addEventListener('click', (event) => {
+        if (event.target === document.getElementById('compare-modal')) closeCompare();
+        if (event.target === document.getElementById('contact-modal')) closeContactModal();
+        if (event.target === document.getElementById('clear-modal')) closeClearModal();
+    });
 }
 
-// --- Асинхронная отправка формы (AJAX) ---
-const contactForm = document.getElementById('contact-form');
-const contactStatus = document.getElementById('contact-status');
+function initContactForm() {
+    const contactForm = document.getElementById('contact-form');
+    const contactStatus = document.getElementById('contact-status');
+    if (!contactForm || !contactStatus) return;
 
-if (contactForm) {
-    contactForm.addEventListener('submit', async function(event) {
-        event.preventDefault(); // Останавливаем стандартную перезагрузку страницы
-        
-        // Меняем текст кнопки на время отправки, чтобы пользователь не кликал дважды
+    contactForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
         const submitBtn = contactForm.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.innerText;
         submitBtn.innerText = 'Отправка...';
         submitBtn.disabled = true;
 
-        const data = new FormData(event.target);
-
         try {
-            // Отправляем запрос на Formspree
             const response = await fetch(event.target.action, {
                 method: contactForm.method,
-                body: data,
-                headers: {
-                    'Accept': 'application/json'
-                }
+                body: new FormData(event.target),
+                headers: { Accept: 'application/json' }
             });
 
             if (response.ok) {
-                // Если всё супер
                 contactStatus.innerText = '✅ Сообщение успешно отправлено!';
-                contactStatus.style.color = '#22c55e'; // Зеленый цвет успеха
+                contactStatus.style.color = '#22c55e';
                 contactStatus.style.display = 'block';
-                contactForm.reset(); // Очищаем поля формы
-                
-                // Закрываем модалку через 3 секунды
+                contactForm.reset();
                 setTimeout(() => {
                     closeContactModal();
                     contactStatus.style.display = 'none';
                 }, 3000);
-
             } else {
-                // Если Formspree вернул ошибку (например, неверный email)
                 const responseData = await response.json();
-                if (Object.hasOwn(responseData, 'errors')) {
-                    contactStatus.innerText = responseData.errors.map(error => error.message).join(", ");
-                } else {
-                    contactStatus.innerText = '❌ Произошла ошибка при отправке.';
-                }
-                contactStatus.style.color = 'var(--danger)'; // Красный цвет из твоих переменных
+                contactStatus.innerText = Object.hasOwn(responseData, 'errors')
+                    ? responseData.errors.map(error => error.message).join(', ')
+                    : '❌ Произошла ошибка при отправке.';
+                contactStatus.style.color = 'var(--danger)';
                 contactStatus.style.display = 'block';
             }
-        } catch (error) {
-            // Если пропал интернет
+        } catch {
             contactStatus.innerText = '❌ Ошибка сети. Проверьте подключение.';
             contactStatus.style.color = 'var(--danger)';
             contactStatus.style.display = 'block';
         } finally {
-            // В любом случае возвращаем кнопку в исходное состояние
             submitBtn.innerText = originalBtnText;
             submitBtn.disabled = false;
         }
@@ -692,68 +726,102 @@ const newsDatabase = [
     }
 ];
 
-let isArchiveExpanded = false; // Флаг: развернут ли архив старых новостей
+let currentNewsTab = 'all';
 
-
-// NEWS START
-// Функция рендеринга новостей
-function renderNews() {
-    const newsGrid = document.getElementById('news-grid');
-    if (!newsGrid) return;
-
-    // Определяем, сколько новостей выводить: 3 или все
-    const newsToRender = isArchiveExpanded ? newsDatabase : newsDatabase.slice(0, 3);
-    
-    let html = '';
-    newsToRender.forEach(item => {
-        html += `
-            <div class="news-card">
-                <div>
-                    <div class="news-card-header">
-                        <span class="news-date">🗓️ ${item.date}</span>
-                        <span class="news-tag">${item.tag}</span>
-                    </div>
-                    <h3>${escapeHTML(item.title)}</h3>
-                    <p class="news-excerpt">${escapeHTML(item.excerpt)}</p>
+function buildNewsCardHTML(item) {
+    return `
+        <div class="news-card">
+            <div>
+                <div class="news-card-header">
+                    <span class="news-date">🗓️ ${item.date}</span>
+                    <span class="news-tag">${escapeHTML(item.tag)}</span>
                 </div>
-                <button class="btn-read-more" onclick="openNewsModal(${item.id})">Подробнее →</button>
+                <h3>${escapeHTML(item.title)}</h3>
+                <p class="news-excerpt">${escapeHTML(item.excerpt)}</p>
             </div>
-        `;
-    });
-    
-    newsGrid.innerHTML = html;
+            <button class="btn-read-more" onclick="openNewsModal(${item.id})">Подробнее →</button>
+        </div>
+    `;
 }
 
-// Переключение режима "Все новости / Скрыть старые"
-// Переключение режима "Все новости / Скрыть старые"
-function toggleNewsArchive() {
-    const btn = document.getElementById('toggle-archive-btn');
-    isArchiveExpanded = !isArchiveExpanded;
-    
-    renderNews();
-    
-    if (isArchiveExpanded) {
-        btn.textContent = "Скрыть старые новости";
-    } else {
-        btn.textContent = "Показать все новости";
-        
-        // Находим блок дашборда статистики, который идет перед новостями
-        const dashboardElement = document.querySelector('.dashboard');
-        
-        if (dashboardElement) {
-            // Считаем точные координаты дашборда на странице
-            const elementPosition = dashboardElement.getBoundingClientRect().top + window.pageYOffset;
-            
-            // Вычитаем высоту шапки (80px) + 15px для красивого отступа
-            const offsetPosition = elementPosition - 95;
-            
-            // Плавно поднимаем пользователя так, чтобы дашборд встал ровно под шапку
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
-        }
+function getFilteredNews() {
+    const searchInput = document.getElementById('news-search');
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+    return newsDatabase.filter(item => {
+        const matchesTab = currentNewsTab === 'all' || item.tag === currentNewsTab;
+        const haystack = `${item.title} ${item.excerpt} ${item.tag}`.toLowerCase();
+        const matchesSearch = !query || haystack.includes(query);
+        return matchesTab && matchesSearch;
+    });
+}
+
+function renderPromoNews() {
+    const container = document.getElementById('promo-news-container');
+    if (!container) return;
+
+    container.innerHTML = newsDatabase.slice(0, 3).map(item => `
+        <div class="car-card news-promo-card">
+            <div class="news-card-header">
+                <span class="news-date">🗓️ ${item.date}</span>
+                <span class="news-tag">${escapeHTML(item.tag)}</span>
+            </div>
+            <h3 class="promo-card-title">${escapeHTML(item.title)}</h3>
+            <p class="news-excerpt news-excerpt--promo">${escapeHTML(item.excerpt)}</p>
+            <button class="btn-main btn-small btn-card-full" onclick="openNewsModal(${item.id})">Читать новость</button>
+        </div>
+    `).join('');
+}
+
+function renderNewsScreen() {
+    const newsGrid = document.getElementById('news-screen-grid');
+    if (!newsGrid) return;
+
+    const filtered = getFilteredNews();
+
+    if (filtered.length === 0) {
+        newsGrid.innerHTML = '<div class="empty-message empty-message--grid"><p>Ничего не найдено. Попробуйте другой запрос или категорию.</p></div>';
+        return;
     }
+
+    newsGrid.innerHTML = filtered.map(item => buildNewsCardHTML(item)).join('');
+}
+
+function filterNews() {
+    renderNewsScreen();
+}
+
+function initNewsTabs() {
+    const tabButtons = document.querySelectorAll('[data-news-tab]');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            currentNewsTab = e.currentTarget.getAttribute('data-news-tab');
+            renderNewsScreen();
+        });
+    });
+}
+
+function renderPromoGarage() {
+    const container = document.getElementById('promo-garage-container');
+    if (!container) return;
+
+    if (cars.length === 0) {
+        container.innerHTML = `
+            <div class="car-card empty-message empty-message--grid">
+                <div class="card-emoji card-emoji--large">📁</div>
+                <h3>Гараж пуст</h3>
+                <p class="promo-card-excerpt">Добавьте первый автомобиль или восстановите демо-набор</p>
+                <button class="btn-main btn-small btn-card-full" onclick="switchScreen('garage'); restoreDefaults();">Восстановить гараж</button>
+            </div>`;
+        return;
+    }
+
+    const topCars = [...cars].sort((a, b) => b.rating - a.rating).slice(0, 3);
+    container.innerHTML = topCars
+        .map(car => buildGarageCardHTML(car, { showCompare: false, showDelete: false }))
+        .join('');
 }
 
 // Открытие модального окна новости
@@ -778,15 +846,3 @@ function closeNewsModal() {
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = ''; // Возвращаем скролл
 }
-
-// Инициализация вызова при загрузке страницы
-document.addEventListener('DOMContentLoaded', () => {
-    renderNews();
-    // Закрытие модалки по клику на оверлей вне контента
-    const newsModal = document.getElementById('news-modal');
-    if (newsModal) {
-        newsModal.addEventListener('click', (e) => {
-            if (e.target === newsModal) closeNewsModal();
-        });
-    }
-});
