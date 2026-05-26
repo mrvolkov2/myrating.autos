@@ -42,12 +42,30 @@ body.compare-bar-visible {
     position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height);
     background: var(--card-bg); border-bottom: 1px solid var(--border);
     display: flex; align-items: center; z-index: 1000;
+    transition: height 0.3s ease;
 }
 .header-content { 
     width: 100%; max-width: 1200px; margin: 0 auto;
     display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
 }
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+}
 .logo-image { height: 35px; display: block; }
+
+/* Навигационные ссылки (Десктоп) */
+.nav-links {
+    display: flex;
+    gap: 15px;
+    margin-right: auto;
+    margin-left: 20px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+}
 
 .theme-btn {
     display: flex; align-items: center; gap: 8px; background: var(--bg);
@@ -55,6 +73,63 @@ body.compare-bar-visible {
     border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px;
 }
 .theme-btn img { height: 18px; width: 18px; }
+
+/* Адаптивность для мобильных экранов (до 768px) */
+@media (max-width: 768px) {
+    :root {
+        /* Увеличиваем высоту хедера под двухстрочный макет */
+        --header-height: 115px;
+    }
+
+    .header-content {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        row-gap: 10px;
+        padding: 10px 15px;
+    }
+
+    .logo-wrapper {
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .header-actions {
+        grid-column: 2;
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    /* Навигация превращается в аккуратную прокручиваемую ленту без переносов */
+    .nav-links {
+        grid-column: 1 / span 2;
+        grid-row: 2;
+        margin: 0;
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Скрытие скроллбара в Firefox */
+    }
+
+    .nav-links::-webkit-scrollbar {
+        display: none; /* Скрытие скроллбара в Chrome/Safari */
+    }
+
+    .nav-link {
+        padding: 6px 12px;
+        font-size: 13.5px;
+        flex-shrink: 0; /* Предотвращает сжатие ссылок */
+    }
+}
+
+
 
 /* КНОПКИ */
 .btn-main {
