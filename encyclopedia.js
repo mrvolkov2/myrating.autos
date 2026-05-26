@@ -60,8 +60,13 @@ const encyclopediaDatabase = [
 const MAIN_PROMO_SECTIONS = [
     'promo-database-section',
     'promo-news-section',
-    'promo-garage-section'
+    'promo-garage-section',
+    'garage-tools-panel',
+    'promo-garage-cards'
 ];
+
+const GARAGE_SHARED_UI = ['garage-tools-panel'];
+const GARAGE_TAB_ONLY = ['garage-screen-intro', 'garage-screen'];
 
 const APP_SCREENS = {
     encyclopedia: 'encyclopedia-screen',
@@ -184,6 +189,8 @@ function setNavActive(screenName) {
 function switchScreen(screenName) {
     MAIN_PROMO_SECTIONS.forEach(id => document.getElementById(id)?.classList.add('hidden'));
     Object.values(APP_SCREENS).forEach(id => document.getElementById(id)?.classList.add('hidden'));
+    GARAGE_SHARED_UI.forEach(id => document.getElementById(id)?.classList.add('hidden'));
+    GARAGE_TAB_ONLY.forEach(id => document.getElementById(id)?.classList.add('hidden'));
     document.getElementById('main-vin-banner')?.classList.add('hidden');
 
     if (screenName === 'main') {
@@ -201,7 +208,8 @@ function switchScreen(screenName) {
         setNavActive('news');
         renderNewsScreen();
     } else if (screenName === 'garage') {
-        document.getElementById(APP_SCREENS.garage)?.classList.remove('hidden');
+        GARAGE_TAB_ONLY.forEach(id => document.getElementById(id)?.classList.remove('hidden'));
+        GARAGE_SHARED_UI.forEach(id => document.getElementById(id)?.classList.remove('hidden'));
         setNavActive('garage');
         filterCars();
     }

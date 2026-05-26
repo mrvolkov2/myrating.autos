@@ -128,6 +128,23 @@ body.compare-bar-visible {
     margin-top: 4px;
     align-items: center;
 }
+
+.sort-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.sort-btn .sort-arrow {
+    font-size: 1rem;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.sort-btn--active {
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
 #clear-all-btn {
     margin-left: auto; /* Смещает кнопку в самый край */
 }
@@ -720,6 +737,31 @@ body.dark-theme .btn-secondary {
 
 .promo-garage-grid {
     margin-top: 20px;
+}
+
+.garage-tools-panel .add-form {
+    margin-bottom: 30px;
+}
+
+.garage-tools-panel .controls .sort-buttons {
+    width: 100%;
+    margin-top: 4px;
+}
+
+.garage-page-intro {
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+.controls--garage-only {
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.controls--garage-only .sort-buttons {
+    width: auto;
+    margin-top: 0;
+    margin-left: auto;
 }
 
 .promo-rating {

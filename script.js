@@ -101,6 +101,8 @@ let compareList = [];
 let currentRegion = 'all';
 let compareLimitNoteTimer = null;
 const compareLimit = 3;
+let activeSortKey = null;
+const sortDirections = { rating: 'desc', price: 'desc' };
 let clearUndoTimer = null;
 let clearUndoInterval = null;
 let lastClearedState = null;
@@ -180,51 +182,64 @@ function buildGarageCardHTML(car, options = {}) {
         </div>`;
 }
 
-function filterCars() {
-    const query = document.getElementById('search-input').value.toLowerCase();
+function isGarageFiltered() {
+    const searchEl = document.getElementById('search-input');
+    const query = searchEl ? searchEl.value.trim() : '';
+    return currentRegion !== 'all' || query.length > 0;
+}
+
+function getFilteredCars() {
+    const searchEl = document.getElementById('search-input');
+    const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
     let filtered = cars;
-    
+
     if (currentRegion !== 'all') {
         filtered = filtered.filter(c => c.region === currentRegion);
     }
-    
+
     if (query) {
         filtered = filtered.filter(c => c.name.toLowerCase().includes(query));
     }
-    
-    // Сохраняем отфильтрованный список в глобальную переменную
-    currentFilteredCars = filtered;
-    
-    // При любом изменении фильтра или поиска — сбрасываем счетчик на начальный
+
+    return filtered;
+}
+
+function updateStatsCounter(filteredCount) {
+    const statsCount = document.getElementById('stats-count');
+    if (!statsCount) return;
+
+    const total = cars.length;
+    const valueText = isGarageFiltered() ? `${filteredCount} из ${total}` : String(total);
+
+    statsCount.innerHTML = `<span class="stats-icon">🚘</span><span>В гараже:</span> <strong class="stats-value">${valueText}</strong>`;
+    statsCount.classList.remove('pulse');
+    void statsCount.offsetWidth;
+    statsCount.classList.add('pulse');
+    if (statsPulseTimer) clearTimeout(statsPulseTimer);
+    statsPulseTimer = setTimeout(() => statsCount.classList.remove('pulse'), 350);
+}
+
+function filterCars() {
+    currentFilteredCars = getFilteredCars();
     visibleCarsCount = CARS_PER_PAGE;
-    
     render(currentFilteredCars);
 }
 
 
 function render(data = cars) {
     const list = document.getElementById('car-list');
-    const statsCount = document.getElementById('stats-count');
     const emptyState = document.getElementById('empty-state');
     const loadMoreContainer = document.getElementById('load-more-container');
-    
-    if (data === cars) {
-        currentFilteredCars = cars;
-    }
 
-    statsCount.innerHTML = `<span class="stats-icon">🚘</span><span>В гараже:</span> <strong class="stats-value">${data.length}</strong>`;
-    statsCount.classList.remove('pulse');
-    void statsCount.offsetWidth;
-    statsCount.classList.add('pulse');
-    if (statsPulseTimer) clearTimeout(statsPulseTimer);
-    statsPulseTimer = setTimeout(() => statsCount.classList.remove('pulse'), 350);
+    currentFilteredCars = data;
+    updateStatsCounter(data.length);
 
     if (data.length === 0) {
-        list.innerHTML = '';
-        emptyState.style.display = 'block';
+        if (list) list.innerHTML = '';
+        if (emptyState) emptyState.style.display = cars.length === 0 ? 'block' : 'none';
         if (loadMoreContainer) loadMoreContainer.style.display = 'none';
     } else {
-        emptyState.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'none';
         
         const carsToRender = data.slice(0, visibleCarsCount);
         let htmlString = '';
@@ -232,9 +247,9 @@ function render(data = cars) {
         carsToRender.forEach((car) => {
             htmlString += buildGarageCardHTML(car, { showCompare: true, showDelete: true });
         });
-        
-        list.innerHTML = htmlString;
-        
+
+        if (list) list.innerHTML = htmlString;
+
         if (loadMoreContainer) {
             const loadMoreBtn = document.getElementById('load-more-btn');
             const collapseBtn = document.getElementById('collapse-btn');
@@ -264,10 +279,10 @@ function render(data = cars) {
 
     }
 
-    updateDashboard();
+    updateDashboard(data);
     updateClearButtonState();
     localStorage.setItem('myrating_v3_db', JSON.stringify(cars));
-    renderPromoGarage();
+    renderPromoGarage(data);
 }
 
 
@@ -287,7 +302,7 @@ function collapseCars() {
 
 function setRegion(region) {
     currentRegion = region;
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+    document.querySelectorAll('#region-filters .filter-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.region === region);
     });
     filterCars();
@@ -422,9 +437,45 @@ function setCompareLimitNote(message) {
     }
 }
 
-function sortCars(key) { 
-    cars.sort((a, b) => b[key] - a[key]); 
-    filterCars(); 
+function updateSortButtonsUI() {
+    const labels = { rating: 'По рейтингу', price: 'По цене' };
+
+    Object.keys(labels).forEach(key => {
+        const btn = document.getElementById(`sort-btn-${key}`);
+        if (!btn) return;
+
+        const arrowEl = btn.querySelector('.sort-arrow');
+        const isActive = activeSortKey === key;
+
+        btn.classList.toggle('sort-btn--active', isActive);
+        btn.classList.toggle('sort-btn--desc', isActive && sortDirections[key] === 'desc');
+        btn.classList.toggle('sort-btn--asc', isActive && sortDirections[key] === 'asc');
+
+        if (arrowEl) {
+            arrowEl.textContent = isActive ? (sortDirections[key] === 'desc' ? '↓' : '↑') : '';
+        }
+
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        const dirLabel = sortDirections[key] === 'desc' ? 'убыванию' : 'возрастанию';
+        btn.setAttribute('aria-label', isActive
+            ? `${labels[key]}: ${dirLabel}`
+            : labels[key]);
+    });
+}
+
+function sortCars(key) {
+    if (activeSortKey === key) {
+        sortDirections[key] = sortDirections[key] === 'desc' ? 'asc' : 'desc';
+    } else {
+        activeSortKey = key;
+        sortDirections[key] = 'desc';
+    }
+
+    const dir = sortDirections[key];
+    cars.sort((a, b) => (dir === 'desc' ? b[key] - a[key] : a[key] - b[key]));
+
+    updateSortButtonsUI();
+    filterCars();
 }
 
 function restoreDefaults() { cars = JSON.parse(JSON.stringify(defaultCars)); filterCars(); }
@@ -506,13 +557,13 @@ function undoClearAll() {
 }
 
 
-function updateDashboard() {
+function updateDashboard(data = currentFilteredCars) {
     const topCarEl = document.getElementById('top-car');
     const cheapestCarEl = document.getElementById('cheapest-car');
     const bestValueCarEl = document.getElementById('best-value-car');
+    if (!topCarEl || !cheapestCarEl || !bestValueCarEl) return;
 
-    // Если гараж пуст, сбрасываем всё в дефолтное состояние
-    if (cars.length === 0) {
+    if (data.length === 0) {
         topCarEl.innerText = '—';
         cheapestCarEl.innerText = '—';
         bestValueCarEl.innerText = '—';
@@ -533,16 +584,13 @@ function updateDashboard() {
         `;
     };
 
-    // 1. Лидер рейтинга (самый высокий балл)
-    const topCar = [...cars].sort((a, b) => b.rating - a.rating)[0];
+    const topCar = [...data].sort((a, b) => b.rating - a.rating)[0];
     topCarEl.innerHTML = renderCardContent(topCar);
 
-    // 2. Авто с минимальной ценой
-    const cheapestCar = [...cars].sort((a, b) => a.price - b.price)[0];
+    const cheapestCar = [...data].sort((a, b) => a.price - b.price)[0];
     cheapestCarEl.innerHTML = renderCardContent(cheapestCar);
 
-    // 3. Лучший по соотношению Цена/Качество (минимальная стоимость одного балла)
-    const bestValueCar = [...cars].sort((a, b) => {
+    const bestValueCar = [...data].sort((a, b) => {
         const costPerPointA = a.price / a.rating;
         const costPerPointB = b.price / b.rating;
         return costPerPointA - costPerPointB;
@@ -598,7 +646,8 @@ function mountVinBanners() {
 
 function initApp() {
     initTheme();
-    render();
+    updateSortButtonsUI();
+    filterCars();
     setupShareLinks();
     renderPromoNews();
     initNewsTabs();
@@ -803,7 +852,7 @@ function initNewsTabs() {
     });
 }
 
-function renderPromoGarage() {
+function renderPromoGarage(data = currentFilteredCars) {
     const container = document.getElementById('promo-garage-container');
     if (!container) return;
 
@@ -818,7 +867,22 @@ function renderPromoGarage() {
         return;
     }
 
-    const topCars = [...cars].sort((a, b) => b.rating - a.rating).slice(0, 3);
+    if (data.length === 0) {
+        container.innerHTML = `
+            <div class="car-card empty-message empty-message--grid">
+                <h3>Ничего не найдено</h3>
+                <p class="promo-card-excerpt">По выбранному фильтру или запросу автомобилей нет. Сбросьте фильтр или измените поиск.</p>
+            </div>`;
+        return;
+    }
+
+    // Если пользователь применил сортировку (activeSortKey не равен null), 
+    // показываем первые 3 машины в выбранном им порядке.
+    // Если сортировка не выбрана, показываем топ-3 по рейтингу (поведение по умолчанию).
+    const topCars = activeSortKey 
+        ? data.slice(0, 3) 
+        : [...data].sort((a, b) => b.rating - a.rating).slice(0, 3);
+
     container.innerHTML = topCars
         .map(car => buildGarageCardHTML(car, { showCompare: false, showDelete: false }))
         .join('');

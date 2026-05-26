@@ -88,11 +88,81 @@
                     <h2>🏎️ Мой гараж</h2>
                     <p>Рассчитывай рейтинг, сравнивай модели и храни подборку в одном месте</p>
                 </div>
+            </section>
 
+            <div id="garage-screen-intro" class="screen-intro container hidden garage-page-intro">
+                <h1>🏎️ Мой гараж</h1>
+                <p>Добавляй автомобили, считай рейтинг и сравнивай до трёх моделей одновременно</p>
+            </div>
+
+            <div id="garage-tools-panel" class="garage-tools-panel">
+                <section class="add-form">
+                    <div class="form-grid">
+                        <input type="text" id="car-name" placeholder="Марка и модель">
+                        <input type="number" id="car-price" placeholder="Цена ($)">
+                        <input type="number" id="car-year" placeholder="Год выпуска">
+                        <input type="number" id="car-mileage" placeholder="Пробег (тыс. км)">
+                        <select id="car-condition">
+                            <option value="1.0">💎 Идеал (в родне)</option>
+                            <option value="0.85">🎨 Косметика</option>
+                            <option value="0.6">🔨 Бит/Крашен</option>
+                            <option value="0.3">💀 Тотал</option>
+                        </select>
+                        <select id="car-region">
+                            <option value="eu">🇪🇺 Европа</option>
+                            <option value="usa">🇺🇸 США</option>
+                            <option value="asia">🌏 Азия</option>
+                            <option value="ru">🇷🇺 РФ / СНГ</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="calculateAndAdd()" class="btn-main">Просчитать и добавить в список</button>
+                </section>
+
+                <section class="dashboard">
+                    <div class="stat-card">
+                        <span class="label">Лидер рейтинга</span>
+                        <div id="top-car" class="value">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Минимальная цена</span>
+                        <div id="cheapest-car" class="value">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Цена / Качество</span>
+                        <div id="best-value-car" class="value">—</div>
+                    </div>
+                </section>
+
+                <section id="region-filters" class="region-filters">
+                    <button type="button" class="filter-btn active" data-region="all" onclick="setRegion('all')">🌐 Весь мир</button>
+                    <button type="button" class="filter-btn" data-region="usa" onclick="setRegion('usa')"><img src="flag-usa.svg" class="flag-icon" alt=""> США</button>
+                    <button type="button" class="filter-btn" data-region="eu" onclick="setRegion('eu')"><img src="flag-eu.svg" class="flag-icon" alt=""> Европа</button>
+                    <button type="button" class="filter-btn" data-region="asia" onclick="setRegion('asia')"><img src="flag-asia.svg" class="flag-icon" alt=""> Азия</button>
+                    <button type="button" class="filter-btn" data-region="ru" onclick="setRegion('ru')"><img src="flag-ru.svg" class="flag-icon" alt=""> РФ / СНГ</button>
+                </section>
+
+                <div class="stats-row">
+                    <div class="stats-counter" id="stats-count">Авто в списке: 0</div>
+                </div>
+
+                <section class="controls">
+                    <input type="text" id="search-input" placeholder="Поиск в гараже..." oninput="filterCars()">
+                    <div class="sort-buttons">
+                        <button type="button" id="sort-btn-rating" class="btn-main btn-small sort-btn" onclick="sortCars('rating')">
+                            <span>По рейтингу</span><span class="sort-arrow" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" id="sort-btn-price" class="btn-main btn-small sort-btn" onclick="sortCars('price')">
+                            <span>По цене</span><span class="sort-arrow" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <section id="promo-garage-cards" class="main-section">
                 <div id="promo-garage-container" class="grid-layout promo-garage-grid"></div>
 
                 <div class="section-cta">
-                    <button class="btn-main" onclick="switchScreen('garage')">Открыть мой гараж →</button>
+                    <button type="button" class="btn-main" onclick="switchScreen('garage')">Открыть мой гараж →</button>
                 </div>
             </section>
 
@@ -158,66 +228,9 @@
 
 
             <section id="garage-screen" class="app-screen container hidden">
-                <div class="screen-intro">
-                    <h1>🏎️ Мой гараж</h1>
-                    <p>Добавляй автомобили, считай рейтинг и сравнивай до трёх моделей одновременно</p>
-                </div>
-
-            <section class="add-form">
-                <div class="form-grid">
-                    <input type="text" id="car-name" placeholder="Марка и модель">
-                    <input type="number" id="car-price" placeholder="Цена ($)">
-                    <input type="number" id="car-year" placeholder="Год выпуска">
-                    <input type="number" id="car-mileage" placeholder="Пробег (тыс. км)">
-                    <select id="car-condition">
-                        <option value="1.0">💎 Идеал (в родне)</option>
-                        <option value="0.85">🎨 Косметика</option>
-                        <option value="0.6">🔨 Бит/Крашен</option>
-                        <option value="0.3">💀 Тотал</option>
-                    </select>
-                    <select id="car-region">
-                        <option value="eu">🇪🇺 Европа</option>
-                        <option value="usa">🇺🇸 США</option>
-                        <option value="asia">🌏 Азия</option>
-                        <option value="ru">🇷🇺 РФ / СНГ</option>
-                    </select>
-                </div>
-                <button onclick="calculateAndAdd()" class="btn-main">Просчитать и добавить в список</button>
-            </section>
-
-            <section class="dashboard">
-                <div class="stat-card">
-                    <span class="label">Лидер рейтинга</span>
-                    <div id="top-car" class="value">—</div>
-                </div>
-                <div class="stat-card">
-                    <span class="label">Минимальная цена</span>
-                    <div id="cheapest-car" class="value">—</div>
-                </div>
-                <div class="stat-card">
-                    <span class="label">Цена / Качество</span>
-                    <div id="best-value-car" class="value">—</div>
-                </div>
-            </section>
-
-            <section id="region-filters" class="region-filters">
-                <button class="filter-btn active" data-region="all" onclick="setRegion('all')">🌐 Весь мир</button>
-                <button class="filter-btn" data-region="usa" onclick="setRegion('usa')"><img src="flag-usa.svg" class="flag-icon" alt=""> США</button>
-                <button class="filter-btn" data-region="eu" onclick="setRegion('eu')"><img src="flag-eu.svg" class="flag-icon" alt=""> Европа</button>
-                <button class="filter-btn" data-region="asia" onclick="setRegion('asia')"><img src="flag-asia.svg" class="flag-icon" alt=""> Азия</button>
-                <button class="filter-btn" data-region="ru" onclick="setRegion('ru')"><img src="flag-ru.svg" class="flag-icon" alt=""> РФ / СНГ</button>
-            </section>
-
-            <div class="stats-row">
-                <div class="stats-counter" id="stats-count">Авто в списке: 0</div>
-            </div>
-
-            <section class="controls">
-                <input type="text" id="search-input" placeholder="Поиск в гараже..." oninput="filterCars()">
+            <section class="controls controls--garage-only">
                 <div class="sort-buttons">
-                    <button class="btn-main btn-small" onclick="sortCars('rating')">По рейтингу</button>
-                    <button class="btn-main btn-small" onclick="sortCars('price')">По цене</button>
-                    <button id="clear-all-btn" class="btn-main btn-small btn-danger" onclick="clearAll()">
+                    <button type="button" id="clear-all-btn" class="btn-main btn-small btn-danger" onclick="clearAll()">
                         <span>🗑️</span> <span class="btn-text">Очистить базу</span>
                     </button>
                 </div>
