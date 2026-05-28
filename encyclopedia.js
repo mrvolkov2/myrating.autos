@@ -1,83 +1,51 @@
 /**
- * База данных энциклопедии надежности (MyRating.autos)
+ * MyRating.autos — Логика Энциклопедии надежности
  */
-const encyclopediaDatabase = [
-    {
-        id: "volvo-xc90-ii",
-        name: "Volvo XC90 (II поколение)",
-        years: "2015 — н.в.",
-        rating: "8.8",
-        isPopular: true,
-        imagePlaceholder: "🚗",
-        summary: "Премиальный кроссовер с отличной безопасностью, но требовательной к софту электроникой.",
-        body: { rating: "high", text: "Кузов отлично оцинкован. Ржавчина не появляется даже в местах глубоких сколов. Хром на элементах отделки может мутнеть от зимних реагентов в СНГ." },
-        transmission: { rating: "high", text: "8-ступенчатый автомат Aisin крайне надежен. Главное — менять масло каждые 60 000 км и следить за чистотой радиаторов. Спокойно ходит до 300 тыс. км." },
-        engines: "Дизель D5 (2.0) хорош после 2017 года (когда устранили проблему с патрубками турбины PowerPulse). Бензиновый T6 (турбина + компрессор) сложный, очень требователен к качеству топлива и масла.",
-        safety: "Традиционные 5 звезд Euro NCAP. Один из самых безопасных автомобилей в классе благодаря прочнейшей капсуле салона из бористой стали и комплексу систем безопасности City Safety (автоторможение, удержание в полосе).",
-        weakPoints: ["Глюки мультимедиа Sensus на ранних версиях прошивок", "Быстрый износ оригинальных тормозных дисков", "Датчики пневмоподвески боятся грязи и соли"]
-    },
-    {
-        id: "vw-passat-b8",
-        name: "Volkswagen Passat B8",
-        years: "2014 — 2023",
-        rating: "8.6",
-        isPopular: true,
-        imagePlaceholder: "🚗",
-        summary: "Эталон управляемости и эргономики в классе, но требует качественного обслуживания сложных узлов.",
-        body: {
-            rating: "high",
-            text: "Кузов автомобиля имеет полную двустороннюю гальваническую оцинковку. ЛКП прочное, однако на стыках бамперов с крыльями и в районе колесных арок со временем могут появляться сколы, которые долго не цветут благодаря качественному металлу."
-        },
-        transmission: {
-            rating: "medium",
-            text: "Роботы DSG-7 (DQ200 с сухими сцеплениями) после 2014 года стали значительно надежнее, но в пробках всё же изнашиваются быстрее. Модификации с DSG-6 (DQ250) и DSG-7 (DQ381) с мокрыми сцеплениями на мощных моторах ходят до 250 000 км при замене масла каждые 60 000 км."
-        },
-        engines: "Бензиновые моторы серии ЕА211 (1.4 TSI) избавились от проблем с цепью (теперь там ремень) и масложором. 2.0 TSI (серия EA888 Gen3) динамичен, но требователен к качеству помпы и термостата. Дизели 2.0 TDI (EA288) — одни из лучших и самых живучих, легко выхаживают за 300 000 км.",
-        safety: "5 звезд Euro NCAP (95% за безопасность взрослых). В базе идут фронтальные и боковые подушки, шторки безопасности, система распознавания усталости водителя и функция автоторможения Multi-collision Brake. В богатых комплектациях доступен отличный адаптивный круиз-контроль (ACC) и удержание в полосе.",
-        weakPoints: [
-            "Скрипы сайлентблоков передних рычагов в холодную погоду (лечится смазкой)",
-            "Сбои в работе сенсорного блока климат-контроля (на рестайлинге)",
-            "Закисание исполнительного механизма актуатора турбины на бензиновых моторах",
-            "Капризный термостат в сборе с помпой на моторах 1.8 и 2.0 TSI"
-        ]
-    },
-    {
-        id: "ford-focus-iii",
-        name: "Ford Focus III (Рестайлинг)",
-        years: "2014 — 2019",
-        rating: "7.9",
-        isPopular: true,
-        imagePlaceholder: "🚗",
-        summary: "Популярный хэтчбек и универсал. Надежные атмосферные моторы, но есть нюансы с роботом PowerShift.",
-        body: { rating: "medium", text: "Металл неплохой, но ЛКП довольно тонкое. Сколы на капоте и колесных арках могут быстро начать 'цвести', если их вовремя не подкрашивать." },
-        transmission: { rating: "low", text: "Механическая КПП идеальна. А вот робот PowerShift (DCT250) дергается в пробках, блок ТСМ часто перегорает от перегрева, а сцепление редко ходит больше 80-100 тыс. км." },
-        engines: "Мотор 1.6 Sigma — старый, конструктивно простой и очень надежный (ресурс до 300к км). Турбо 1.5 EcoBoost горячий, боится перегревов и детонации — есть риск разрушения поршней.",
-        safety: "5 звезд Euro NCAP. Кузов прочный, но электроника попроще, чем у премиума. В рестайлинге улучшили систему автоматического торможения Active City Stop (работает на скорости до 50 км/ч) и добавили систему отслеживания слепых зон BLIS с предупреждением о движении перекрестного транспорта.",
-        weakPoints: ["Тесноватый салон на заднем ряду", "Рулевая рейка может застучать к 80 тыс. км", "Капризный блок управления роботом (TCM)"]
-    }
-];
 
-const MAIN_PROMO_SECTIONS = [
-    'promo-database-section',
-    'promo-news-section',
-    'promo-garage-section',
-    'garage-tools-panel',
-    'promo-garage-cards'
-];
+// Вспомогательные функции для сборки агрегатов из DB_COMPONENTS
+function generateEnginesListHTML(engineIds) {
+    if (!engineIds || engineIds.length === 0) return '<p class="details-text">Нет данных</p>';
+    return engineIds.map(id => {
+        const eng = DB_COMPONENTS.engines[id];
+        if (!eng) return '';
+        const badgeClass = eng.reliability === 'high' ? 'reliability-high' : (eng.reliability === 'medium' ? 'reliability-medium' : 'reliability-low');
+        const relText = eng.reliability === 'high' ? 'Высокая надежность' : (eng.reliability === 'medium' ? 'Средняя надежность' : 'Низкая надежность (Внимание!)');
+        return `
+            <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <strong>${escapeHTML(eng.name)}</strong>
+                    <span class="reliability-badge ${badgeClass}" style="font-size: 11px; padding: 2px 6px;">${relText}</span>
+                </div>
+                <p class="details-text" style="margin: 4px 0 0 0; font-size: 13px; line-height: 1.4;">${escapeHTML(eng.desc)}</p>
+            </div>
+        `;
+    }).join('');
+}
 
+function generateTransmissionsListHTML(transmissionIds) {
+    if (!transmissionIds || transmissionIds.length === 0) return '<p class="details-text">Нет данных</p>';
+    return transmissionIds.map(id => {
+        const tr = DB_COMPONENTS.transmissions[id];
+        if (!tr) return '';
+        const badgeClass = tr.reliability === 'high' ? 'reliability-high' : (tr.reliability === 'medium' ? 'reliability-medium' : 'reliability-low');
+        const relText = tr.reliability === 'high' ? 'Надежная КПП' : (tr.reliability === 'medium' ? 'Средний ресурс' : 'Капризная КПП');
+        return `
+            <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <strong>${escapeHTML(tr.name)}</strong>
+                    <span class="reliability-badge ${badgeClass}" style="font-size: 11px; padding: 2px 6px;">${relText}</span>
+                </div>
+                <p class="details-text" style="margin: 4px 0 0 0; font-size: 13px; line-height: 1.4;"><em>Производитель: ${escapeHTML(tr.brand)} (${escapeHTML(tr.type)})</em>. ${escapeHTML(tr.desc)}</p>
+            </div>
+        `;
+    }).join('');
+}
+
+// Константы UI управления экранами
+const MAIN_PROMO_SECTIONS = ['promo-database-section', 'promo-news-section', 'promo-garage-section', 'garage-tools-panel', 'promo-garage-cards'];
 const GARAGE_SHARED_UI = ['garage-tools-panel'];
 const GARAGE_TAB_ONLY = ['garage-screen-intro', 'garage-screen'];
-
-const APP_SCREENS = {
-    encyclopedia: 'encyclopedia-screen',
-    news: 'news-screen',
-    garage: 'garage-screen'
-};
-
-const BODY_RELIABILITY_LABEL = { high: 'Отличный', medium: 'Средний', low: 'Слабый' };
-const TRANSMISSION_RELIABILITY_LABEL = { high: 'Надежная', medium: 'Средняя', low: 'Слабая' };
-const BODY_STRENGTH_LABEL = { high: 'Отличная стойкость', medium: 'Средняя стойкость', low: 'Слабая стойкость' };
-const TRANSMISSION_STRENGTH_LABEL = { high: 'Высокая надежность', medium: 'Есть нюансы / Средняя', low: 'Зона риска / Требует внимания' };
+const APP_SCREENS = { encyclopedia: 'encyclopedia-screen', news: 'news-screen', garage: 'garage-screen' };
 
 let currentEncTab = 'all';
 
@@ -85,26 +53,26 @@ function getEncyclopediaTabContent(car, tab) {
     if (tab === 'body') {
         return `
             <div class="tab-badge-row">
-                <span class="reliability-badge reliability-${car.body.rating}">Кузов: ${BODY_RELIABILITY_LABEL[car.body.rating] || 'Средний'}</span>
+                <span class="reliability-badge reliability-high">Индекс: ${escapeHTML(car.bodyCode)}</span>
             </div>
-            <p class="tab-preview-text">${escapeHTML(car.body.text)}</p>`;
+            <p class="tab-preview-text">Доступные кузова: ${escapeHTML(car.bodyTypes)}</p>`;
     }
     if (tab === 'engines') {
+        const enginesStr = car.engineIds.map(id => DB_COMPONENTS.engines[id]?.name || id).join(', ');
         return `
-            <h4 class="tab-preview-title tab-preview-title--engines">🔧 Двигатели:</h4>
-            <p class="tab-preview-text">${escapeHTML(car.engines)}</p>`;
+            <h4 class="tab-preview-title tab-preview-title--engines">🔧 Доступные моторы:</h4>
+            <p class="tab-preview-text">${escapeHTML(enginesStr)}</p>`;
     }
     if (tab === 'transmissions') {
+        const transStr = car.transmissionIds.map(id => DB_COMPONENTS.transmissions[id]?.name || id).join(', ');
         return `
-            <div class="tab-badge-row">
-                <span class="reliability-badge reliability-${car.transmission.rating}">КПП: ${TRANSMISSION_RELIABILITY_LABEL[car.transmission.rating] || 'Средняя'}</span>
-            </div>
-            <p class="tab-preview-text">${escapeHTML(car.transmission.text)}</p>`;
+            <h4 class="tab-preview-title tab-preview-title--engines">⚙️ Коробки передач:</h4>
+            <p class="tab-preview-text">${escapeHTML(transStr)}</p>`;
     }
     if (tab === 'safety') {
         return `
             <h4 class="tab-preview-title tab-preview-title--safety">🚨 Безопасность:</h4>
-            <p class="tab-preview-text">${escapeHTML(car.safety || 'Информация обновляется...')}</p>`;
+            <p class="tab-preview-text">${escapeHTML(car.safetyLevel)} — ${escapeHTML(car.safetyText)}</p>`;
     }
     if (tab === 'weak-points') {
         const points = car.weakPoints.slice(0, 2).map(point => `<li>${escapeHTML(point)}</li>`).join('');
@@ -118,9 +86,7 @@ function getEncyclopediaTabContent(car, tab) {
 
 function buildEncyclopediaCardHTML(car, options = {}) {
     const tab = options.searchMode ? 'all' : currentEncTab;
-    const tabContent = options.searchMode
-        ? `<p class="tab-preview-summary">${escapeHTML(car.summary)}</p>`
-        : getEncyclopediaTabContent(car, tab);
+    const tabContent = options.searchMode ? `<p class="tab-preview-summary">${escapeHTML(car.summary)}</p>` : getEncyclopediaTabContent(car, tab);
 
     return `
         <div class="car-card">
@@ -137,9 +103,7 @@ function renderEncyclopedia(filterText = '') {
     if (!container) return;
 
     const query = filterText.trim().toLowerCase();
-    const filtered = query
-        ? encyclopediaDatabase.filter(car => car.name.toLowerCase().includes(query))
-        : encyclopediaDatabase;
+    const filtered = query ? encyclopediaDatabase.filter(car => car.name.toLowerCase().includes(query)) : encyclopediaDatabase;
 
     if (filtered.length === 0) {
         container.innerHTML = `
@@ -176,12 +140,7 @@ function initEncyclopediaTabs() {
 }
 
 function setNavActive(screenName) {
-    const navMap = {
-        main: 'nav-main',
-        encyclopedia: 'nav-encyclopedia',
-        news: 'nav-news',
-        garage: 'nav-garage'
-    };
+    const navMap = { main: 'nav-main', encyclopedia: 'nav-encyclopedia', news: 'nav-news', garage: 'nav-garage' };
     document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
     document.getElementById(navMap[screenName])?.classList.add('active');
 }
@@ -231,8 +190,8 @@ function renderPromoCards() {
                 <p class="card-meta">Годы: ${car.years}</p>
                 <p class="tab-preview-summary">${escapeHTML(car.summary)}</p>
                 <div class="promo-badges">
-                    <span class="reliability-badge reliability-${car.body.rating}">Кузов: ${BODY_RELIABILITY_LABEL[car.body.rating] || 'Средний'}</span>
-                    <span class="reliability-badge reliability-${car.transmission.rating}">КПП: ${TRANSMISSION_RELIABILITY_LABEL[car.transmission.rating] || 'Средняя'}</span>
+                    <span class="reliability-badge reliability-high">Для души: ${car.soulScore}</span>
+                    <span class="reliability-badge reliability-medium">Электрика: ${car.electricalReliability}</span>
                 </div>
                 <button class="btn-main btn-small btn-card-full" onclick="viewCarDetails('${car.id}')">Читать обзор</button>
             </div>`)
@@ -255,26 +214,54 @@ function viewCarDetails(carId) {
             <h2>${escapeHTML(car.name)} <span class="rating-highlight">⭐ ${car.rating}/10</span></h2>
             <p>Период выпуска: <strong>${car.years}</strong></p>
         </div>
+
         <div class="db-details-grid">
             <div class="db-details-card">
-                <h3>🛡️ Стойкость кузова к коррозии</h3>
-                <span class="reliability-badge reliability-${car.body.rating}">${BODY_STRENGTH_LABEL[car.body.rating] || 'Средняя стойкость'}</span>
-                <p class="details-text">${escapeHTML(car.body.text)}</p>
+                <h3>🌍 Происхождение и Рынок</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px;">
+                    <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 0; color: #64748b;">Марка / Модель:</td><td style="padding: 6px 0; font-weight: 600;">${escapeHTML(car.brand)} ${escapeHTML(car.model)}</td></tr>
+                    <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 0; color: #64748b;">Страна бренда:</td><td style="padding: 6px 0;">${escapeHTML(car.brandOrigin)}</td></tr>
+                    <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 0; color: #64748b;">Откуда пригон:</td><td style="padding: 6px 0;">${escapeHTML(car.importCountry)}</td></tr>
+                    <tr><td style="padding: 6px 0; color: #64748b;">Где эксплуатируется:</td><td style="padding: 6px 0;">${escapeHTML(car.operationCountry)}</td></tr>
+                </table>
             </div>
+
             <div class="db-details-card">
-                <h3>⚙️ Transmission и коробки передач</h3>
-                <span class="reliability-badge reliability-${car.transmission.rating}">${TRANSMISSION_STRENGTH_LABEL[car.transmission.rating] || 'Средняя'}</span>
-                <p class="details-text">${escapeHTML(car.transmission.text)}</p>
+                <h3>📐 Кузов и Поколение</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px;">
+                    <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 0; color: #64748b;">Заводской индекс:</td><td style="padding: 6px 0; font-weight: 600; color: var(--primary);">${escapeHTML(car.bodyCode)}</td></tr>
+                    <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 0; color: #64748b;">Типы кузова:</td><td style="padding: 6px 0;">${escapeHTML(car.bodyTypes)}</td></tr>
+                    <tr style="border-bottom: 1px solid var(--border);"><td style="padding: 6px 0; color: #64748b;">Электрика (надежность):</td><td style="padding: 6px 0; font-weight: 600;">${escapeHTML(car.electricalReliability)}</td></tr>
+                    <tr><td style="padding: 6px 0; color: #64748b;">Балл "Для души":</td><td style="padding: 6px 0; color: #f59e0b; font-weight: 600;">❤️ ${escapeHTML(car.soulScore)}</td></tr>
+                </table>
             </div>
+
             <div class="db-details-card">
-                <h3>🔧 Надежность линейки двигателей</h3>
-                <p class="details-text">${escapeHTML(car.engines)}</p>
+                <h3>🛡️ Безопасность</h3>
+                <span class="reliability-badge reliability-high" style="margin-bottom: 8px; display: inline-block;">Уровень: ${escapeHTML(car.safetyLevel)}</span>
+                <p class="details-text" style="font-size: 14px; line-height: 1.5;">${escapeHTML(car.safetyText)}</p>
             </div>
+
+            <div class="db-details-card">
+                <h3>🔧 Линейка двигателей</h3>
+                <div style="margin-top: 10px;">
+                    ${generateEnginesListHTML(car.engineIds)}
+                </div>
+            </div>
+
+            <div class="db-details-card">
+                <h3>⚙️ Коробки передач</h3>
+                <div style="margin-top: 10px;">
+                    ${generateTransmissionsListHTML(car.transmissionIds)}
+                </div>
+            </div>
+
             <div class="db-details-card">
                 <h3>⚠️ Частые болячки и слабые места</h3>
                 <ul class="details-list">${car.weakPoints.map(point => `<li>${escapeHTML(point)}</li>`).join('')}</ul>
             </div>
-        </div>`;
+        </div>
+    `;
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }

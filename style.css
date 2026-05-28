@@ -1232,3 +1232,41 @@ input, select { background: var(--bg); border: 1px solid var(--border); color: v
 /* Подпись разработчика в футере */
 .footer-dev {margin-top: 8px; opacity: 0.8; }
 .footer-dev span {color: #ffffff; font-weight: 800; letter-spacing: 0.8px; font-size: 0.85rem; }
+
+
+/* Стили для вложенных карточек моторов и коробок */
+.components-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.component-card {
+    background: var(--bg); /* Используем твою CSS-переменную для фона */
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    transition: 0.2s;
+}
+
+.component-card:hover {
+    border-color: var(--primary);
+}
+
+.component-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+
+.component-header strong {
+    color: var(--text);
+}
+
+.component-header span {
+    color: #64748b; /* Серый цвет для доп. инфы */
+    font-size: 13px;
+}
