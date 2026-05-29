@@ -1,6 +1,6 @@
 /**
  * MyRating.autos — Справочник общих компонентов (двигатели и коробки передач)
- * Расширенная версия: 40+ ключевых агрегатов
+ * Расширенная версия: 50+ ключевых агрегатов
  */
 const DB_COMPONENTS = {
     engines: {
@@ -20,13 +20,28 @@ const DB_COMPONENTS = {
         "kia_20_g4kd": { name: "2.0 MPI (Theta II G4KD)", type: "Бензин", volume: "2.0 л", reliability: "low", desc: "Старый корейский 2.0. Известен частыми стуками и задирами на пробегах до 100-150 тыс. км из-за отсутствия масляных форсунок." },
         "kia_20_crdi": { name: "2.0 CRDi (D4HA)", type: "Дизель", volume: "2.0 л", reliability: "high", desc: "Тяговитый дизель на Tucson/Sportage. Очень ресурсный (350+ тыс. км), но чувствителен к качеству солярки и датчикам давления." },
 
-        // === Французы и Япония (Renault, Nissan) ===
-        "ren_15_dci": { name: "1.5 dCi (K9K)", type: "Дизель", volume: "1.5 л", reliability: "high", desc: "Легенда европейского пригона (Megane, Scenic). Расход 4л/100км. На больших пробегах (>200к) профилактически рекомендуют менять шатунные вкладыши." },
+        // === Французы и Япония (Renault, Nissan, Mitsubishi) ===
+        "ren_15_dci": { name: "1.5 dCi (K9K)", type: "Дизель", volume: "1.5 л", reliability: "high", desc: "Легенда европейского пригона (Megane, Scenic, Duster). Расход 4л/100км. На больших пробегах (>200к) профилактически рекомендуют менять шатунные вкладыши." },
         "ren_16_k4m": { name: "1.6 MPI (K4M)", type: "Бензин", volume: "1.6 л", reliability: "high", desc: "Чугунный 16-клапанник (Logan, Duster, Sandero). Неубиваемый, но прожорливый и со слабыми сальниками." },
-        "ren_16_h4m": { name: "1.6 MPI (H4M / HR16DE)", type: "Бензин", volume: "1.6 л", reliability: "high", desc: "Атмосферник Nissan с цепью ГРМ и алюминиевым блоком. Ставился на Vesta, Logan, Kaptur. Тихий, экономичный, ресурс около 300к км." },
-        "toy_25_ar": { name: "2.5 MPI (2AR-FE)", type: "Бензин", volume: "2.5 л", reliability: "high", desc: "Легендарный мотор Camry. Абсолютный эталон надежности, ходит по 500 тыс. км без вмешательств." },
+        "ren_16_h4m": { name: "1.6 MPI (H4M / HR16DE)", type: "Бензин", volume: "1.6 л", reliability: "high", desc: "Атмосферник Nissan с цепью ГРМ и алюминиевым блоком. Ставился на Vesta, Logan, Kaptur, Qashqai. Тихий, экономичный, ресурс около 300к км." },
+        "niss_20_mr20": { name: "2.0 (MR20DD)", type: "Бензин", volume: "2.0 л", reliability: "high", desc: "Популярный японский мотор кроссоверов Nissan (Qashqai, X-Trail). Надежен, имеет цепной привод ГРМ, но чувствителен к перетяжке свечей при замене." },
+        "mitsu_20_4b11": { name: "2.0 (MIVEC 4B11)", type: "Бензин", volume: "2.0 л", reliability: "high", desc: "Чугунный блок цилиндров, огромный запас прочности. Устанавливался на Mitsubishi Outlander, Lancer. Способен пройти 400к км при должном уходе." },
         
-        // === Китай и Geely (Белджи) ===
+        // === Toyota, Lexus, Mazda, Honda ===
+        "toy_25_ar": { name: "2.5 MPI (2AR-FE)", type: "Бензин", volume: "2.5 л", reliability: "high", desc: "Легендарный мотор Camry. Абсолютный эталон надежности, ходит по 500 тыс. км без вмешательств." },
+        "toy_18_2zr": { name: "1.8 (2ZR-FE)", type: "Бензин", volume: "1.8 л", reliability: "high", desc: "Устанавливается на Corolla, Prius. Очень надежен, прост конструктивно. Иногда страдает шумом муфт Dual VVT-i." },
+        "mazda_20_sky": { name: "2.0 SkyActiv-G (PE-VPS)", type: "Бензин", volume: "2.0 л", reliability: "high", desc: "Мотор с высокой степенью сжатия (14:1) на Mazda 3, 6, CX-5. Отличная экономичность и ресурс, но строго требователен к качеству бензина (АИ-95/98)." },
+        "honda_15_l15": { name: "1.5 VTEC Turbo (L15B7)", type: "Бензин", volume: "1.5 л", reliability: "high", desc: "Ставится на Civic X, Accord X из США. Бодрый турбомотор. На ранних версиях бывали случаи попадания бензина в масло при коротких поездках зимой." },
+        "honda_18_r18": { name: "1.8 i-VTEC (R18A)", type: "Бензин", volume: "1.8 л", reliability: "high", desc: "Атмосферный хит прошлых поколений Civic и HR-V. Один из самых долговечных моторов Honda, простая конструкция без сложных систем наддува." },
+
+        // === Ford, Subaru, Opel, Chevrolet, Peugeot ===
+        "ford_15_ecob": { name: "1.5 EcoBoost (I4)", type: "Бензин", volume: "1.5 л", reliability: "medium", desc: "Турбомотор на Ford Fusion (США). Обладает хорошей тягой, но склонен к перегреву 2-го и 3-го цилиндров из-за конструктивных особенностей блока." },
+        "sub_20_fb20": { name: "2.0 Boxer (FB20)", type: "Бензин (Оппозитный)", volume: "2.0 л", reliability: "medium", desc: "Оппозитный двигатель Subaru Forester. Хороший центр тяжести, но чувствителен к уровню масла и склонен к его угару после 150к км." },
+        "psa_16_ep6": { name: "1.6 THP (EP6DT)", type: "Бензин", volume: "1.6 л", reliability: "low", desc: "Турбированный двигатель совместной разработки PSA и BMW (Peugeot 3008). Склонен к нагарообразованию на клапанах и быстрому растяжению цепи ГРМ." },
+        "gm_14_net": { name: "1.4 Turbo (LUJ/NET)", type: "Бензин", volume: "1.4 л", reliability: "medium", desc: "Популярный турбомотор на Opel Astra J/K и Chevrolet Cruze. Прост в ремонте, но имеет хлипкую систему вентиляции картерных газов." },
+        "gm_15_lfv": { name: "1.5 Turbo Ecotec (LFV)", type: "Бензин", volume: "1.5 л", reliability: "high", desc: "Устанавливается на Chevrolet Malibu из США. Экономичный мотор с непосредственным впрыском, цепной ГРМ служит долго." },
+
+        // === Китай и Geely ===
         "geely_15_3g15t": { name: "1.5 TD (JLE-3G15TD)", type: "Бензин", volume: "1.5 л", reliability: "medium", desc: "3-цилиндровый турбомотор (Coolray, Atlas Pro), разработанный совместно с Volvo. Динамичный, но требователен к октановому числу топлива." },
         "geely_20_turbo": { name: "2.0 T-GDI (JLH-4G20TD)", type: "Бензин", volume: "2.0 л", reliability: "high", desc: "4-цилиндровый турбомотор (Tugella, Monjaro). Фактически является клоном шведского Volvo Drive-E. Очень ресурсный." },
         
@@ -44,6 +59,8 @@ const DB_COMPONENTS = {
         "kia_6at": { brand: "Hyundai/Kia", name: "A6GF1 / A6MF1", type: "Автомат", reliability: "high", desc: "Собственный автомат корейцев (Solaris, Rio, Tucson). Исключительно удачная и плавная коробка. Служит до 300к км." },
         "kia_4at": { brand: "Hyundai/Kia", name: "A4CF1", type: "Автомат", reliability: "high", desc: "Древний, но неубиваемый 4-ступенчатый автомат (Solaris 1-го поколения до рестайлинга). Надежен, но повышает расход." },
         "dp2_dp8": { brand: "Renault", name: "DP2 / DP8", type: "Автомат", reliability: "medium", desc: "Французский 4-ступенчатый автомат. Склонен к перегревам, боится трассы в жару, но дешев в ремонте." },
+        "mazda_6at": { brand: "Mazda", name: "SkyActiv-Drive (FW6A)", type: "Автомат", reliability: "high", desc: "6-ступенчатый гидротрансформатор собственной разработки Mazda. Очень шустрая блокировка гидротрансформатора, работает как робот, но при этом надежен." },
+        "gm_6at": { brand: "GM", name: "6T40", type: "Автомат", reliability: "medium", desc: "6-ступенчатый автомат на Chevrolet Malibu/Cruze и Opel Astra. Ранние версии страдали от перегрева и разрушения волнистой пружины, позже конструкцию доработали." },
 
         // === Роботы ===
         "vag_dq200": { brand: "VW", name: "DSG-7 (DQ200)", type: "Робот (сухой)", reliability: "medium", desc: "7-ступенчатый сухой робот. На свежих версиях (после 2014) ходит неплохо, но пробки и частые старты ускоряют износ сцепления." },
@@ -51,6 +68,9 @@ const DB_COMPONENTS = {
         "ford_powershift": { brand: "Getrag", name: "PowerShift (6DCT250)", type: "Робот", reliability: "low", desc: "Сухой робот Ford. Известен дерганьем в пробках, частыми отказами блоков ТСМ и протечками сальников." },
         
         // === Вариаторы ===
-        "jatco_jf015e": { brand: "Jatco", name: "Вариатор (JF015E)", type: "Вариатор", reliability: "medium", desc: "Ставился на Logan, Vesta, Captur. Боится резких стартов зимой без прогрева и буксования." }
+        "jatco_jf015e": { brand: "Jatco", name: "Вариатор (JF015E)", type: "Вариатор", reliability: "medium", desc: "Малый вариатор для двигателей до 1.6л. Ставился на Logan, Vesta, Qashqai. Боится резких стартов зимой без прогрева." },
+        "jatco_jf016e": { brand: "Jatco", name: "Вариатор (JF016E / CVT8)", type: "Вариатор", reliability: "medium", desc: "Крупный вариатор для двигателей от 2.0л (Qashqai, Outlander). Чувствителен к чистоте масла. При замене масла каждые 40к км живет долго." },
+        "honda_cvt": { brand: "Honda", name: "Honda CVT", type: "Вариатор", reliability: "high", desc: "Собственный вариатор Honda. Один из самых ресурсных и живучих вариаторов на рынке. Износ ремня минимален." },
+        "sub_lineartronic": { brand: "Subaru", name: "Lineartronic (TR580)", type: "Вариатор (цепной)", reliability: "high", desc: "Клиноцепной вариатор Subaru. Вместо ремня используется цепь фирмы LuK. Долговечен, обеспечивает хорошее сцепление, но дорог в ремонте." }
     }
 };
